@@ -24,10 +24,14 @@ class _LoginScreenState extends State<LoginScreen> {
         Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
-              colors: [Colors.white, AppColors.tertiary],
+              colors: [Colors.white, AppColors.primary],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
+            // image: DecorationImage(
+            //   image: AssetImage('assets/common/hero-texture.png'),
+            //   fit: BoxFit.cover,
+            // ),
           ),
         ),
         AnimatedPositioned(

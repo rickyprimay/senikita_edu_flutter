@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:senikita_edu/res/widgets/colors.dart';
 import 'package:senikita_edu/res/widgets/fonts.dart';
@@ -36,18 +35,23 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),
       body: SafeArea(
+        top: false,
         child: Column(
           children: [
-            // Header Section
             Container(
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 color: AppColors.primary,
                 borderRadius: BorderRadius.vertical(bottom: Radius.circular(30)),
+                image: DecorationImage(
+                  image: AssetImage('assets/common/hero-texture.png'),
+                  fit: BoxFit.cover,
+                ),
               ),
               padding: const EdgeInsets.all(20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  const SizedBox(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
