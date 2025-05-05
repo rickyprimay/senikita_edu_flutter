@@ -5,6 +5,7 @@ import 'package:widya/utils/routes/routes.dart';
 import 'package:widya/utils/routes/routes_names.dart';
 import 'package:widya/viewModel/auth_view_model.dart';
 import 'package:widya/viewModel/category_view_model.dart';
+import 'package:widya/viewModel/course_view_model.dart';
 import 'package:widya/viewModel/user_view_model.dart';
 import 'package:toastification/toastification.dart';
 
@@ -22,7 +23,8 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => AuthViewModel()),
         ChangeNotifierProvider(create: (_) => UserViewModel()),
         ChangeNotifierProvider(create: (_) => CategoryViewModel()),
-        ChangeNotifierProvider(create: (_) => CategoryProvider())
+        ChangeNotifierProvider(create: (_) => CategoryProvider()),
+        ChangeNotifierProvider(create: (_) => CourseViewModel()),
       ],
       child: ToastificationWrapper(
         child: MaterialApp(

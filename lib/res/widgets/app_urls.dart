@@ -6,4 +6,6 @@ class AppUrls {
 
   static const getCategory = "$baseUrl/categories";
 
+  static const getCourse = "$baseUrl/courses";
+
 }

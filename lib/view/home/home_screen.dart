@@ -3,7 +3,8 @@ import 'package:widya/res/widgets/colors.dart';
 import 'package:widya/res/widgets/fonts.dart';
 import 'package:widya/res/widgets/shared_preferences.dart';
 import 'package:widya/view/home/widget/category_slider_widget.dart';
-import 'package:widya/view/home/widget/course_card_widget.dart'; 
+import 'package:widya/view/home/widget/course_card_widget.dart';
+import 'package:widya/viewModel/course_view_model.dart'; 
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -13,6 +14,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final CourseViewModel courseViewModel = CourseViewModel();
   String? name;
   String? photo;
 
@@ -20,6 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _loadUserData();
+    courseViewModel.fetchCourses();
   }
 
   Future<void> _loadUserData() async {
@@ -58,9 +61,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       const Icon(Icons.menu, color: Colors.white),
                       Text(
-                        'SENIKITA EDU',
-                        style: AppFont.crimsonTextSubtitle.copyWith(
+                        'Widya',
+                        style: AppFont.crimsonTextTitle.copyWith(
                           color: Colors.white,
+                          fontSize: 24,
                         ),
                       ),
                       ClipOval(
@@ -137,7 +141,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: ListView(
                 padding: const EdgeInsets.all(20),
                 children: [
-                  courseCard(
+                  CourseCard(
                     color: Colors.orange.shade100,
                     title: "Memainkan Gamelan",
                     subtitle: "Belajar memainkan alat musik tradisional gamelan dengan cara yang menyenangkan.",
@@ -146,7 +150,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     author: "Dosen Seni Musik",
                   ),
                   const SizedBox(height: 20),
-                  courseCard(
+                  CourseCard(
                     color: Colors.blue.shade100,
                     title: "Mencanting Batik",
                     subtitle: "Belajar mencanting batik dengan teknik yang benar dan mudah dipahami.",
@@ -155,7 +159,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     author: "Dosen Seni Rupa",
                   ),
                   const SizedBox(height: 20),
-                  courseCard(
+                  CourseCard(
                     color: Colors.orange.shade200,
                     title: "Belajar Tari Tradisional",
                     subtitle: "Belajar gerakan dasar tari tradisional Indonesia dengan mudah.",
@@ -164,7 +168,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     author: "Dosen Seni Tari",
                   ),
                   const SizedBox(height: 20),
-                  courseCard(
+                  CourseCard(
                     color: Colors.green.shade200,
                     title: "Tari Piring Minangkabau",
                     subtitle: "Belajar Tari Piring Minangkabau dengan langkah-langkah yang mudah.",

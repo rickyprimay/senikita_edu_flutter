@@ -14,7 +14,7 @@ class CategorySliderWidget extends StatelessWidget {
       future: CategoryViewModel().getCachedCategoryIdAndName(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return const SizedBox(height: 50); 
+          return const SizedBox(height: 50);
         }
 
         final cachedCategories = snapshot.data ?? [];
@@ -56,7 +56,9 @@ class CategorySliderWidget extends StatelessWidget {
       onTap: () {
         context.read<CategoryProvider>().selectCategory(label);
       },
-      child: Container(
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeInOut,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         margin: EdgeInsets.only(right: isLast ? 20 : 8),
         decoration: BoxDecoration(
@@ -64,10 +66,16 @@ class CategorySliderWidget extends StatelessWidget {
           borderRadius: BorderRadius.circular(20),
           border: isSelected ? null : Border.all(color: Colors.grey.shade300),
         ),
-        child: Text(
-          label,
-          style: AppFont.ralewaySubtitle.copyWith(
-            color: isSelected ? Colors.white : Colors.black,
+        child: AnimatedScale(
+          scale: isSelected ? 1.05 : 1.0,
+          duration: const Duration(milliseconds: 150),
+          curve: Curves.easeOut,
+          child: Text(
+            label,
+            style: AppFont.ralewaySubtitle.copyWith(
+              color: isSelected ? Colors.white : Colors.black,
+              fontWeight: isSelected ? FontWeight.w500 : FontWeight.w400,
+            ),
           ),
         ),
       ),
