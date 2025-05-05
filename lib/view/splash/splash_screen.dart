@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:senikita_edu/res/widgets/colors.dart';
 import 'package:senikita_edu/res/widgets/fonts.dart';
 import 'package:senikita_edu/viewModel/splash_view_model.dart';
 
@@ -84,7 +85,7 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
                       child: Text(
                         'senikita',
                         style: AppFont.crimsonHeaderLarge.copyWith(
-                          color: const Color(0xFF1E1E1E),
+                          color: AppColors.primary,
                           letterSpacing: 2,
                         ),
                       ),

@@ -16,28 +16,28 @@ class Discover extends StatelessWidget {
     return [
       PersistentBottomNavBarItem(
         icon: const Icon(Icons.home),
-        title: "Home",
+        title: "Beranda",
         activeColorPrimary: AppColors.primary,
         inactiveColorPrimary: Colors.grey,
         activeColorSecondary: Colors.white,
       ),
       PersistentBottomNavBarItem(
         icon: const Icon(Icons.search),
-        title: "Search",
+        title: "Cari",
         activeColorPrimary: AppColors.primary,
         inactiveColorPrimary: Colors.grey,
         activeColorSecondary: Colors.white
       ),
       PersistentBottomNavBarItem(
-        icon: const Icon(Icons.manage_history),
-        title: "History",
+        icon: const Icon(Icons.class_),
+        title: "Kelas Saya",
         activeColorPrimary: AppColors.primary,
         inactiveColorPrimary: Colors.grey,
         activeColorSecondary: Colors.white
       ),
       PersistentBottomNavBarItem(
         icon: const Icon(Icons.person),
-        title: "Profile",
+        title: "Profil",
         activeColorPrimary: AppColors.primary,
         inactiveColorPrimary: Colors.grey,
         activeColorSecondary: Colors.white

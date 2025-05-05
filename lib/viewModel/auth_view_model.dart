@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:senikita_edu/repository/auth_repository.dart';
+import 'package:senikita_edu/res/widgets/logger.dart';
 import 'package:senikita_edu/res/widgets/shared_preferences.dart';
 import 'package:senikita_edu/utils/routes/routes_names.dart';
 import 'package:senikita_edu/viewModel/user_view_model.dart';
@@ -100,6 +101,9 @@ class AuthViewModel with ChangeNotifier {
 
     try {
       await SharedPrefs.remove('auth_token');
+      await SharedPrefs.remove('user_name');
+      await SharedPrefs.remove('user_email');
+      await SharedPrefs.remove('user_photo');
       await _googleSignIn.signOut();
 
       isAuthenticated = false;
@@ -112,6 +116,7 @@ class AuthViewModel with ChangeNotifier {
       );
     } catch (e) {
       Utils.showToastification('Gagal Log Out', 'Gagal Logout, silahkan coba kembali', false, context);
+      AppLogger.logError('Logout Error: $e');
     } finally {
       setLogoutLoading(false);
     }

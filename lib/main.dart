@@ -4,6 +4,7 @@ import 'package:senikita_edu/utils/routes/routes.dart';
 import 'package:senikita_edu/utils/routes/routes_names.dart';
 import 'package:senikita_edu/viewModel/auth_view_model.dart';
 import 'package:senikita_edu/viewModel/user_view_model.dart';
+import 'package:toastification/toastification.dart';
 
 void main() async {
   runApp(const MyApp());
@@ -19,11 +20,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => AuthViewModel()),
         ChangeNotifierProvider(create: (_) => UserViewModel()),
       ],
-      child: WillPopScope(
-        onWillPop: () async {
-          Navigator.pop(context);
-          return true;
-        },
+      child: ToastificationWrapper(
         child: MaterialApp(
           title: 'SeniKitaEdu',
           theme: ThemeData(
@@ -31,6 +28,15 @@ class MyApp extends StatelessWidget {
           ),
           initialRoute: RouteNames.splashScreen,
           onGenerateRoute: Routes.generateRoute,
+          builder: (context, child) {
+            return WillPopScope(
+              onWillPop: () async {
+                Navigator.pop(context);
+                return true;
+              },
+              child: child!,
+            );
+          },
         ),
       ),
     );
