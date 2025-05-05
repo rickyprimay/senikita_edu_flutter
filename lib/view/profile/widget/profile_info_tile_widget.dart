@@ -49,12 +49,37 @@ class ProfileInfoTile extends StatelessWidget {
                 if (onTap != null) {
                   onTap!();
                 } else {
-                  QuickAlert.show(
-                    context: context,
-                    type: QuickAlertType.warning,
-                    title: 'Peringatan',
-                    text: 'Alamat Email ini berdasarkan dari akun Google yang kamu gunakan untuk mendaftar. Jika ada kesalahan, maka tidak dapat diubah.',
-                  );
+                 QuickAlert.show(
+                  context: context,
+                  type: QuickAlertType.custom, 
+                  widget: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Peringatan', 
+                          style: AppFont.crimsonSubtitle.copyWith(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.primary, 
+                          ),
+                        ),
+                        const SizedBox(height: 8), 
+                        Text(
+                          'Alamat Email ini berdasarkan dari akun Google yang kamu gunakan untuk mendaftar. Jika ada kesalahan, maka tidak dapat diubah.',
+                          style: AppFont.crimsonFootnoteSmall.copyWith(
+                            fontSize: 14,
+                            color: AppColors.secondary,
+                          ),
+                          textAlign: TextAlign.justify,
+                        ),
+                      ],
+                    ),
+                  ),
+                  confirmBtnText: 'Baik', 
+                  confirmBtnColor: AppColors.primary, 
+                );
                 }
               },
               child: SizedBox(

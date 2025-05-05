@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:senikita_edu/res/widgets/colors.dart';
 import 'package:senikita_edu/res/widgets/fonts.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SeniKitaScreen extends StatefulWidget {
   const SeniKitaScreen({super.key});
@@ -10,6 +11,18 @@ class SeniKitaScreen extends StatefulWidget {
 }
 
 class _SeniKitaScreenState extends State<SeniKitaScreen> {
+  Future<void>? _launched;
+  Future<void> _launchInBrowser(Uri url) async {
+    if (!await launchUrl(
+      url,
+      mode: LaunchMode.externalApplication,
+    )) {
+      throw Exception('Could not launch $url');
+    }
+  }
+
+  final Uri toLaunch = Uri(scheme: 'https', host: 'www.senikita.my.id', path: '/');
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,12 +57,22 @@ class _SeniKitaScreenState extends State<SeniKitaScreen> {
             color: Colors.white,
           ),
         ),
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.language, 
+              color: Colors.white,
+            ),
+            onPressed: () => setState(() {
+                  _launched = _launchInBrowser(toLaunch);
+                }),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Hero Section
             Container(
               width: double.infinity,
               height: 160,
@@ -90,8 +113,6 @@ class _SeniKitaScreenState extends State<SeniKitaScreen> {
                 ),
               ),
             ),
-
-            // Deskripsi + Card
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
               child: Column(
@@ -108,7 +129,6 @@ class _SeniKitaScreenState extends State<SeniKitaScreen> {
                   ),
                   const SizedBox(height: 20),
 
-                  // Card Visi
                   _buildCard(
                     title: 'Visi',
                     description:
@@ -116,7 +136,6 @@ class _SeniKitaScreenState extends State<SeniKitaScreen> {
                   ),
                   const SizedBox(height: 16),
 
-                  // Card Misi
                   _buildCard(
                     title: 'Misi',
                     description:
