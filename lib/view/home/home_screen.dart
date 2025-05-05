@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:provider/provider.dart';
 import 'package:widya/provider/home_provider.dart';
 import 'package:widya/res/helpers/duration_formatter.dart';
@@ -139,42 +140,66 @@ class HomeScreen extends StatelessWidget {
               Expanded(
                 child: Consumer<CourseViewModel>(
                   builder: (context, courseViewModel, child) {
-                    if (courseViewModel.loading) {
+                    Future<void> _refreshCourses() async {
+                      await courseViewModel.fetchCourses();
+                    }
+
+                    if (courseViewModel.loading && (courseViewModel.courses == null || courseViewModel.courses!.isEmpty)) {
                       return Loading(opacity: 0.5);
                     }
 
-                    if (courseViewModel.error != null) {
+                    if (courseViewModel.error != null && (courseViewModel.courses == null || courseViewModel.courses!.isEmpty)) {
                       return Center(child: Text("Error: ${courseViewModel.error}"));
                     }
 
                     final courses = courseViewModel.courses;
 
-                    if (courses == null || courses.isEmpty) {
-                      return Center(child: Text("Tidak ada kursus tersedia saat ini.", style: AppFont.ralewaySubtitle.copyWith(fontSize: 16, fontWeight: FontWeight.w500)));
-                    }
+                    return LiquidPullToRefresh(
+                      onRefresh: _refreshCourses,
+                      showChildOpacityTransition: false,
+                      color: AppColors.primary,
+                      height: 60,
+                      backgroundColor: Colors.white,     
+                      animSpeedFactor: 2.0,        
+                      child: (courses == null || courses.isEmpty)
+                          ? ListView(
+                              physics: const AlwaysScrollableScrollPhysics(),
+                              children: [
+                                SizedBox(
+                                  height: MediaQuery.of(context).size.height * 0.5,
+                                  child: Center(
+                                    child: Text(
+                                      "Tidak ada kursus tersedia saat ini.",
+                                      style: AppFont.ralewaySubtitle.copyWith(fontSize: 16, fontWeight: FontWeight.w500),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            )
+                          : ListView.builder(
+                              padding: const EdgeInsets.all(20),
+                              itemCount: courses.length,
+                              physics: const AlwaysScrollableScrollPhysics(),
+                              itemBuilder: (context, index) {
+                                final course = courses[index];
 
-                    return ListView.builder(
-                      padding: const EdgeInsets.all(20),
-                      itemCount: courses.length,
-                      itemBuilder: (context, index) {
-                        final course = courses[index];
-
-                        return Column(
-                          children: [
-                            CourseCard(
-                              color: Colors.orange.shade100,
-                              title: course.title,
-                              subtitle: course.description,
-                              duration: formatDuration(course.duration),
-                              icon: Icons.music_note,
-                              author: course.instructor.name,
-                              imageUrl: course.thumbnail,
-                              level: course.level,
+                                return Column(
+                                  children: [
+                                    CourseCard(
+                                      color: Colors.orange.shade100,
+                                      title: course.title,
+                                      subtitle: course.description,
+                                      duration: formatDuration(course.duration),
+                                      icon: Icons.music_note,
+                                      author: course.instructor.name,
+                                      imageUrl: course.thumbnail,
+                                      level: course.level,
+                                    ),
+                                    const SizedBox(height: 20),
+                                  ],
+                                );
+                              },
                             ),
-                            const SizedBox(height: 20),
-                          ],
-                        );
-                      },
                     );
                   },
                 ),

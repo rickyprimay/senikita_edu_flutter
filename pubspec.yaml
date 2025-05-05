@@ -24,6 +24,8 @@ dependencies:
   quickalert: ^1.1.0
   url_launcher: ^6.3.1
   flutter_launcher_icons: ^0.14.3
+  liquid_pull_refresh: ^1.0.6
+  liquid_pull_to_refresh: ^3.0.1
 
 dev_dependencies:
   flutter_test:
