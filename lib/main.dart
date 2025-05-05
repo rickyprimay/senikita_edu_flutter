@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:widya/provider/category_provider.dart';
+import 'package:widya/provider/login_provider.dart';
 import 'package:widya/utils/routes/routes.dart';
 import 'package:widya/utils/routes/routes_names.dart';
 import 'package:widya/viewModel/auth_view_model.dart';
@@ -25,6 +26,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => CategoryViewModel()),
         ChangeNotifierProvider(create: (_) => CategoryProvider()),
         ChangeNotifierProvider(create: (_) => CourseViewModel()),
+        ChangeNotifierProvider(create: (_) => LoginProvider()),
       ],
       child: ToastificationWrapper(
         child: MaterialApp(
