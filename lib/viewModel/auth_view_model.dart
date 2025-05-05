@@ -4,16 +4,17 @@ import 'package:widya/repository/auth_repository.dart';
 import 'package:widya/res/widgets/logger.dart';
 import 'package:widya/res/widgets/shared_preferences.dart';
 import 'package:widya/utils/routes/routes_names.dart';
+import 'package:widya/viewModel/category_view_model.dart';
 import 'package:widya/viewModel/user_view_model.dart';
 import 'package:widya/utils/utils.dart';
 
 class AuthViewModel with ChangeNotifier {
   final _auths = AuthRepository();
   final UserViewModel userViewModel = UserViewModel();
+  final CategoryViewModel categoryViewModel = CategoryViewModel();
 
   static final GoogleSignIn _googleSignIn = GoogleSignIn(
-    serverClientId:
-        "82646193951-uumjlviabndq5hu8rc9r9tq1auo6fdkt.apps.googleusercontent.com",
+    serverClientId: "82646193951-uumjlviabndq5hu8rc9r9tq1auo6fdkt.apps.googleusercontent.com",
   );
 
   bool _loginLoading = false;
@@ -92,6 +93,7 @@ class AuthViewModel with ChangeNotifier {
     await SharedPrefs.setString('auth_token', token);
 
     await userViewModel.fetchUserDetail(context);
+    await categoryViewModel.fetchCategory();
 
     Utils.showToastification('Login Berhasil', 'Anda berhasil login', true, context);
     Navigator.pushNamed(context, RouteNames.discover);

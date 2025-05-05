@@ -9,6 +9,8 @@ class SplashService {
 
     await Future.delayed(const Duration(seconds: 3));
 
+    if (!context.mounted) return;
+
     if (token == null || token.isEmpty) {
       Navigator.pushNamed(context, RouteNames.login);
     } else {
