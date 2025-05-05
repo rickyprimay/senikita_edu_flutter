@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:senikita_edu/repository/auth_repository.dart';
+import 'package:senikita_edu/res/widgets/logger.dart';
 import 'package:senikita_edu/res/widgets/shared_preferences.dart';
 import 'package:senikita_edu/utils/routes/routes_names.dart';
 import 'package:senikita_edu/viewModel/user_view_model.dart';
@@ -107,16 +108,16 @@ class AuthViewModel with ChangeNotifier {
 
       Utils.toastMessage('Successfully logged out!');
 
-      Navigator.pushNamedAndRemoveUntil(
-        context,
+      Navigator.of(context, rootNavigator: true).pushNamedAndRemoveUntil(
         RouteNames.login,
         (route) => false,
-     );
+      );
     } catch (e) {
       Utils.flushBarErrorMessage(
         'Error during logout. Please try again.: $e',
         context,
       );
+      AppLogger.logError("Error during logout: $e");
     }
   }
 }

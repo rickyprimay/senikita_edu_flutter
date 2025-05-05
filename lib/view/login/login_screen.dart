@@ -34,32 +34,32 @@ class _LoginScreenState extends State<LoginScreen> {
             // ),
           ),
         ),
-        AnimatedPositioned(
-          duration: const Duration(milliseconds: 500),
-          top: -100,
-          left: isLogin ? 250 : -100,
-          child: Container(
-            width: 280,
-            height: 280,
-            decoration: BoxDecoration(
-              color: AppColors.primary,
-              shape: BoxShape.circle,
-            ),
-          ),
-        ),
-        AnimatedPositioned(
-          duration: const Duration(milliseconds: 500),
-          bottom: -100,
-          right: isLogin ? 250 : -100,
-          child: Container(
-            width: 240,
-            height: 240,
-            decoration: BoxDecoration(
-              color: AppColors.primary,
-              shape: BoxShape.circle,
-            ),
-          ),
-        ),
+        // AnimatedPositioned(
+        //   duration: const Duration(milliseconds: 500),
+        //   top: -100,
+        //   left: isLogin ? 250 : -100,
+        //   child: Container(
+        //     width: 280,
+        //     height: 280,
+        //     decoration: BoxDecoration(
+        //       color: AppColors.primary.withAlpha(77),
+        //       shape: BoxShape.circle,
+        //     ),
+        //   ),
+        // ),
+        // AnimatedPositioned(
+        //   duration: const Duration(milliseconds: 500),
+        //   bottom: -100,
+        //   right: isLogin ? 250 : -100,
+        //   child: Container(
+        //     width: 240,
+        //     height: 240,
+        //     decoration: BoxDecoration(
+        //       color: AppColors.primary.withAlpha(77),
+        //       shape: BoxShape.circle,
+        //     ),
+        //   ),
+        // ),
         Scaffold(
           backgroundColor: Colors.transparent,
           body: SafeArea(
@@ -74,16 +74,16 @@ class _LoginScreenState extends State<LoginScreen> {
                       'assets/logo/senikita_logo.png',
                       height: 180,
                     ),
-                    const SizedBox(height: 30),
+                    const SizedBox(height: 2),
                     Text(
-                      isLogin ? 'Selamat Datang' : 'Buat Akun Baru',
-                      style: AppFont.nunitoHeaderMedium.copyWith(
-                        color: Colors.white,
+                      isLogin ? 'Selamat Datang' : 'Bergabunglah dengan kami',
+                      style: AppFont.crimsonHeaderLarge.copyWith(
+                        color: AppColors.primary,
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(height: 30),
+                    const SizedBox(height: 10),
                     ElevatedButton.icon(
                       icon: Image.asset(
                         'assets/logo/google_logo.png',
@@ -92,8 +92,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       label: Text(
                         isLogin ? 'Login dengan Google' : 'Daftar dengan Google',
-                        style: AppFont.nunitoTitleMedium.copyWith(
+                        style: AppFont.ralewayTitleMedium.copyWith(
                           color: Colors.black,
+                          fontSize: 16,
                         ),
                       ),
                       onPressed: () {
@@ -114,18 +115,55 @@ class _LoginScreenState extends State<LoginScreen> {
                         elevation: 5,
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 15),
+                    Row(
+                      children: <Widget>[
+                        const Expanded(
+                          child: Divider(
+                            color: Colors.white70,
+                            thickness: 1,
+                            endIndent: 8, // Jarak ke teks
+                          ),
+                        ),
+                        Text(
+                          "Informasi",
+                          style: AppFont.ralewayFootnoteSmall.copyWith(
+                            color: Colors.white70,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const Expanded(
+                          child: Divider(
+                            color: Colors.white70,
+                            thickness: 1,
+                            indent: 8, // Jarak ke teks
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      "Dengan mendaftar, Anda akan mendapatkan akses ke semua kursus dan materi pembelajaran seni dan budaya Indonesia",
+                      style: AppFont.ralewayFootnoteSmall.copyWith(
+                        color: Colors.white70,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      textAlign: TextAlign.center
+                    ),
+                    const SizedBox(height: 10),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          isLogin ? 'Belum punya akun?' : 'Sudah punya akun?',
-                          style: AppFont.nunitoBodyMedium.copyWith(
-                            color: Colors.white,
+                          isLogin ? 'Belum memiliki akun?' : 'Sudah memiliki akun?',
+                          style: AppFont.ralewayFootnoteLarge.copyWith(
+                            color: AppColors.greyCustom,
                             fontSize: 16,
                           ),
                         ),
-                        const SizedBox(width: 10),
+                        // const SizedBox(width: 2),
                         TextButton(
                           onPressed: () {
                             setState(() {
@@ -135,25 +173,11 @@ class _LoginScreenState extends State<LoginScreen> {
                           style: TextButton.styleFrom(
                             padding: EdgeInsets.zero,
                           ),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 20,
-                              vertical: 10,
-                            ),
-                            decoration: BoxDecoration(
-                              color: AppColors.greyCustom,
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color: AppColors.tertiary,
-                                width: 1,
-                              ),
-                            ),
-                            child: Text(
-                              isLogin ? 'Daftar' : 'Login',
-                              style: AppFont.nunitoBodyMedium.copyWith(
-                                color: AppColors.tertiary,
-                                fontWeight: FontWeight.bold,
-                              ),
+                          child: Text(
+                            isLogin ? 'Daftar' : 'Login',
+                            style: AppFont.ralewayFootnoteLarge.copyWith(
+                              color: AppColors.secondary,
+                              fontSize: 16,
                             ),
                           ),
                         ),

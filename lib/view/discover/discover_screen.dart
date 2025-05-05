@@ -17,26 +17,30 @@ class Discover extends StatelessWidget {
       PersistentBottomNavBarItem(
         icon: const Icon(Icons.home),
         title: "Home",
-        activeColorPrimary: AppColors.brick,
+        activeColorPrimary: AppColors.primary,
         inactiveColorPrimary: Colors.grey,
+        activeColorSecondary: Colors.white,
       ),
       PersistentBottomNavBarItem(
         icon: const Icon(Icons.search),
         title: "Search",
-        activeColorPrimary: AppColors.brick,
+        activeColorPrimary: AppColors.primary,
         inactiveColorPrimary: Colors.grey,
+        activeColorSecondary: Colors.white
       ),
       PersistentBottomNavBarItem(
-        icon: const Icon(Icons.notifications),
-        title: "Notif",
-        activeColorPrimary: AppColors.brick,
+        icon: const Icon(Icons.manage_history),
+        title: "History",
+        activeColorPrimary: AppColors.primary,
         inactiveColorPrimary: Colors.grey,
+        activeColorSecondary: Colors.white
       ),
       PersistentBottomNavBarItem(
         icon: const Icon(Icons.person),
         title: "Profile",
-        activeColorPrimary: AppColors.brick,
+        activeColorPrimary: AppColors.primary,
         inactiveColorPrimary: Colors.grey,
+        activeColorSecondary: Colors.white
       ),
     ];
   }
@@ -48,7 +52,8 @@ class Discover extends StatelessWidget {
       controller: controller,
       screens: screens,
       items: _navBarsItems(),
-      navBarStyle: NavBarStyle.style3,
+      navBarStyle: NavBarStyle.style7,
+      navBarHeight: kBottomNavigationBarHeight * 1.4,
     );
   }
 }

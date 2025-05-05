@@ -53,9 +53,6 @@ class UserViewModel with ChangeNotifier {
         await sp.setString('user_name', userData['name']);
         await sp.setString('user_email', userData['email']);
         await sp.setString('user_photo', userData['photo']);
-
-        AppLogger.logInfo('✅ User data saved to SharedPreferences');
-        Utils.toastMessage("User details fetched successfully");
       } else {
         throw Exception("Failed to fetch user data");
       }
@@ -63,9 +60,6 @@ class UserViewModel with ChangeNotifier {
       _userDetail = response;
 
     } catch (e) {
-      _error = e.toString();
-      AppLogger.logError('❌ Error fetching user detail: $_error');
-      
       Utils.flushBarErrorMessage(_error!, context);
     } finally {
       _isLoading = false;

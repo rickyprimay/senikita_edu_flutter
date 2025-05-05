@@ -1,4 +1,3 @@
-// splash_screen.dart
 import 'package:flutter/material.dart';
 import 'package:senikita_edu/res/widgets/fonts.dart';
 import 'package:senikita_edu/viewModel/splash_view_model.dart';
@@ -21,7 +20,6 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
   void initState() {
     super.initState();
 
-    // Inisialisasi Scale Animation
     _scaleController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 2),
@@ -31,7 +29,6 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
       CurvedAnimation(parent: _scaleController, curve: Curves.easeOut),
     );
 
-    // Inisialisasi Opacity Animation
     _opacityController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 2),
@@ -41,11 +38,9 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
       CurvedAnimation(parent: _opacityController, curve: Curves.easeOut),
     );
 
-    // Jalankan animasi
     _scaleController.forward();
     _opacityController.forward();
 
-    // Cek autentikasi setelah 4 detik (seperti SwiftUI delay 4 detik)
     Future.delayed(const Duration(seconds: 4), () {
       SplashService.checkAuthentication(context);
     });
@@ -61,7 +56,7 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white, // mirip SwiftUI Color.white
+      backgroundColor: Colors.white, 
       body: SafeArea(
         child: Center(
           child: AnimatedBuilder(
@@ -89,7 +84,7 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
                       child: Text(
                         'senikita',
                         style: AppFont.crimsonHeaderLarge.copyWith(
-                          color: const Color(0xFF1E1E1E), // ganti sesuai warna 'primary'
+                          color: const Color(0xFF1E1E1E),
                           letterSpacing: 2,
                         ),
                       ),

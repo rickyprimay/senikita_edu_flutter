@@ -163,11 +163,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   const SizedBox(height: 20),
                   courseCard(
-                    color: Colors.orange.shade200,
-                    title: "Belajar Tari Tradisional",
-                    subtitle: "Belajar gerakan dasar tari tradisional Indonesia dengan mudah.",
+                    color: Colors.green.shade200,
+                    title: "Tari Piring Minangkabau",
+                    subtitle: "Belajar Tari Piring Minangkabau dengan langkah-langkah yang mudah.",
                     duration: "1hr 5mnt",
-                    icon: Icons.energy_savings_leaf,
+                    icon: Icons.military_tech_outlined,
                   ),
                 ],
               ),
@@ -224,9 +224,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   Text(
                     title,
-                    style: AppFont.nunitoHeaderMedium.copyWith(
+                    style: AppFont.ralewayHeaderMedium.copyWith(
                       fontSize: 16,
-                      fontWeight: FontWeight.w900,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
                   const SizedBox(height: 5),
@@ -240,12 +240,19 @@ class _HomeScreenState extends State<HomeScreen> {
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 8),
-                  Text(
-                    duration,
-                    style: AppFont.nunitoSubtitle.copyWith(
-                      color: Colors.orange,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  Row(
+                    children: [
+                      Icon(Icons.timer, size: 14, color: Colors.orange[300]),
+                      const SizedBox(width: 4),
+                      Text(
+                        duration,
+                        style: AppFont.nunitoSubtitle.copyWith(
+                          color: Colors.orange[400],
+                          fontWeight: FontWeight.w600,
+                          fontSize: 13,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
