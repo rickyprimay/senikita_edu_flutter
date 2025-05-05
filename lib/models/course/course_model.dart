@@ -11,6 +11,8 @@ class Course {
   String thumbnail;
   Category category;
   Instructor instructor;
+  int duration;
+  String level;
 
   Course({
     required this.id,
@@ -22,6 +24,8 @@ class Course {
     required this.thumbnail,
     required this.category,
     required this.instructor,
+    required this.duration,
+    required this.level,
   });
 
   factory Course.fromJson(Map<String, dynamic> json) {
@@ -35,6 +39,8 @@ class Course {
       thumbnail: json['thumbnail'],
       category: Category.fromJson(json['category']),
       instructor: Instructor.fromJson(json['instructor']),
+      duration: json['duration'],
+      level: json['level'],
     );
   }
 
@@ -49,6 +55,8 @@ class Course {
       'thumbnail': thumbnail,
       'category': category.toJson(),
       'instructor': instructor.toJson(),
+      'duration': duration,
+      'level': level,
     };
   }
 }
