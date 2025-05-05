@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 import 'package:widya/res/widgets/discover_list.dart';
 import 'package:widya/utils/routes/routes_names.dart';
+import 'package:widya/view/course/course_screen.dart';
 import 'package:widya/view/discover/discover_screen.dart';
 import 'package:widya/view/home/home_screen.dart';
 import 'package:widya/view/login/login_screen.dart';
@@ -37,6 +38,8 @@ class Routes {
         return MaterialPageRoute(builder: (BuildContext context) => const SeniKitaScreen());
       case (RouteNames.seniKitaEdu):
         return MaterialPageRoute(builder: (BuildContext context) => const SeniKitaEduScreen());
+      case (RouteNames.Course):
+        return MaterialPageRoute(builder: (BuildContext context) => const CourseScreen());
       default:
         return MaterialPageRoute(
           builder: (_) => const Scaffold(

@@ -168,6 +168,8 @@ class HomeScreen extends StatelessWidget {
                               duration: formatDuration(course.duration),
                               icon: Icons.music_note,
                               author: course.instructor.name,
+                              imageUrl: course.thumbnail,
+                              level: course.level,
                             ),
                             const SizedBox(height: 20),
                           ],

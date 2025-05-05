@@ -9,16 +9,20 @@ class CourseCard extends StatefulWidget {
   final String duration;
   final IconData icon;
   final String author;
+  final String? imageUrl;
+  final String level;
 
   const CourseCard({
-    Key? key,
+    super.key,
     required this.color,
     required this.title,
     required this.subtitle,
     required this.duration,
     required this.icon,
     required this.author,
-  }) : super(key: key);
+    this.imageUrl,
+    required this.level,
+  });
 
   @override
   _CourseCardState createState() => _CourseCardState();
@@ -77,7 +81,28 @@ class _CourseCardState extends State<CourseCard> {
                     width: 1,
                   ),
                 ),
-                child: Icon(widget.icon, size: 40, color: Colors.black87),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(15),
+                  child: (widget.imageUrl != null && widget.imageUrl!.isNotEmpty)
+                      ? Image.network(
+                          widget.imageUrl!,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return const SizedBox();
+                          },
+                          loadingBuilder: (context, child, loadingProgress) {
+                            if (loadingProgress == null) return child;
+                            return Center(
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                valueColor:
+                                    AlwaysStoppedAnimation<Color>(AppColors.primary),
+                              ),
+                            );
+                          },
+                        )
+                      : const SizedBox(),
+                ),
               ),
               Expanded(
                 child: Padding(
