@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:senikita_edu/res/widgets/colors.dart';
 import 'package:senikita_edu/res/widgets/fonts.dart';
 import 'package:senikita_edu/res/widgets/shared_preferences.dart';
+import 'package:senikita_edu/utils/routes/routes_names.dart';
 import 'package:senikita_edu/view/profile/widget/profile_info_tile_widget.dart';
 import 'package:senikita_edu/viewModel/auth_view_model.dart';
 import 'package:quickalert/quickalert.dart';
@@ -74,7 +75,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   const SizedBox(height: 20),
                   ClipOval(
                     child: Image.network(
-                      photo ?? 'https://via.placeholder.com/150',
+                      photo ?? 'https://placehold.co/150x150/png',
                       width: 80,
                       height: 80,
                       fit: BoxFit.cover,
@@ -170,7 +171,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     ProfileInfoTile(icon: const Icon(Icons.help), title: "Bantuan", trailing: const Icon(Icons.arrow_forward_ios, size: 16, color: AppColors.lightBrick)),
                     ProfileInfoTile(icon: const Icon(Icons.info), title: "Tentang SeniKitaEdu", trailing: const Icon(Icons.arrow_forward_ios, size: 16, color: AppColors.lightBrick)),
-                    ProfileInfoTile(icon: Image.asset('assets/common/loading.png', width: 24, height: 24,), title: "Tentang SeniKita Marketplace", trailing: const Icon(Icons.arrow_forward_ios, size: 16, color: AppColors.lightBrick)),
+                    ProfileInfoTile(
+                      icon: Image.asset('assets/common/loading.png', width: 24, height: 24,),
+                      title: "Tentang SeniKita Marketplace",
+                      trailing: const Icon(Icons.arrow_forward_ios, size: 16, color: AppColors.lightBrick),
+                      onTap: () {
+                        Navigator.of(context, rootNavigator: true).pushNamed(RouteNames.seniKita);
+                      },
+                    ),
                     ProfileInfoTile(
                       icon: const Icon(Icons.logout),
                       title: "Log Out",

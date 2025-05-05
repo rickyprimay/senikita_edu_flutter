@@ -7,6 +7,7 @@ import 'package:senikita_edu/view/home/home_screen.dart';
 import 'package:senikita_edu/view/login/login_screen.dart';
 import 'package:senikita_edu/view/my_class/my_class_screen.dart';
 import 'package:senikita_edu/view/profile/profile_screen.dart';
+import 'package:senikita_edu/view/senikita/senikita_screen.dart';
 import 'package:senikita_edu/view/splash/splash_screen.dart';
 
 class Routes {
@@ -31,6 +32,8 @@ class Routes {
         return MaterialPageRoute(builder: (BuildContext context) => const ProfileScreen());
       case (RouteNames.myClass):
         return MaterialPageRoute(builder: (BuildContext context) => const MyClassScreen());
+      case (RouteNames.seniKita):
+        return MaterialPageRoute(builder: (BuildContext context) => const SeniKitaScreen());
       default:
         return MaterialPageRoute(
           builder: (_) => const Scaffold(

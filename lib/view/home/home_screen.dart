@@ -64,7 +64,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       ClipOval(
                         child: Image.network(
-                          photo ?? 'https://via.placeholder.com/150',
+                          photo ?? 'https://placehold.co/150x150/png',
                           width: 50,
                           height: 50,
                           fit: BoxFit.cover,
