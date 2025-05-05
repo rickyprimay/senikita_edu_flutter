@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:senikita_edu/res/widgets/colors.dart';
-import 'package:senikita_edu/res/widgets/fonts.dart';
-import 'package:senikita_edu/res/widgets/shared_preferences.dart';
-import 'package:senikita_edu/view/home/widget/category_slider_widget.dart';
-import 'package:senikita_edu/view/home/widget/course_card_widget.dart'; 
+import 'package:widya/res/widgets/colors.dart';
+import 'package:widya/res/widgets/fonts.dart';
+import 'package:widya/res/widgets/shared_preferences.dart';
+import 'package:widya/view/home/widget/category_slider_widget.dart';
+import 'package:widya/view/home/widget/course_card_widget.dart'; 
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:senikita_edu/res/widgets/fonts.dart';
-import 'package:senikita_edu/viewModel/auth_view_model.dart';
-import 'package:senikita_edu/res/widgets/loading.dart';
-import 'package:senikita_edu/res/widgets/colors.dart';
+import 'package:widya/res/widgets/fonts.dart';
+import 'package:widya/viewModel/auth_view_model.dart';
+import 'package:widya/res/widgets/loading.dart';
+import 'package:widya/res/widgets/colors.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -24,7 +24,7 @@ class _LoginScreenState extends State<LoginScreen> {
         Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
-              colors: [Colors.white, AppColors.primary],
+              colors: [Colors.white, Colors.white],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
@@ -69,19 +69,30 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const SizedBox(height: 120),
+                    const SizedBox(height: 60),
                     Image.asset(
-                      'assets/logo/senikita_logo.png',
+                      'assets/logo/widya_text_logo.png',
                       height: 180,
+                      width: 180,
                     ),
-                    const SizedBox(height: 2),
+                    const SizedBox(height: 60),
                     Text(
-                      isLogin ? 'Selamat Datang' : 'Bergabunglah dengan kami',
-                      style: AppFont.crimsonHeaderLarge.copyWith(
+                      isLogin ? 'Selamat Datang Kembali' : 'Daftar Sekarang',
+                      style: AppFont.crimsonTextHeader.copyWith(
                         color: AppColors.primary,
                         fontSize: 28,
-                        fontWeight: FontWeight.bold,
+                        // fontWeight: FontWeight.bold,
                       ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      isLogin ? "Silahkan Masuk untuk melanjutkan perjalanan budaya anda" : "Silahkan Daftar untuk melanjutkan perjalanan budaya anda",
+                      style: AppFont.ralewayFootnoteLarge.copyWith(
+                        color: AppColors.secondary,
+                        fontSize: 14,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 10),
                     ElevatedButton.icon(
@@ -91,10 +102,11 @@ class _LoginScreenState extends State<LoginScreen> {
                         width: 30,
                       ),
                       label: Text(
-                        isLogin ? 'Login dengan Google' : 'Daftar dengan Google',
+                        isLogin ? 'Masuk dengan Google' : 'Daftar dengan Google',
                         style: AppFont.ralewayTitleMedium.copyWith(
                           color: Colors.black,
                           fontSize: 16,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                       onPressed: () {
@@ -107,12 +119,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           vertical: 12,
                         ),
                         backgroundColor: Colors.white,
-                        foregroundColor: Colors.black,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15),
                           side: const BorderSide(color: Colors.grey),
                         ),
-                        elevation: 5,
                       ),
                     ),
                     const SizedBox(height: 15),
@@ -120,35 +130,33 @@ class _LoginScreenState extends State<LoginScreen> {
                       children: <Widget>[
                         const Expanded(
                           child: Divider(
-                            color: Colors.white70,
+                            color: AppColors.secondary,
                             thickness: 1,
-                            endIndent: 8, // Jarak ke teks
+                            endIndent: 8,
                           ),
                         ),
                         Text(
-                          "Informasi",
+                          "INFORMASI",
                           style: AppFont.ralewayFootnoteSmall.copyWith(
-                            color: Colors.white70,
+                            color: AppColors.secondary,
                             fontSize: 14,
-                            fontWeight: FontWeight.w600,
                           ),
                         ),
                         const Expanded(
                           child: Divider(
-                            color: Colors.white70,
+                            color: AppColors.secondary,
                             thickness: 1,
-                            indent: 8, // Jarak ke teks
+                            indent: 8,
                           ),
                         ),
                       ],
                     ),
                     const SizedBox(height: 10),
                     Text(
-                      "Dengan mendaftar, Anda akan mendapatkan akses ke semua kursus dan materi pembelajaran seni dan budaya Indonesia",
+                      isLogin ? "Kami hanya mendukung login melalui Google untuk keamanan dan kemudahan akses" : "Dengan mendaftar, Anda akan mendapatkan akses ke semua kursus dan materi pembelajaran seni dan budaya Indonesia",
                       style: AppFont.ralewayFootnoteSmall.copyWith(
-                        color: Colors.white70,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
+                        color: AppColors.secondary,
+                        fontSize: 14,
                       ),
                       textAlign: TextAlign.center
                     ),
@@ -159,7 +167,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         Text(
                           isLogin ? 'Belum memiliki akun?' : 'Sudah memiliki akun?',
                           style: AppFont.ralewayFootnoteLarge.copyWith(
-                            color: AppColors.greyCustom,
+                            color: AppColors.secondary,
                             fontSize: 16,
                           ),
                         ),
@@ -176,7 +184,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           child: Text(
                             isLogin ? 'Daftar' : 'Login',
                             style: AppFont.ralewayFootnoteLarge.copyWith(
-                              color: AppColors.secondary,
+                              color: AppColors.primary,
                               fontSize: 16,
                             ),
                           ),

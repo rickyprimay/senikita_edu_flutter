@@ -1,4 +1,4 @@
-import 'package:senikita_edu/models/user/user_model.dart';
+import 'package:widya/models/user/user_model.dart';
 
 class Auth {
   final String status;

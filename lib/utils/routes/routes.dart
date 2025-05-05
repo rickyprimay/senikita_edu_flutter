@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
-import 'package:senikita_edu/res/widgets/discover_list.dart';
-import 'package:senikita_edu/utils/routes/routes_names.dart';
-import 'package:senikita_edu/view/discover/discover_screen.dart';
-import 'package:senikita_edu/view/home/home_screen.dart';
-import 'package:senikita_edu/view/login/login_screen.dart';
-import 'package:senikita_edu/view/my_class/my_class_screen.dart';
-import 'package:senikita_edu/view/profile/profile_screen.dart';
-import 'package:senikita_edu/view/senikita/senikita_screen.dart';
-import 'package:senikita_edu/view/splash/splash_screen.dart';
+import 'package:widya/res/widgets/discover_list.dart';
+import 'package:widya/utils/routes/routes_names.dart';
+import 'package:widya/view/discover/discover_screen.dart';
+import 'package:widya/view/home/home_screen.dart';
+import 'package:widya/view/login/login_screen.dart';
+import 'package:widya/view/my_class/my_class_screen.dart';
+import 'package:widya/view/profile/profile_screen.dart';
+import 'package:widya/view/senikita/senikita_screen.dart';
+import 'package:widya/view/senikita_edu/senikita_edu.dart';
+import 'package:widya/view/splash/splash_screen.dart';
 
 class Routes {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -34,6 +35,8 @@ class Routes {
         return MaterialPageRoute(builder: (BuildContext context) => const MyClassScreen());
       case (RouteNames.seniKita):
         return MaterialPageRoute(builder: (BuildContext context) => const SeniKitaScreen());
+      case (RouteNames.seniKitaEdu):
+        return MaterialPageRoute(builder: (BuildContext context) => const SeniKitaEduScreen());
       default:
         return MaterialPageRoute(
           builder: (_) => const Scaffold(

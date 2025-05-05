@@ -7,6 +7,50 @@ class AppFont {
   
   static const String nunito = 'Nunito';
 
+  static const String crimsonText = 'CrimsonText';
+
+  static const TextStyle crimsonTextHeader = TextStyle(
+    fontFamily: crimsonText,
+    fontWeight: FontWeight.w800,
+    fontSize: 40,
+  );
+
+  static const TextStyle crimsonTextTitle = TextStyle(
+    fontFamily: crimsonText,
+    fontWeight: FontWeight.w700,
+    fontSize: 32,
+  );
+
+  static const TextStyle crimsonTextSubtitle = TextStyle(
+    fontFamily: crimsonText,
+    fontWeight: FontWeight.w700,
+    fontSize: 16,
+  );
+
+  static const TextStyle crimsonTextBody = TextStyle(
+    fontFamily: crimsonText,
+    fontWeight: FontWeight.w400,
+    fontSize: 18,
+  );
+
+  static const TextStyle crimsonTextFootnote = TextStyle(
+    fontFamily: crimsonText,
+    fontWeight: FontWeight.w400,
+    fontSize: 16,
+  );
+
+  static const TextStyle crimsonTextFootnoteSmall = TextStyle(
+    fontFamily: crimsonText,
+    fontWeight: FontWeight.w400,
+    fontSize: 13,
+  );
+
+  static const TextStyle ralewayHeader = TextStyle(
+    fontFamily: raleway,
+    fontWeight: FontWeight.w800,
+    fontSize: 40,
+  );
+
   static const TextStyle ralewayHeaderLarge = TextStyle(
     fontFamily: raleway,
     fontWeight: FontWeight.w800,

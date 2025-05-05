@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:senikita_edu/repository/auth_repository.dart';
-import 'package:senikita_edu/res/widgets/logger.dart';
-import 'package:senikita_edu/res/widgets/shared_preferences.dart';
-import 'package:senikita_edu/utils/routes/routes_names.dart';
-import 'package:senikita_edu/viewModel/user_view_model.dart';
-import 'package:senikita_edu/utils/utils.dart';
+import 'package:widya/repository/auth_repository.dart';
+import 'package:widya/res/widgets/logger.dart';
+import 'package:widya/res/widgets/shared_preferences.dart';
+import 'package:widya/utils/routes/routes_names.dart';
+import 'package:widya/viewModel/user_view_model.dart';
+import 'package:widya/utils/utils.dart';
 
 class AuthViewModel with ChangeNotifier {
   final _auths = AuthRepository();
@@ -81,6 +81,7 @@ class AuthViewModel with ChangeNotifier {
       }
     } catch (e) {
       Utils.showToastification('Verfikasi gagal', 'Verifikasi gagal, silahkan coba kembali', false, context);
+      AppLogger.logError('Google Sign In Error: $e');
     } finally {
       setLoginLoading(false);
       notifyListeners();

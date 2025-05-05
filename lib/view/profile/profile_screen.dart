@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:senikita_edu/res/widgets/colors.dart';
-import 'package:senikita_edu/res/widgets/fonts.dart';
-import 'package:senikita_edu/res/widgets/shared_preferences.dart';
-import 'package:senikita_edu/utils/routes/routes_names.dart';
-import 'package:senikita_edu/view/profile/widget/profile_info_tile_widget.dart';
-import 'package:senikita_edu/viewModel/auth_view_model.dart';
+import 'package:widya/res/widgets/colors.dart';
+import 'package:widya/res/widgets/fonts.dart';
+import 'package:widya/res/widgets/shared_preferences.dart';
+import 'package:widya/utils/routes/routes_names.dart';
+import 'package:widya/view/profile/widget/profile_info_tile_widget.dart';
+import 'package:widya/viewModel/auth_view_model.dart';
 import 'package:quickalert/quickalert.dart';
-import 'package:senikita_edu/view/profile/widget/info_card_widget.dart';
+import 'package:widya/view/profile/widget/info_card_widget.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -170,7 +170,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                     ),
                     ProfileInfoTile(icon: const Icon(Icons.help), title: "Bantuan", trailing: const Icon(Icons.arrow_forward_ios, size: 16, color: AppColors.lightBrick)),
-                    ProfileInfoTile(icon: const Icon(Icons.info), title: "Tentang SeniKitaEdu", trailing: const Icon(Icons.arrow_forward_ios, size: 16, color: AppColors.lightBrick)),
+                    ProfileInfoTile(
+                      icon: const Icon(Icons.info),
+                      title: "Tentang SeniKitaEdu",
+                      trailing: const Icon(Icons.arrow_forward_ios, size: 16, color: AppColors.lightBrick),
+                      onTap: () {
+                        Navigator.of(context, rootNavigator: true).pushNamed(RouteNames.seniKitaEdu);
+                      },
+                    ),
                     ProfileInfoTile(
                       icon: Image.asset('assets/common/loading.png', width: 24, height: 24,),
                       title: "Tentang SeniKita Marketplace",

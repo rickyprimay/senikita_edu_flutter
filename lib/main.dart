@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:senikita_edu/utils/routes/routes.dart';
-import 'package:senikita_edu/utils/routes/routes_names.dart';
-import 'package:senikita_edu/viewModel/auth_view_model.dart';
-import 'package:senikita_edu/viewModel/user_view_model.dart';
+import 'package:widya/utils/routes/routes.dart';
+import 'package:widya/utils/routes/routes_names.dart';
+import 'package:widya/viewModel/auth_view_model.dart';
+import 'package:widya/viewModel/user_view_model.dart';
 import 'package:toastification/toastification.dart';
 
 void main() async {

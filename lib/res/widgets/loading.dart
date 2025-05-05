@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:senikita_edu/res/widgets/colors.dart';
-import 'package:senikita_edu/res/widgets/fonts.dart';
+import 'package:widya/res/widgets/colors.dart';
+import 'package:widya/res/widgets/fonts.dart';
 
 class Loading extends StatefulWidget {
   final double opacity;
@@ -42,88 +42,90 @@ class _LoadingState extends State<Loading> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return Opacity(
-      opacity: widget.opacity,
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        body: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Stack(
-                alignment: Alignment.center,
-                children: [
-                  AnimatedBuilder(
-                    animation: _controller,
-                    builder: (context, child) {
-                      return Transform.rotate(
-                        angle: _rotationAnimation.value * 3.14159 / 180,
-                        child: Image.asset(
-                          'assets/common/loading.png',
-                          width: 120,
-                          height: 120,
-                        ),
-                      );
-                    },
-                  ),
-                  Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      AnimatedBuilder(
+    final int alpha = (widget.opacity * 255).round();
+    
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Stack(
+              alignment: Alignment.center,
+              children: [
+                AnimatedBuilder(
+                  animation: _controller,
+                  builder: (context, child) {
+                    return Transform.rotate(
+                      angle: _rotationAnimation.value * 3.14159 / 180,
+                      child: Image.asset(
+                        'assets/logo/widya_logo.png',
+                        width: 120,
+                        height: 120,
+                        color: Colors.white.withAlpha(alpha),
+                        colorBlendMode: BlendMode.srcATop,
+                      ),
+                    );
+                  },
+                ),
+                Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    AnimatedBuilder(
+                      animation: _controller,
+                      builder: (context, child) {
+                        return Transform.rotate(
+                          angle: _rotationAnimation.value * 3.14159 / 180,
+                          child: Image.asset(
+                            'assets/logo/widya_logo.png',
+                            width: 120,
+                            height: 120,
+                            color: Colors.white.withAlpha(alpha),
+                            colorBlendMode: BlendMode.srcATop,
+                          ),
+                        );
+                      },
+                    ),
+                    ClipRect(
+                      child: AnimatedBuilder(
                         animation: _controller,
                         builder: (context, child) {
-                          return Transform.rotate(
-                            angle: _rotationAnimation.value * 3.14159 / 180,
-                            child: Image.asset(
-                              'assets/common/loading.png',
-                              width: 120,
-                              height: 120,
+                          return Align(
+                            alignment: Alignment.centerLeft,
+                            child: FractionalTranslation(
+                              translation: Offset(_shimmerAnimation.value / 200, 0), 
+                              child: Container(
+                                width: 120,
+                                height: 120,
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      Colors.white.withOpacity(0.1),
+                                      Colors.white.withOpacity(0.5),
+                                      Colors.white.withOpacity(0.1),
+                                    ],
+                                    begin: Alignment.centerLeft,
+                                    end: Alignment.centerRight,
+                                  ),
+                                ),
+                              ),
                             ),
                           );
                         },
                       ),
-                      ClipRect(
-                        child: AnimatedBuilder(
-                          animation: _controller,
-                          builder: (context, child) {
-                            return Align(
-                              alignment: Alignment.centerLeft,
-                              child: FractionalTranslation(
-                                translation: Offset(_shimmerAnimation.value / 200, 0), 
-                                child: Container(
-                                  width: 120,
-                                  height: 120,
-                                  decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                      colors: [
-                                        Colors.white.withOpacity(0.1),
-                                        Colors.white.withOpacity(0.5),
-                                        Colors.white.withOpacity(0.1),
-                                      ],
-                                      begin: Alignment.centerLeft,
-                                      end: Alignment.centerRight,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    ],
-                  )
-
-                ],
+                    ),
+                  ],
+                )
+              ],
+            ),
+            Text(
+              "widya",
+              style: AppFont.crimsonHeaderLarge.copyWith(
+                color: AppColors.primary.withAlpha(alpha),
+                letterSpacing: 2,
               ),
-              Text(
-                "senikita",
-                style: AppFont.crimsonHeaderLarge.copyWith(
-                  color: AppColors.primary,
-                  letterSpacing: 2,
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

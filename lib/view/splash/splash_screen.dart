@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:senikita_edu/res/widgets/colors.dart';
-import 'package:senikita_edu/res/widgets/fonts.dart';
-import 'package:senikita_edu/viewModel/splash_view_model.dart';
+import 'package:widya/res/widgets/colors.dart';
+import 'package:widya/res/widgets/fonts.dart';
+import 'package:widya/viewModel/splash_view_model.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:senikita_edu/res/widgets/shared_preferences.dart';
-import 'package:senikita_edu/utils/routes/routes_names.dart';
+import 'package:widya/res/widgets/shared_preferences.dart';
+import 'package:widya/utils/routes/routes_names.dart';
 
 class SplashService {
   static void checkAuthentication(BuildContext context) async {

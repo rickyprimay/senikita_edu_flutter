@@ -1,5 +1,5 @@
-import 'package:senikita_edu/data/network/network_api_services.dart';
-import 'package:senikita_edu/res/widgets/app_urls.dart';
+import 'package:widya/data/network/network_api_services.dart';
+import 'package:widya/res/widgets/app_urls.dart';
 
 class AuthRepository {
   final NetworkApiServices _network = NetworkApiServices();

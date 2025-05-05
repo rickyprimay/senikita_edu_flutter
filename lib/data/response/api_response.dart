@@ -1,4 +1,4 @@
-import 'package:senikita_edu/data/response/status.dart';
+import 'package:widya/data/response/status.dart';
 
 class ApiResponse<T> {
 

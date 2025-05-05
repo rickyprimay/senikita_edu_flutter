@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:senikita_edu/res/widgets/colors.dart';
-import 'package:senikita_edu/res/widgets/fonts.dart';
+import 'package:widya/res/widgets/colors.dart';
+import 'package:widya/res/widgets/fonts.dart';
 
 class MyClassScreen extends StatefulWidget {
   const MyClassScreen({super.key});

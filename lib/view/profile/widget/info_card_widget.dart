@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:senikita_edu/res/widgets/colors.dart';
-import 'package:senikita_edu/res/widgets/fonts.dart';
+import 'package:widya/res/widgets/colors.dart';
+import 'package:widya/res/widgets/fonts.dart';
 
 class InfoCardWidget extends StatelessWidget {
   final IconData icon;
@@ -30,7 +30,7 @@ class InfoCardWidget extends StatelessWidget {
           borderRadius: BorderRadius.circular(24),
           boxShadow: [
             BoxShadow(
-              color: AppColors.primary.withAlpha(120),
+              color: AppColors.primary.withAlpha(60),
               blurRadius: 16,
               offset: const Offset(0, 8),
             ),

@@ -1,7 +1,6 @@
-// lib/view/home/widget/course_card_widget.dart
 import 'package:flutter/material.dart';
-import 'package:senikita_edu/res/widgets/colors.dart';
-import 'package:senikita_edu/res/widgets/fonts.dart';
+import 'package:widya/res/widgets/colors.dart';
+import 'package:widya/res/widgets/fonts.dart';
 
 Widget courseCard({
   required Color color,

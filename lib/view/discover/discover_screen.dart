@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
-import 'package:senikita_edu/res/widgets/colors.dart';
+import 'package:widya/res/widgets/colors.dart';
 
 class Discover extends StatelessWidget {
   final PersistentTabController controller;

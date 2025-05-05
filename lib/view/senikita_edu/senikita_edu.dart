@@ -3,14 +3,14 @@ import 'package:widya/res/widgets/colors.dart';
 import 'package:widya/res/widgets/fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class SeniKitaScreen extends StatefulWidget {
-  const SeniKitaScreen({super.key});
+class SeniKitaEduScreen extends StatefulWidget {
+  const SeniKitaEduScreen({super.key});
 
   @override
-  State<SeniKitaScreen> createState() => _SeniKitaScreenState();
+  State<SeniKitaEduScreen> createState() => _SeniKitaEduScreenState();
 }
 
-class _SeniKitaScreenState extends State<SeniKitaScreen> {
+class _SeniKitaEduScreenState extends State<SeniKitaEduScreen> {
   Future<void>? _launched;
   Future<void> _launchInBrowser(Uri url) async {
     if (!await launchUrl(
@@ -50,7 +50,7 @@ class _SeniKitaScreenState extends State<SeniKitaScreen> {
           ),
         ),
         title: Text(
-          'SeniKita Marketplace',
+          'SeniKita Edu',
           style: AppFont.crimsonBodyMedium.copyWith(
             fontSize: 20,
             fontWeight: FontWeight.w700,
@@ -92,7 +92,7 @@ class _SeniKitaScreenState extends State<SeniKitaScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'Tentang SeniKita',
+                      'Tentang SeniKita Edu',
                       style: AppFont.ralewayHeaderMedium.copyWith(
                         color: Colors.white,
                         fontSize: 24,
@@ -101,7 +101,7 @@ class _SeniKitaScreenState extends State<SeniKitaScreen> {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Marketplace Seni dan Jasa Kesenian Indonesia',
+                      'Platform pembelajaran seni dan budaya Indonesia',
                       style: AppFont.ralewaySubtitle.copyWith(
                         color: Colors.white,
                         fontWeight: FontWeight.w400,

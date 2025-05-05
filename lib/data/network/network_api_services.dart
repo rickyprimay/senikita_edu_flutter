@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
-import 'package:senikita_edu/data/app_exceptions.dart';
-import 'package:senikita_edu/data/network/base_api_services.dart';
+import 'package:widya/data/app_exceptions.dart';
+import 'package:widya/data/network/base_api_services.dart';
 
 class NetworkApiServices extends BaseApiServices {
   @override

@@ -1,4 +1,4 @@
-name: senikita_edu
+name: widya
 description: "Aplikasi untuk belajar kesenian dan budaya daerah Indonesia dari penjuru yang berpengalaman"
 publish_to: 'none'
 version: 0.1.0
@@ -23,6 +23,7 @@ dependencies:
   toastification: ^3.0.2
   quickalert: ^1.1.0
   url_launcher: ^6.3.1
+  flutter_launcher_icons: ^0.14.3
 
 dev_dependencies:
   flutter_test:
@@ -39,6 +40,16 @@ flutter:
     - assets/placeholder/
 
   fonts:
+
+    - family: CrimsonText
+      fonts:
+        - asset: assets/fonts/CrimsonText/CrimsonText-Bold.ttf
+        - asset: assets/fonts/CrimsonText/CrimsonText-BoldItalic.ttf
+        - asset: assets/fonts/CrimsonText/CrimsonText-Italic.ttf
+        - asset: assets/fonts/CrimsonText/CrimsonText-Regular.ttf
+        - asset: assets/fonts/CrimsonText/CrimsonText-SemiBold.ttf
+        - asset: assets/fonts/CrimsonText/CrimsonText-SemiBoldItalic.ttf
+
     - family: CrimsonPro
       fonts:
         - asset: assets/fonts/Crimson/CrimsonPro-Black.ttf

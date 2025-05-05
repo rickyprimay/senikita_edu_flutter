@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
-import 'package:senikita_edu/res/widgets/logger.dart';
-import 'package:senikita_edu/res/widgets/shared_preferences.dart';
-import 'package:senikita_edu/repository/user_repository.dart';
+import 'package:widya/res/widgets/logger.dart';
+import 'package:widya/res/widgets/shared_preferences.dart';
+import 'package:widya/repository/user_repository.dart';
 import 'package:flutter/material.dart'; 
-import 'package:senikita_edu/utils/utils.dart';  
+import 'package:widya/utils/utils.dart';  
 
 class UserViewModel with ChangeNotifier {
   final UserRepository _userRepository = UserRepository();
