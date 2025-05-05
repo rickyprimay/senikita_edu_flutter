@@ -3,6 +3,7 @@ import 'package:senikita_edu/res/widgets/colors.dart';
 import 'package:senikita_edu/res/widgets/fonts.dart';
 import 'package:senikita_edu/res/widgets/shared_preferences.dart';
 import 'package:senikita_edu/view/home/widget/category_slider_widget.dart';
+import 'package:senikita_edu/view/home/widget/course_card_widget.dart'; 
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -97,7 +98,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  // Search Bar
                   Container(
                     decoration: BoxDecoration(
                       color: Colors.white,
@@ -133,7 +133,6 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 20),
             const CategorySliderWidget(),
             const SizedBox(height: 20),
-            // Course Cards Section
             Expanded(
               child: ListView(
                 padding: const EdgeInsets.all(20),
@@ -144,6 +143,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     subtitle: "Belajar memainkan alat musik tradisional gamelan dengan cara yang menyenangkan.",
                     duration: "1hr 9mnt",
                     icon: Icons.music_note,
+                    author: "Dosen Seni Musik",
                   ),
                   const SizedBox(height: 20),
                   courseCard(
@@ -152,6 +152,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     subtitle: "Belajar mencanting batik dengan teknik yang benar dan mudah dipahami.",
                     duration: "2hr 1mnt",
                     icon: Icons.brush,
+                    author: "Dosen Seni Rupa",
                   ),
                   const SizedBox(height: 20),
                   courseCard(
@@ -160,6 +161,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     subtitle: "Belajar gerakan dasar tari tradisional Indonesia dengan mudah.",
                     duration: "1hr 5mnt",
                     icon: Icons.energy_savings_leaf,
+                    author: "Dosen Seni Tari",
                   ),
                   const SizedBox(height: 20),
                   courseCard(
@@ -168,97 +170,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     subtitle: "Belajar Tari Piring Minangkabau dengan langkah-langkah yang mudah.",
                     duration: "1hr 5mnt",
                     icon: Icons.military_tech_outlined,
+                    author: "Dosen Seni Tari",
                   ),
                 ],
               ),
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget courseCard({
-    required Color color,
-    required String title,
-    required String subtitle,
-    required String duration,
-    required IconData icon,
-  }) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black12,
-            blurRadius: 8,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 80,
-            height: 80,
-            margin: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: color,
-              borderRadius: BorderRadius.circular(15),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  blurRadius: 5,
-                  offset: const Offset(0, 3),
-                ),
-              ],
-            ),
-            child: Icon(icon, size: 40, color: Colors.black87),
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: AppFont.ralewayHeaderMedium.copyWith(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  const SizedBox(height: 5),
-                  Text(
-                    subtitle,
-                    style: AppFont.nunitoHeaderMedium.copyWith(
-                      fontSize: 12,
-                      color: Colors.grey,
-                    ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      Icon(Icons.timer, size: 14, color: Colors.orange[300]),
-                      const SizedBox(width: 4),
-                      Text(
-                        duration,
-                        style: AppFont.nunitoSubtitle.copyWith(
-                          color: Colors.orange[400],
-                          fontWeight: FontWeight.w600,
-                          fontSize: 13,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }
