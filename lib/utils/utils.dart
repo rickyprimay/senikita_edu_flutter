@@ -4,6 +4,9 @@ import 'package:another_flushbar/flushbar_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:senikita_edu/res/widgets/colors.dart';
+import 'package:senikita_edu/res/widgets/fonts.dart';
+import 'package:toastification/toastification.dart';
 
 class Utils {
   static void changeNodeFocus(BuildContext context, {FocusNode? current, FocusNode? next}) {
@@ -45,6 +48,32 @@ class Utils {
   static snackBar(String message, BuildContext context) {
     return ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(backgroundColor: Colors.red, content: Text(message)));
+  }
+
+  static showToastification(String message, String description, bool isSuccess, BuildContext context) {
+    return toastification.show(
+      context: context,
+      title: Text(
+        message,
+        style: AppFont.crimsonBodyMedium.copyWith(
+          fontSize: 16,
+          color: Colors.white
+        ),
+      ),
+      description: Text(
+        description,
+        style: AppFont.crimsonFootnoteLarge.copyWith(
+          fontSize: 14,
+          color: Colors.white
+        ),
+      ),
+      autoCloseDuration: const Duration(seconds: 5),
+      style: ToastificationStyle.fillColored, 
+      primaryColor: AppColors.secondary,
+      backgroundColor: isSuccess ? AppColors.customGreen : AppColors.customRed,
+      foregroundColor: AppColors.greyCustom,
+      showProgressBar: true,
+    );
   }
 
   static double averageRatings(List<int> ratings) {

@@ -60,35 +60,59 @@ class _LoadingState extends State<Loading> with SingleTickerProviderStateMixin {
                         angle: _rotationAnimation.value * 3.14159 / 180,
                         child: Image.asset(
                           'assets/common/loading.png',
-                          width: 100,
-                          height: 100,
+                          width: 120,
+                          height: 120,
                         ),
                       );
                     },
                   ),
-                  AnimatedBuilder(
-                    animation: _controller,
-                    builder: (context, child) {
-                      return Positioned(
-                        left: _shimmerAnimation.value,
-                        child: Container(
-                          width: 100,
-                          height: 100,
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [
-                                Colors.white.withOpacity(0.1),
-                                Colors.white.withOpacity(0.5),
-                                Colors.white.withOpacity(0.1),
-                              ],
-                              begin: Alignment.centerLeft,
-                              end: Alignment.centerRight,
+                  Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      AnimatedBuilder(
+                        animation: _controller,
+                        builder: (context, child) {
+                          return Transform.rotate(
+                            angle: _rotationAnimation.value * 3.14159 / 180,
+                            child: Image.asset(
+                              'assets/common/loading.png',
+                              width: 120,
+                              height: 120,
                             ),
-                          ),
+                          );
+                        },
+                      ),
+                      ClipRect(
+                        child: AnimatedBuilder(
+                          animation: _controller,
+                          builder: (context, child) {
+                            return Align(
+                              alignment: Alignment.centerLeft,
+                              child: FractionalTranslation(
+                                translation: Offset(_shimmerAnimation.value / 200, 0), 
+                                child: Container(
+                                  width: 120,
+                                  height: 120,
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      colors: [
+                                        Colors.white.withOpacity(0.1),
+                                        Colors.white.withOpacity(0.5),
+                                        Colors.white.withOpacity(0.1),
+                                      ],
+                                      begin: Alignment.centerLeft,
+                                      end: Alignment.centerRight,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
                         ),
-                      );
-                    },
-                  ),
+                      ),
+                    ],
+                  )
+
                 ],
               ),
               Text(

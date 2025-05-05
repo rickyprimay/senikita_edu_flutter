@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:senikita_edu/repository/auth_repository.dart';
-import 'package:senikita_edu/res/widgets/logger.dart';
 import 'package:senikita_edu/res/widgets/shared_preferences.dart';
 import 'package:senikita_edu/utils/routes/routes_names.dart';
 import 'package:senikita_edu/viewModel/user_view_model.dart';
@@ -17,12 +16,19 @@ class AuthViewModel with ChangeNotifier {
   );
 
   bool _loginLoading = false;
+  bool _logoutLoading = false;
   bool isAuthenticated = false;
-
+  
+  bool get logoutLoading => _logoutLoading;  
   bool get loading => _loginLoading;
 
   void setLoginLoading(bool value) {
     _loginLoading = value;
+    notifyListeners();
+  }
+
+  void setLogoutLoading(bool value) {
+    _logoutLoading = value;
     notifyListeners();
   }
 
@@ -52,10 +58,7 @@ class AuthViewModel with ChangeNotifier {
 
       await verifyGoogleToken(idToken, context);
     } catch (e) {
-      Utils.flushBarErrorMessage(
-        'Error during Google sign-in. Please try again.',
-        context,
-      );
+      Utils.showToastification('Gagal melakukan Login dengan Google', 'Gagal Login dengan Google, silahkan coba kembali', false, context);
     } finally {
       setLoginLoading(false);
       notifyListeners();
@@ -73,16 +76,10 @@ class AuthViewModel with ChangeNotifier {
         isAuthenticated = true;
         await saveToken(token, context);
       } else {
-        Utils.flushBarErrorMessage(
-          'Failed to authenticate with the server. Please try again.',
-          context,
-        );
+        Utils.showToastification('Gagal terkoneksi ke Server', 'Gagal terkoneksi ke Server, silahkan coba kembali', false, context);
       }
     } catch (e) {
-      Utils.flushBarErrorMessage(
-        'Verification failed. Please try again.',
-        context,
-      );
+      Utils.showToastification('Verfikasi gagal', 'Verifikasi gagal, silahkan coba kembali', false, context);
     } finally {
       setLoginLoading(false);
       notifyListeners();
@@ -94,30 +91,29 @@ class AuthViewModel with ChangeNotifier {
 
     await userViewModel.fetchUserDetail(context);
 
-    Utils.toastMessage('Successfully logged in!');
+    Utils.showToastification('Login Berhasil', 'Anda berhasil login', true, context);
     Navigator.pushNamed(context, RouteNames.discover);
   }
 
   Future<void> logout(BuildContext context) async {
+    setLogoutLoading(true);
+
     try {
       await SharedPrefs.remove('auth_token');
-
       await _googleSignIn.signOut();
 
       isAuthenticated = false;
 
-      Utils.toastMessage('Successfully logged out!');
+      Utils.showToastification('Log Out berhasil', 'Anda berhasil Logout', true, context);
 
       Navigator.of(context, rootNavigator: true).pushNamedAndRemoveUntil(
         RouteNames.login,
         (route) => false,
       );
     } catch (e) {
-      Utils.flushBarErrorMessage(
-        'Error during logout. Please try again.: $e',
-        context,
-      );
-      AppLogger.logError("Error during logout: $e");
+      Utils.showToastification('Gagal Log Out', 'Gagal Logout, silahkan coba kembali', false, context);
+    } finally {
+      setLogoutLoading(false);
     }
   }
 }
