@@ -34,14 +34,14 @@ class ProfileInfoTile extends StatelessWidget {
       leading: coloredIcon,
       title: Text(
         title,
-        style: AppFont.crimsonSubtitle.copyWith(
+        style: AppFont.crimsonTextSubtitle.copyWith(
           fontSize: 16,
           fontWeight: FontWeight.w700,
         ),
       ),
       subtitle: subtitle != null ? Text(
         subtitle!, 
-        style: AppFont.crimsonSubtitle.copyWith(fontSize: 14),
+        style: AppFont.crimsonTextSubtitle.copyWith(fontSize: 14),
       ) : null,
       trailing: trailing != null
           ? GestureDetector(
@@ -59,7 +59,7 @@ class ProfileInfoTile extends StatelessWidget {
                       children: [
                         Text(
                           'Peringatan', 
-                          style: AppFont.crimsonSubtitle.copyWith(
+                          style: AppFont.crimsonTextSubtitle.copyWith(
                             fontSize: 18,
                             fontWeight: FontWeight.w700,
                             color: AppColors.primary, 
@@ -68,7 +68,7 @@ class ProfileInfoTile extends StatelessWidget {
                         const SizedBox(height: 8), 
                         Text(
                           'Alamat Email ini berdasarkan dari akun Google yang kamu gunakan untuk mendaftar. Jika ada kesalahan, maka tidak dapat diubah.',
-                          style: AppFont.crimsonFootnoteSmall.copyWith(
+                          style: AppFont.crimsonTextSubtitle.copyWith(
                             fontSize: 14,
                             color: AppColors.secondary,
                           ),

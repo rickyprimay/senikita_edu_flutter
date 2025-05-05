@@ -1,3 +1,3 @@
-# seni_kita_edu
+# Widya
 
 A new Flutter project.

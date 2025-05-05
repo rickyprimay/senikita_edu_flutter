@@ -120,7 +120,7 @@ class _LoadingState extends State<Loading> with SingleTickerProviderStateMixin {
             ),
             Text(
               "widya",
-              style: AppFont.crimsonHeaderLarge.copyWith(
+              style: AppFont.crimsonTextHeader.copyWith(
                 color: AppColors.primary.withAlpha(alpha),
                 letterSpacing: 2,
               ),

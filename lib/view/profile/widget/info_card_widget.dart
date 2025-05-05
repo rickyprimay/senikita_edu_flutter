@@ -22,19 +22,16 @@ class InfoCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ConstrainedBox(
-      constraints: const BoxConstraints(minHeight: 220),
+      constraints: const BoxConstraints(minHeight: 120),
       child: Container(
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(24),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.primary.withAlpha(60),
-              blurRadius: 16,
-              offset: const Offset(0, 8),
-            ),
-          ],
+          border: Border.all(
+            color: AppColors.primary.withAlpha(120),
+            width: 1,
+          ),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -54,7 +51,7 @@ class InfoCardWidget extends StatelessWidget {
                 Expanded(
                   child: Text(
                     title,
-                    style: AppFont.crimsonHeaderMedium.copyWith(
+                    style: AppFont.crimsonTextSubtitle.copyWith(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
                       color: Colors.grey[800],
@@ -66,7 +63,7 @@ class InfoCardWidget extends StatelessWidget {
             const SizedBox(height: 12),
             Text(
               value,
-              style: AppFont.crimsonBodyMedium.copyWith(
+              style: AppFont.crimsonTextSubtitle.copyWith(
                 fontSize: 24,
                 fontWeight: FontWeight.w700,
                 color: Colors.black87,

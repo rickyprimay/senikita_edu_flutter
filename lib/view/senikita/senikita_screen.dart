@@ -51,7 +51,7 @@ class _SeniKitaScreenState extends State<SeniKitaScreen> {
         ),
         title: Text(
           'SeniKita Marketplace',
-          style: AppFont.crimsonBodyMedium.copyWith(
+          style: AppFont.crimsonTextSubtitle.copyWith(
             fontSize: 20,
             fontWeight: FontWeight.w700,
             color: Colors.white,

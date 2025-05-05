@@ -59,7 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       const Icon(Icons.menu, color: Colors.white),
                       Text(
                         'SENIKITA EDU',
-                        style: AppFont.crimsonTitleMedium.copyWith(
+                        style: AppFont.crimsonTextSubtitle.copyWith(
                           color: Colors.white,
                         ),
                       ),
@@ -84,7 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   const SizedBox(height: 20),
                   Text(
                     'Halo, $name👋',
-                    style: AppFont.nunitoSubtitle.copyWith(
+                    style: AppFont.ralewaySubtitle.copyWith(
                       fontSize: 18,
                       color: Colors.white,
                     ),
@@ -92,7 +92,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   const SizedBox(height: 2),
                   Text(
                     'Siapkah kamu untuk melestarikan Kesenian Indonesia? Mari Belajar Seni dan Budaya Nusantara Bersama Ahlinya',
-                    style: AppFont.nunitoSubtitle.copyWith(
+                    style: AppFont.ralewaySubtitle.copyWith(
                       fontSize: 12,
                       color: Colors.white70,
                     ),
@@ -130,9 +130,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 10),
             const CategorySliderWidget(),
-            const SizedBox(height: 20),
+            const SizedBox(height: 8),
             Expanded(
               child: ListView(
                 padding: const EdgeInsets.all(20),

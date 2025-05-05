@@ -34,7 +34,7 @@ class _MyClassScreenState extends State<MyClassScreen> {
                   Center(
                     child: Text(
                       'Kelas Saya',
-                      style: AppFont.crimsonTitleMedium.copyWith(
+                      style: AppFont.crimsonTextSubtitle.copyWith(
                         color: Colors.white,
                         fontSize: 20,
                       ),
@@ -109,81 +109,78 @@ class _MyClassScreenState extends State<MyClassScreen> {
     required double progress,
   }) {
     final percentage = (progress * 100).toStringAsFixed(0);
-  
+
     return ConstrainedBox(
-    constraints: BoxConstraints(maxHeight: 122),
-    child: Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
+      constraints: BoxConstraints(maxHeight: 124),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
             color: AppColors.primary.withAlpha(120),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
+            width: 1,
           ),
-        ],
-      ),
-      child: Row(
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(20),
-            child: Image.asset(
-              imagePath,
-              width: 120,
-              height: 120,
-              fit: BoxFit.cover,
-            ),
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: AppFont.ralewayHeaderMedium.copyWith(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    subtitle,
-                    style: AppFont.nunitoHeaderMedium.copyWith(
-                      fontSize: 13,
-                      color: Colors.grey[700],
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 12),
-                  LinearProgressIndicator(
-                    value: progress,
-                    color: AppColors.tertiary,
-                    backgroundColor: Colors.grey[200],
-                    minHeight: 6,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    "$percentage% Selesai",
-                    style: AppFont.nunitoSubtitle.copyWith(
-                      fontSize: 14,
-                      color: Colors.black.withAlpha(120),
-                    ),
-                  ),
-                ],
+        ),
+        child: Row(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: Image.asset(
+                imagePath,
+                width: 120,
+                height: 120,
+                fit: BoxFit.cover,
               ),
             ),
-          ),
-        ],
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: AppFont.ralewayHeaderMedium.copyWith(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      subtitle,
+                      style: AppFont.nunitoHeaderMedium.copyWith(
+                        fontSize: 13,
+                        color: Colors.grey[700],
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 12),
+                    LinearProgressIndicator(
+                      value: progress,
+                      color: AppColors.tertiary,
+                      backgroundColor: Colors.grey[200],
+                      minHeight: 6,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      "$percentage% Selesai",
+                      style: AppFont.nunitoSubtitle.copyWith(
+                        fontSize: 14,
+                        color: Colors.black.withAlpha(120),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
-    )
     );
   }
 }

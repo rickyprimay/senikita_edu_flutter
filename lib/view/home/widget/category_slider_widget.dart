@@ -44,7 +44,7 @@ class CategorySliderWidget extends StatelessWidget {
       ),
       child: Text(
         label,
-        style: AppFont.nunitoSubtitle.copyWith(
+        style: AppFont.ralewaySubtitle.copyWith(
           color: isSelected ? Colors.white : Colors.black,
         ),
       ),

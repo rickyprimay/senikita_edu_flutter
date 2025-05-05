@@ -71,20 +71,20 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
                     child: Opacity(
                       opacity: _opacityAnimation.value,
                       child: Image.asset(
-                        'assets/common/loading.png',
+                        'assets/logo/widya_logo.png',
                         width: 100,
                         height: 100,
                       ),
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 10),
                   Transform.scale(
                     scale: _scaleAnimation.value,
                     child: Opacity(
                       opacity: _opacityAnimation.value,
                       child: Text(
-                        'senikita',
-                        style: AppFont.crimsonHeaderLarge.copyWith(
+                        'Widya',
+                        style: AppFont.crimsonTextHeader.copyWith(
                           color: AppColors.primary,
                           letterSpacing: 2,
                         ),

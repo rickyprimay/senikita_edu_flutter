@@ -64,7 +64,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       Center(
                         child: Text(
                           'Profil Akun',
-                          style: AppFont.crimsonTitleMedium.copyWith(
+                          style: AppFont.crimsonTextSubtitle.copyWith(
                             color: Colors.white,
                             fontSize: 20,
                           ),
@@ -92,14 +92,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   const SizedBox(height: 10),
                   Text(
                     name ?? 'User Name',
-                    style: AppFont.nunitoSubtitle.copyWith(
+                    style: AppFont.ralewaySubtitle.copyWith(
                       fontSize: 18,
                       color: Colors.white,
                     ),
                   ),
                   Text(
                     email ?? '',
-                    style: AppFont.nunitoSubtitle.copyWith(
+                    style: AppFont.ralewaySubtitle.copyWith(
                       fontSize: 12,
                       color: Colors.white70,
                     ),
@@ -124,17 +124,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               value: "2 Sudah selesai",
                               tag: "4",
                               tagColor: AppColors.customRed,
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: InfoCardWidget(
-                              title: "Kelas tersedia",
-                              icon: Icons.school,
-                              label: "Kamu Miliki",
-                              value: "30 tersedia",
-                              tag: "6",
-                              tagColor: AppColors.customGreen,
                             ),
                           ),
                         ],
@@ -172,7 +161,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ProfileInfoTile(icon: const Icon(Icons.help), title: "Bantuan", trailing: const Icon(Icons.arrow_forward_ios, size: 16, color: AppColors.lightBrick)),
                     ProfileInfoTile(
                       icon: const Icon(Icons.info),
-                      title: "Tentang SeniKitaEdu",
+                      title: "Tentang Widya",
                       trailing: const Icon(Icons.arrow_forward_ios, size: 16, color: AppColors.lightBrick),
                       onTap: () {
                         Navigator.of(context, rootNavigator: true).pushNamed(RouteNames.seniKitaEdu);

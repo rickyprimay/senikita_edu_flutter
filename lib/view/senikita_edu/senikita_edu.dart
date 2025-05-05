@@ -50,8 +50,8 @@ class _SeniKitaEduScreenState extends State<SeniKitaEduScreen> {
           ),
         ),
         title: Text(
-          'SeniKita Edu',
-          style: AppFont.crimsonBodyMedium.copyWith(
+          'Widya',
+          style: AppFont.crimsonTextSubtitle.copyWith(
             fontSize: 20,
             fontWeight: FontWeight.w700,
             color: Colors.white,
@@ -92,7 +92,7 @@ class _SeniKitaEduScreenState extends State<SeniKitaEduScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'Tentang SeniKita Edu',
+                      'Tentang Widya',
                       style: AppFont.ralewayHeaderMedium.copyWith(
                         color: Colors.white,
                         fontSize: 24,

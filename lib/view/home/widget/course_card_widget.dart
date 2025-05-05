@@ -14,12 +14,10 @@ Widget courseCard({
     decoration: BoxDecoration(
       color: Colors.white,
       borderRadius: BorderRadius.circular(20),
-      boxShadow: [
-        BoxShadow(
-          color: AppColors.primary.withAlpha(120),
-          blurRadius: 8,
-        ),
-      ],
+      border: Border.all(
+        color: AppColors.primary.withAlpha(120), 
+        width: 1,
+      ),
     ),
     child: Row(
       children: [
@@ -30,13 +28,10 @@ Widget courseCard({
           decoration: BoxDecoration(
             color: color,
             borderRadius: BorderRadius.circular(15),
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.primary.withAlpha(120),
-                blurRadius: 5,
-                offset: const Offset(0, 3),
-              ),
-            ],
+            border: Border.all(
+              color: AppColors.primary.withAlpha(120),
+              width: 1,
+            ),
           ),
           child: Icon(icon, size: 40, color: Colors.black87),
         ),
@@ -48,7 +43,7 @@ Widget courseCard({
               children: [
                 Text(
                   title,
-                  style: AppFont.ralewayHeaderMedium.copyWith(
+                  style: AppFont.crimsonTextHeader.copyWith(
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
                   ),
@@ -56,31 +51,22 @@ Widget courseCard({
                 const SizedBox(height: 5),
                 Text(
                   subtitle,
-                  style: AppFont.nunitoHeaderMedium.copyWith(
+                  style: AppFont.ralewaySubtitle.copyWith(
                     fontSize: 12,
                     color: Colors.grey,
                   ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
-                // const SizedBox(height: 5),
-                // Text(
-                //       author,
-                //       style: AppFont.nunitoSubtitle.copyWith(
-                //         color: AppColors.secondary,
-                //         fontWeight: FontWeight.bold,
-                //         fontSize: 13,
-                //       ),
-                //     ),
                 const SizedBox(height: 8),
                 Row(
                   children: [
-                    Icon(Icons.timer, size: 14, color: Colors.orange[300]),
+                    Icon(Icons.timer, size: 14, color: AppColors.tertiary),
                     const SizedBox(width: 4),
                     Text(
                       duration,
                       style: AppFont.nunitoSubtitle.copyWith(
-                        color: Colors.orange[400],
+                        color: AppColors.tertiary,
                         fontWeight: FontWeight.w600,
                         fontSize: 13,
                       ),

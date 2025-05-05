@@ -55,14 +55,14 @@ class Utils {
       context: context,
       title: Text(
         message,
-        style: AppFont.crimsonBodyMedium.copyWith(
+        style: AppFont.crimsonTextSubtitle.copyWith(
           fontSize: 16,
           color: Colors.white
         ),
       ),
       description: Text(
         description,
-        style: AppFont.crimsonFootnoteLarge.copyWith(
+        style: AppFont.crimsonTextSubtitle.copyWith(
           fontSize: 14,
           color: Colors.white
         ),
