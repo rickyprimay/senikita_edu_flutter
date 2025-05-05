@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:widya/provider/category_provider.dart';
 import 'package:widya/viewModel/category_view_model.dart';
+import 'package:widya/viewModel/course_view_model.dart';
 import 'package:widya/res/widgets/colors.dart';
 import 'package:widya/res/widgets/fonts.dart';
 
@@ -27,13 +28,14 @@ class CategorySliderWidget extends StatelessWidget {
             child: Row(
               children: [
                 const SizedBox(width: 20),
-                _buildCategoryItem(context, label: "Semua"),
+                _buildCategoryItem(context, label: "Semua", categoryId: null),
 
                 ...cachedCategories.map((category) {
                   final isLast = cachedCategories.last['id'] == category['id'];
                   return _buildCategoryItem(
                     context,
                     label: category['name'],
+                    categoryId: category['id'], 
                     isLast: isLast,
                   );
                 }).toList(),
@@ -47,6 +49,7 @@ class CategorySliderWidget extends StatelessWidget {
 
   Widget _buildCategoryItem(BuildContext context, {
     required String label,
+    required int? categoryId, 
     bool isLast = false,
   }) {
     final selectedLabel = context.watch<CategoryProvider>().selectedLabel;
@@ -55,6 +58,8 @@ class CategorySliderWidget extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         context.read<CategoryProvider>().selectCategory(label);
+        
+        context.read<CourseViewModel>().fetchCourses(categoryId: categoryId); 
       },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),

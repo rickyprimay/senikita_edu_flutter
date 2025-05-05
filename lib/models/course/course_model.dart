@@ -9,8 +9,8 @@ class Course {
   String slug;
   String status;
   String thumbnail;
-  Category category;
-  Instructor instructor;
+  Category? category;
+  Instructor? instructor;
   int duration;
   String level;
 
@@ -37,8 +37,8 @@ class Course {
       slug: json['slug'],
       status: json['status'],
       thumbnail: json['thumbnail'],
-      category: Category.fromJson(json['category']),
-      instructor: Instructor.fromJson(json['instructor']),
+      category: json['category'] != null ? Category.fromJson(json['category']) : null,
+      instructor: json['instructor'] != null ? Instructor.fromJson(json['instructor']) : null,
       duration: json['duration'],
       level: json['level'],
     );
@@ -53,8 +53,8 @@ class Course {
       'slug': slug,
       'status': status,
       'thumbnail': thumbnail,
-      'category': category.toJson(),
-      'instructor': instructor.toJson(),
+      'category': category?.toJson(),
+      'instructor': instructor?.toJson(),
       'duration': duration,
       'level': level,
     };

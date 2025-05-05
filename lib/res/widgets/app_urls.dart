@@ -6,6 +6,26 @@ class AppUrls {
 
   static const getCategory = "$baseUrl/categories";
 
-  static const getCourse = "$baseUrl/courses";
+  static String getCourse({int? categoryId, String? search}) {
+    String url = "$baseUrl/courses";
+    
+    List<String> queryParameters = [];
+    
+    if (categoryId != null) {
+      queryParameters.add("category_id=$categoryId");
+    }
+    
+    if (search != null && search.isNotEmpty) {
+      queryParameters.add("search=$search");
+    }
+
+    if (queryParameters.isNotEmpty) {
+      url += "?${queryParameters.join('&')}";
+    }
+
+    return url;
+  }
+
+  static String getEnrollments = "$baseUrl/enrollments";
 
 }

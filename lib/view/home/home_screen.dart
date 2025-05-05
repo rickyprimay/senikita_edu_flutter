@@ -191,7 +191,7 @@ class HomeScreen extends StatelessWidget {
                                       subtitle: course.description,
                                       duration: formatDuration(course.duration),
                                       icon: Icons.music_note,
-                                      author: course.instructor.name,
+                                      author: course.instructor?.name ?? "",
                                       imageUrl: course.thumbnail,
                                       level: course.level,
                                     ),

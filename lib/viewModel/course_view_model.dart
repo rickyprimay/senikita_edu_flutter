@@ -3,6 +3,7 @@ import 'package:widya/models/course/course_list_model.dart';
 import 'package:widya/models/course/course_model.dart';
 import 'package:widya/repository/course_repository.dart';
 import 'package:widya/res/widgets/logger.dart';
+import 'package:widya/res/widgets/shared_preferences.dart';
 
 class CourseViewModel with ChangeNotifier {
   final CourseRepository _courseRepository = CourseRepository();
@@ -16,14 +17,19 @@ class CourseViewModel with ChangeNotifier {
   List<Course>? _courses;
   List<Course>? get courses => _courses;
 
-  Future<void> fetchCourses() async {
+  
+
+  Future<void> fetchCourses({int? categoryId}) async {
+    final sp = await SharedPrefs.instance;
+    final String? token = sp.getString("auth_token");
     _loading = true;
     _error = null; 
     notifyListeners();  
 
     try {
-      final response = await _courseRepository.fetchCourse();
+      final response = await _courseRepository.fetchCourse(categoryId: categoryId);
       AppLogger.logInfo('📥 Course Response: $response');
+      AppLogger.logInfo('Token: $token');
       
       final courseListResponse = CourseListResponse.fromJson(response);
 
