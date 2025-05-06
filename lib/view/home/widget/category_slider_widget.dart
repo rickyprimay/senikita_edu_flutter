@@ -58,7 +58,6 @@ class CategorySliderWidget extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         context.read<CategoryProvider>().selectCategory(label);
-        
         context.read<CourseViewModel>().fetchCourses(categoryId: categoryId); 
       },
       child: AnimatedContainer(

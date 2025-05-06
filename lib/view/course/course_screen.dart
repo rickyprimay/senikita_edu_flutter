@@ -7,6 +7,7 @@ import 'package:widya/res/widgets/colors.dart';
 import 'package:widya/res/widgets/fonts.dart';
 import 'package:widya/res/widgets/loading.dart';
 import 'package:widya/viewModel/course_view_model.dart';
+import 'package:widya/viewModel/enrollments_view_model.dart';
 
 class CourseScreen extends StatefulWidget {
   final int courseId;
@@ -45,6 +46,7 @@ class _CourseScreenState extends State<CourseScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final viewModel = Provider.of<CourseViewModel>(context, listen: false);
+      final enrollmentsViewModel = Provider.of<EnrollmentsViewModel>(context, listen: false);
       viewModel.fetchCourseDetail(widget.courseId);
     });
   }
@@ -58,9 +60,12 @@ class _CourseScreenState extends State<CourseScreen> {
   @override
   Widget build(BuildContext context) {
     final viewModel = context.watch<CourseViewModel>();
+    final enrollmentsViewModel = context.watch<EnrollmentsViewModel>(); 
     final courseDetail = viewModel.courseDetail;
 
-    return Scaffold(
+    return Stack(
+      children: [
+        Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.primary,
         leading: Padding(
@@ -261,7 +266,12 @@ class _CourseScreenState extends State<CourseScreen> {
                   child: SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        enrollmentsViewModel.postEnrollments(
+                          courseId: widget.courseId,
+                          context: context,
+                        );
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.primary,
                         padding: const EdgeInsets.symmetric(vertical: 14),
@@ -629,6 +639,9 @@ class _CourseScreenState extends State<CourseScreen> {
           );
         },
       ),
+    ),
+       if (enrollmentsViewModel.loading) const Loading(opacity: 0.5)
+      ],
     );
   }
 }

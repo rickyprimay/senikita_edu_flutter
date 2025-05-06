@@ -17,17 +17,12 @@ class EnrollmentsRepository {
     }
   }
 
-  Future<dynamic> pushEnrollments({required String token, required int courseId, dynamic data}) async {
-    try {
-      final headers = {
-        'Authorization': 'Bearer $token',
-        'Content-Type': 'application/json',
-      };
-      final resonse = await _network.getPostApiResponseWithHeader(AppUrls.postEnrollments, headers, data);
-      return resonse;
-    } catch (e) {
-      rethrow;
-    }
-  }
-
+  Future<dynamic> postEnrollments({required String token, required int courseId, dynamic data}) async {
+    final headers = {
+      'Authorization': 'Bearer $token',
+      'Content-Type': 'application/json',
+    };
+    final response = await _network.getPostApiResponseWithHeader(AppUrls.postEnrollments, headers, data);
+    return response;
+  } 
 }

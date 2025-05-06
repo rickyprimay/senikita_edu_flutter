@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:widya/data/app_exceptions.dart';
 import 'package:widya/data/network/base_api_services.dart';
+import 'package:widya/res/widgets/logger.dart';
 
 class NetworkApiServices extends BaseApiServices {
   @override
@@ -60,16 +61,12 @@ class NetworkApiServices extends BaseApiServices {
   }
 
   Future<dynamic> getPostApiResponseWithHeader(String url, Map<String, String> headers, dynamic data) async {
-    try {
-      final response = await http.post(Uri.parse(url), headers: headers, body: data);
+    final response = await http.post(Uri.parse(url), headers: headers, body: jsonEncode(data),);
 
-      if (response.statusCode == 200) {
-        return jsonDecode(response.body);
-      } else {
-        throw Exception('Failed to load data ${response.statusCode}');
-      }
-    } catch (e) {
-      rethrow;
+     if (response.statusCode == 200) {
+       return jsonDecode(response.body);
+    } else {
+      AppLogger.logError('Failed to load data ${response.statusCode}');
     }
   }
   

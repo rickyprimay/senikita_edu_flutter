@@ -45,7 +45,7 @@ class _LoadingState extends State<Loading> with SingleTickerProviderStateMixin {
     final int alpha = (widget.opacity * 255).round();
     
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.white.withOpacity(widget.opacity),
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -80,7 +80,6 @@ class _LoadingState extends State<Loading> with SingleTickerProviderStateMixin {
                             'assets/logo/widya_logo.png',
                             width: 120,
                             height: 120,
-                            color: Colors.white.withAlpha(alpha),
                             colorBlendMode: BlendMode.srcATop,
                           ),
                         );
