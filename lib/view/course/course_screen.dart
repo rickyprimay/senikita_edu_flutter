@@ -13,6 +13,7 @@ class CourseScreen extends StatefulWidget {
   final int courseId;
   final String instructorName;
   final String categoryName;
+
   const CourseScreen({
     super.key,
     required this.courseId,
@@ -424,7 +425,7 @@ class _CourseScreenState extends State<CourseScreen> {
                       ),
                     ),
                     Text(
-                      formatDuration(courseDetail.duration as int),
+                      courseDetail.duration,
                       style: AppFont.nunitoFootnoteLarge.copyWith(
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
@@ -462,7 +463,7 @@ class _CourseScreenState extends State<CourseScreen> {
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
-                                  "Video - ${formatDuration(courseDetail.duration as int)}",
+                                  "Video - $courseDetail.duration}",
                                   style: AppFont.ralewaySubtitle.copyWith(
                                     fontSize: 12,
                                     fontWeight: FontWeight.w400,
@@ -491,7 +492,7 @@ class _CourseScreenState extends State<CourseScreen> {
                     Icon(Icons.video_settings_rounded, size: 20, color: Colors.grey,),
                     const SizedBox(width: 5),
                     Text(
-                      "${formatDuration(courseDetail.duration as int)} berdasarkan video",
+                      "$courseDetail.duration berdasarkan video",
                       style: AppFont.ralewaySubtitle.copyWith(
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
