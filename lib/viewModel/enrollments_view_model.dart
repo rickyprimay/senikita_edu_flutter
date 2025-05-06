@@ -76,16 +76,20 @@ class EnrollmentsViewModel extends ChangeNotifier {
       if (response != null && response['success'] == true) {
         _error = '';
         Utils.showToastification('Berhasil', 'Kamu berhasil mendaftar kelas.', true, context);
+        Navigator.pop(context, 'goToMyClass');
       } else {
         _error = 'Gagal mendaftar kelas.';
         Utils.showToastification('Gagal', 'Gagal mendaftar kelas, silahkan coba lagi.', false, context);
         AppLogger.logError("Error: $response");
+        Navigator.pop(context, 'goToMyClass');
+
       }
     } catch (e) {
       _error = 'Failed to load data: $e';
       Utils.showToastification('Gagal', 'Gagal mendaftar kelas, silahkan coba lagi.', false, context);
       AppLogger.logError("Error: $e");
       AppLogger.logError("Error: $response");
+      Navigator.pop(context, 'goToMyClass');
     } finally {
       _loading = false;
       notifyListeners();

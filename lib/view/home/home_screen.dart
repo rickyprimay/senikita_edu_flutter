@@ -41,7 +41,7 @@ class HomeScreen extends StatelessWidget {
                         fit: BoxFit.cover,
                       ),
                     ),
-                    padding: const EdgeInsets.all(20),
+                    padding: const EdgeInsets.all(18),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -157,7 +157,7 @@ class HomeScreen extends StatelessWidget {
 
                     return LiquidPullToRefresh(
                       onRefresh: refreshCourses,
-                      showChildOpacityTransition: false,
+                      showChildOpacityTransition: true,
                       color: AppColors.primary,
                       height: 60,
                       backgroundColor: Colors.white,     

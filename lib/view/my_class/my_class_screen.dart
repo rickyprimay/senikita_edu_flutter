@@ -65,7 +65,7 @@ class MyClassScreen extends StatelessWidget {
 
                     return LiquidPullToRefresh(
                       onRefresh: refreshEnrollments,
-                      showChildOpacityTransition: false,
+                      showChildOpacityTransition: true,
                       color: AppColors.primary,
                       height: 60,
                       backgroundColor: Colors.white,     
