@@ -15,6 +15,8 @@ class Course {
   final int enrolledCount;
   final int rating;
   final int lessonsCount;
+  final List<String>? sneakpeeks;
+  final List<String>? requirements;
   final String? createdAt;
   final String? updatedAt;
 
@@ -33,6 +35,8 @@ class Course {
     required this.enrolledCount,
     required this.rating,
     required this.lessonsCount,
+    this.sneakpeeks,
+    this.requirements,
     this.createdAt,
     this.updatedAt,
   });
@@ -53,6 +57,8 @@ class Course {
       enrolledCount: json['enrolled_count'] ?? 0,
       rating: json['rating'] ?? 0,
       lessonsCount: json['lessons_count'] ?? 0,
+      sneakpeeks: json['sneakpeeks'] != null ? List<String>.from(json['sneakpeeks']) : null,
+      requirements: json['requirements'] != null ? List<String>.from(json['requirements']) : null,
       createdAt: json['created_at'],
       updatedAt: json['updated_at'],
     );
@@ -74,6 +80,8 @@ class Course {
       'enrolled_count': enrolledCount,
       'rating': rating,
       'lessons_count': lessonsCount,
+      'sneakpeeks': sneakpeeks != null ? List<String>.from(sneakpeeks!) : null,
+      'requirements': requirements != null ? List<String>.from(requirements!) : null,
       'created_at': createdAt,
       'updated_at': updatedAt,
     };

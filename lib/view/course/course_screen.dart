@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:widya/res/helpers/date_formatter.dart';
-import 'package:widya/res/helpers/duration_formatter.dart';
 import 'package:widya/res/helpers/get_level_color.dart';
 import 'package:widya/res/widgets/colors.dart';
 import 'package:widya/res/widgets/fonts.dart';
 import 'package:widya/res/widgets/loading.dart';
+import 'package:widya/res/widgets/logger.dart';
 import 'package:widya/viewModel/course_view_model.dart';
 import 'package:widya/viewModel/enrollments_view_model.dart';
 
@@ -31,16 +31,6 @@ class _CourseScreenState extends State<CourseScreen> {
   final _learnSectionKey = GlobalKey();
   
   bool isExpanded = false;
-
-  final List<String> learnItems = [
-    "Membuat karya seni yang berkualitas tinggi",
-    "Membangun ekosistem seni yang inklusif",
-    "Mendukung seniman lokal dengan sarana inovatif",
-    "Meningkatkan keterampilan seni dan kreativitas",
-    "Menciptakan peluang kerja di bidang seni",
-    "Mengembangkan platform seni yang berkelanjutan",
-    "Meningkatkan kesadaran akan seni dan budaya",
-  ];
 
   @override
   void initState() {
@@ -272,6 +262,7 @@ class _CourseScreenState extends State<CourseScreen> {
                           courseId: widget.courseId,
                           context: context,
                         );
+                        AppLogger.logInfo("course Id: ${widget.courseId}");
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.primary,
@@ -346,7 +337,7 @@ class _CourseScreenState extends State<CourseScreen> {
                         ),
                         const SizedBox(height: 12),
                         ...List.generate(
-                          isExpanded ? learnItems.length : learnItems.length.clamp(0, 4),
+                          isExpanded ? courseDetail.sneakpeeks?.length ?? 0 : (courseDetail.sneakpeeks?.length ?? 0).clamp(0, 4),
                           (index) => Padding(
                             padding: const EdgeInsets.symmetric(vertical: 4),
                             child: Row(
@@ -356,7 +347,7 @@ class _CourseScreenState extends State<CourseScreen> {
                                 const SizedBox(width: 8),
                                 Expanded(
                                   child: Text(
-                                    learnItems[index],
+                                    courseDetail.sneakpeeks?[index] ?? '',  
                                     style: AppFont.ralewaySubtitle.copyWith(
                                       fontSize: 14,
                                       fontWeight: FontWeight.w500,
@@ -368,7 +359,7 @@ class _CourseScreenState extends State<CourseScreen> {
                           ),
                         ),
                         const SizedBox(height: 8),
-                        if (learnItems.length > 4)
+                        if ((courseDetail.sneakpeeks?.length ?? 0) > 4)
                           GestureDetector(
                           onTap: () async {
                             setState(() {
@@ -492,7 +483,7 @@ class _CourseScreenState extends State<CourseScreen> {
                     Icon(Icons.video_settings_rounded, size: 20, color: Colors.grey,),
                     const SizedBox(width: 5),
                     Text(
-                      "$courseDetail.duration berdasarkan video",
+                      "${courseDetail.duration} berdasarkan video",
                       style: AppFont.ralewaySubtitle.copyWith(
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
@@ -573,68 +564,31 @@ class _CourseScreenState extends State<CourseScreen> {
                       ),
                     ),
                     const SizedBox(height: 10),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(top: 4),
-                          child: Icon(Icons.circle, size: 6, color: Colors.grey),
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            "Harus memiliki perangkat yang mendukung video",
-                            style: AppFont.ralewaySubtitle.copyWith(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                              color: AppColors.secondary,
+                    ...List.generate(
+                      courseDetail.requirements?.length ?? 0,
+                      (index) => Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(top: 4),
+                            child: Icon(Icons.circle, size: 6, color: Colors.grey),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              courseDetail.requirements?[index] ?? '', 
+                              style: AppFont.ralewaySubtitle.copyWith(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color: AppColors.secondary,
+                              ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(top: 4),
-                          child: Icon(Icons.circle, size: 6, color: Colors.grey),
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            "Koneksi internet yang stabil",
-                            style: AppFont.ralewaySubtitle.copyWith(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                              color: AppColors.secondary,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(top: 4),
-                          child: Icon(Icons.circle, size: 6, color: Colors.grey),
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            "Memiliki alat musik yang sesuai dengan materi",
-                            style: AppFont.ralewaySubtitle.copyWith(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                              color: AppColors.secondary,
-                            ),
-                          ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ],
-                )
+                ),
               ],
             ),
           );
