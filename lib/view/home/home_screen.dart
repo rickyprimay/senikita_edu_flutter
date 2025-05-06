@@ -196,7 +196,7 @@ class HomeScreen extends StatelessWidget {
                                       imageUrl: course.thumbnail,
                                       level: course.level,
                                       onTap: () {
-                                        Navigator.of(context, rootNavigator: true).pushNamed(RouteNames.course, arguments: {'courseId': course.id});
+                                        Navigator.of(context, rootNavigator: true).pushNamed(RouteNames.course, arguments: {'courseId': course.id, 'instructorName': course.instructor?.name ?? "", 'categoryName': course.category?.name ?? ""});
                                       },
                                     ),
                                     const SizedBox(height: 20),

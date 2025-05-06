@@ -13,6 +13,8 @@ class Course {
   Instructor? instructor;
   int duration;
   String level;
+  String? createdAt;
+  String? updatedAt;
 
   Course({
     required this.id,
@@ -26,6 +28,8 @@ class Course {
     required this.instructor,
     required this.duration,
     required this.level,
+    this.createdAt,
+    this.updatedAt,
   });
 
   factory Course.fromJson(Map<String, dynamic> json) {
@@ -41,6 +45,8 @@ class Course {
       instructor: json['instructor'] != null ? Instructor.fromJson(json['instructor']) : null,
       duration: json['duration'],
       level: json['level'],
+      createdAt: json['created_at'],
+      updatedAt: json['updated_at'],
     );
   }
 
