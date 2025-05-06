@@ -37,22 +37,31 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> {
       'type': 'Kuis',
       'duration': '',
     },
+    {
+      'title': 'Quiz: Teori Musik Klasik',
+      'type': 'Kuis',
+      'duration': '',
+    },
+    {
+      'title': 'Quiz: Teori Musik Klasik',
+      'type': 'Kuis',
+      'duration': '',
+    },
   ];
 
   int? _selectedIndex;
+  final List<int> _selectedLectureIndices = [];
 
-  // Tambah controller YouTube
   late YoutubePlayerController _youtubeController;
 
   @override
   void initState() {
     super.initState();
-    // Ambil videoId dari URL YouTube
-    const videoUrl = 'https://youtu.be/agW8jvfTwf4?si=RmO6kOnOYwaYmf4U';
+    const videoUrl = 'https://www.youtube.com/embed/yNJNb71MITI';
     final videoId = YoutubePlayer.convertUrlToId(videoUrl);
 
     _youtubeController = YoutubePlayerController(
-      initialVideoId: videoId ?? '', // fallback kosong kalau gagal
+      initialVideoId: videoId ?? '', 
       flags: const YoutubePlayerFlags(
         autoPlay: false,
         mute: false,
@@ -72,7 +81,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> {
       appBar: AppBar(
         backgroundColor: AppColors.primary,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_downward),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -83,14 +92,11 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // === YOUTUBE VIDEO ===
             YoutubePlayer(
               controller: _youtubeController,
               showVideoProgressIndicator: true,
               progressIndicatorColor: AppColors.primary,
             ),
-
-            // === TEKS JUDUL DAN DESKRIPSI ===
             Container(
               padding: const EdgeInsets.all(16),
               child: Column(
@@ -116,8 +122,6 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> {
                 ],
               ),
             ),
-
-            // === TAB BAR ===
             Row(
               children: [
                 Expanded(
@@ -156,14 +160,13 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> {
               ],
             ),
             const Divider(color: Colors.grey, height: 1),
-
-            // === LIST MATERI ===
             Expanded(
               child: ListView.builder(
                 itemCount: lectures.length,
                 itemBuilder: (context, index) {
                   final lecture = lectures[index];
                   final isSelected = _selectedIndex == index;
+                  final isSelectedLecture = _selectedLectureIndices.contains(index); 
 
                   return AnimatedContainer(
                     duration: const Duration(milliseconds: 200),
@@ -176,18 +179,24 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> {
                           _selectedIndex = index;
                         });
                       },
-                      onLongPress: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('Materi: ${lecture['title']} ditekan lama'),
-                            duration: const Duration(seconds: 1),
-                          ),
-                        );
-                      },
                       splashColor: AppColors.primary.withAlpha(44),
                       highlightColor: AppColors.primary.withAlpha(22),
                       child: ListTile(
-                        leading: const Icon(Icons.check_circle, color: AppColors.primary),
+                        leading: IconButton(
+                          icon: Icon(
+                            isSelectedLecture ? Icons.check_circle_outline : Icons.circle_outlined,
+                            color: AppColors.primary,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              if (isSelectedLecture) {
+                                _selectedLectureIndices.remove(index); 
+                              } else {
+                                _selectedLectureIndices.add(index); 
+                              }
+                            });
+                          },
+                        ),
                         title: Text(
                           lecture['title'],
                           style: AppFont.ralewaySubtitle.copyWith(
