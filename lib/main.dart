@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gemini/flutter_gemini.dart';
 import 'package:provider/provider.dart';
 import 'package:widya/provider/category_provider.dart';
 import 'package:widya/provider/login_provider.dart';
@@ -11,7 +12,11 @@ import 'package:widya/viewModel/enrollments_view_model.dart';
 import 'package:widya/viewModel/user_view_model.dart';
 import 'package:toastification/toastification.dart';
 
+const geminiApiKey = "AIzaSyB1rg-gZlHOll5yFz6vJgpOz92vjMfqxqo";
+
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  Gemini.init(apiKey: geminiApiKey);
   runApp(const MyApp());
 }
 

@@ -1,15 +1,15 @@
 class Category {
-  final int id;
+  final int? id;
   final String name;
-  final String slug;
+  final String? slug;
   final String? description;  
   final String? status;       
   final String? thumbnail;    
 
   Category({
-    required this.id,
+    this.id,
     required this.name,
-    required this.slug,
+    this.slug,
     this.description,  
     this.status,       
     this.thumbnail, 

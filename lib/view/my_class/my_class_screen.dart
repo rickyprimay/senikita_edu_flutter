@@ -98,7 +98,7 @@ class MyClassScreen extends StatelessWidget {
                                     CourseCardWithProgress(
                                       title: enrollment.course.title,
                                       subtitle: enrollment.course.description,
-                                      duration: formatDuration(enrollment.course.duration),
+                                      duration: enrollment.course.duration,
                                       author: enrollment.course.instructor?.name ?? "", 
                                       imageUrl: enrollment.course.thumbnail,
                                       progress: 0.22,

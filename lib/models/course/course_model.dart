@@ -1,20 +1,22 @@
-import 'package:widya/models/category/category.dart';
 import 'package:widya/models/instructor/instructor_model.dart';
 
 class Course {
-  int id;
-  String title;
-  String description;
-  int certificateAvailable;
-  String slug;
-  String status;
-  String thumbnail;
-  Category? category;
-  Instructor? instructor;
-  int duration;
-  String level;
-  String? createdAt;
-  String? updatedAt;
+  final int id;
+  final String title;
+  final String description;
+  final int certificateAvailable;
+  final String slug;
+  final String status;
+  final String thumbnail;
+  final List<String> category;
+  final Instructor instructor;
+  final String duration;
+  final String level;
+  final int enrolledCount;
+  final int rating;
+  final int lessonsCount;
+  final String? createdAt;
+  final String? updatedAt;
 
   Course({
     required this.id,
@@ -28,6 +30,9 @@ class Course {
     required this.instructor,
     required this.duration,
     required this.level,
+    required this.enrolledCount,
+    required this.rating,
+    required this.lessonsCount,
     this.createdAt,
     this.updatedAt,
   });
@@ -41,10 +46,13 @@ class Course {
       slug: json['slug'],
       status: json['status'],
       thumbnail: json['thumbnail'],
-      category: json['category'] != null ? Category.fromJson(json['category']) : null,
-      instructor: json['instructor'] != null ? Instructor.fromJson(json['instructor']) : null,
+      category: List<String>.from(json['category']),
+      instructor: Instructor.fromJson(json['instructor']),
       duration: json['duration'],
       level: json['level'],
+      enrolledCount: json['enrolled_count'],
+      rating: json['rating'],
+      lessonsCount: json['lessons_count'],
       createdAt: json['created_at'],
       updatedAt: json['updated_at'],
     );
@@ -59,10 +67,15 @@ class Course {
       'slug': slug,
       'status': status,
       'thumbnail': thumbnail,
-      'category': category?.toJson(),
-      'instructor': instructor?.toJson(),
+      'category': category,
+      'instructor': instructor.toJson(), 
       'duration': duration,
       'level': level,
+      'enrolled_count': enrolledCount,
+      'rating': rating,
+      'lessons_count': lessonsCount,
+      'created_at': createdAt,
+      'updated_at': updatedAt,
     };
   }
 }

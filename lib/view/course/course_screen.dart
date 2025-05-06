@@ -424,7 +424,7 @@ class _CourseScreenState extends State<CourseScreen> {
                       ),
                     ),
                     Text(
-                      formatDuration(courseDetail.duration),
+                      formatDuration(courseDetail.duration as int),
                       style: AppFont.nunitoFootnoteLarge.copyWith(
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
@@ -462,7 +462,7 @@ class _CourseScreenState extends State<CourseScreen> {
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
-                                  "Video - ${formatDuration(courseDetail.duration)}",
+                                  "Video - ${formatDuration(courseDetail.duration as int)}",
                                   style: AppFont.ralewaySubtitle.copyWith(
                                     fontSize: 12,
                                     fontWeight: FontWeight.w400,
@@ -491,7 +491,7 @@ class _CourseScreenState extends State<CourseScreen> {
                     Icon(Icons.video_settings_rounded, size: 20, color: Colors.grey,),
                     const SizedBox(width: 5),
                     Text(
-                      "${formatDuration(courseDetail.duration)} berdasarkan video",
+                      "${formatDuration(courseDetail.duration as int)} berdasarkan video",
                       style: AppFont.ralewaySubtitle.copyWith(
                         fontSize: 14,
                         fontWeight: FontWeight.w500,

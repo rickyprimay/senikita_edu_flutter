@@ -9,7 +9,7 @@ import 'package:widya/res/widgets/loading.dart';
 import 'package:widya/utils/routes/routes_names.dart';
 import 'package:widya/view/home/widget/category_slider_widget.dart';
 import 'package:widya/view/home/widget/course_card_widget.dart';
-import 'package:widya/viewModel/course_view_model.dart'; 
+import 'package:widya/viewModel/course_view_model.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -150,7 +150,30 @@ class HomeScreen extends StatelessWidget {
                     }
 
                     if (courseViewModel.error != null && (courseViewModel.courses == null || courseViewModel.courses!.isEmpty)) {
-                      return Center(child: Text("Error: ${courseViewModel.error}", style: AppFont.ralewayBodyLarge));
+                      return Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "Error: Gagal Koneksi Ke Server",
+                              style: AppFont.ralewaySubtitle.copyWith(fontSize: 16, fontWeight: FontWeight.w500),
+                            ),
+                            const SizedBox(height: 20),
+                            ElevatedButton(
+                              onPressed: () => refreshCourses(),
+                              style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
+                              child: Text(
+                                'Coba Lagi',
+                                style: AppFont.ralewaySubtitle.copyWith(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
                     }
 
                     final courses = courseViewModel.courses;
@@ -190,13 +213,13 @@ class HomeScreen extends StatelessWidget {
                                       color: Colors.orange.shade100,
                                       title: course.title,
                                       subtitle: course.description,
-                                      duration: formatDuration(course.duration),
+                                      duration: course.duration,
                                       icon: Icons.music_note,
                                       author: course.instructor?.name ?? "",
                                       imageUrl: course.thumbnail,
                                       level: course.level,
                                       onTap: () {
-                                        Navigator.of(context, rootNavigator: true).pushNamed(RouteNames.course, arguments: {'courseId': course.id, 'instructorName': course.instructor?.name ?? "", 'categoryName': course.category?.name ?? ""});
+                                        Navigator.of(context, rootNavigator: true).pushNamed(RouteNames.course, arguments: {'courseId': course.id, 'instructorName': course.instructor?.name ?? ""});
                                       },
                                     ),
                                     const SizedBox(height: 20),
