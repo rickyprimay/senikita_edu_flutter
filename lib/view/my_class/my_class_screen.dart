@@ -59,7 +59,30 @@ class MyClassScreen extends StatelessWidget {
                     }
 
                     if (enrollmentsViewModel.error != null && (enrollmentsViewModel.enrollments.isEmpty)) {
-                      return Center(child: Text("Error: ${enrollmentsViewModel.error}"));
+                      return Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "Error: Gagal Koneksi Ke Server",
+                              style: AppFont.ralewaySubtitle.copyWith(fontSize: 16, fontWeight: FontWeight.w500),
+                            ),
+                            const SizedBox(height: 20),
+                            ElevatedButton(
+                              onPressed: () => refreshEnrollments(),
+                              style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
+                              child: Text(
+                                'Coba Lagi',
+                                style: AppFont.ralewaySubtitle.copyWith(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
                     }
 
                     final enrollments = enrollmentsViewModel.enrollments;

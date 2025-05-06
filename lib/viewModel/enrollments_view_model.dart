@@ -35,16 +35,20 @@ class EnrollmentsViewModel extends ChangeNotifier {
       if (response != null) {
         try {
           _enrollmentsListResponse = EnrollmentsListResponse.fromJson(response);
-          _error = ''; 
+          AppLogger.logInfo("enrollments: ${_enrollmentsListResponse?.data}");
+          _error = null; 
         } catch (e) {
+          AppLogger.logError("Failed to parse enrollments response: $e");
           _error = 'Failed to parse response';
 
         }
       } else {
         _error = 'Data not found or empty.';
+        AppLogger.logError("enrollments: $_error");
       }
     } catch (e) {
       _error = 'Failed to load data: $e';
+      AppLogger.logError("enrollments: $_error");
     } finally {
       _loading = false;
       notifyListeners();
