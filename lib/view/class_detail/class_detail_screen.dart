@@ -81,7 +81,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> {
       appBar: AppBar(
         backgroundColor: AppColors.primary,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_downward),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pop(context);
           },
