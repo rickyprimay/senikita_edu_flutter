@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:widya/data/network/network_api_services.dart';
 import 'package:widya/res/widgets/app_urls.dart';
 
@@ -17,12 +18,12 @@ class EnrollmentsRepository {
     }
   }
 
-  Future<dynamic> postEnrollments({required String token, required int courseId, dynamic data}) async {
+  Future<dynamic> postEnrollments({required String token, required int courseId, dynamic data, required BuildContext context}) async {
     final headers = {
       'Authorization': 'Bearer $token',
       'Content-Type': 'application/json',
     };
-    final response = await _network.getPostApiResponseWithHeader(AppUrls.postEnrollments, headers, data);
+    final response = await _network.getPostApiResponseWithHeader(AppUrls.postEnrollments, headers, data, context);
     return response;
   } 
 }

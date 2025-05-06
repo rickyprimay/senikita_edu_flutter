@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:widya/models/enrollments/enrollments_model.dart';
 import 'package:widya/models/enrollments/enrollments_list_model.dart';
@@ -24,33 +23,46 @@ class EnrollmentsViewModel extends ChangeNotifier {
     return _enrollmentsListResponse?.data ?? [];
   }
 
-  Future<void> fetchEnrollments({int? page}) async {
-    final sp = await SharedPrefs.instance;
-    final String? token = sp.getString("auth_token");
-    
-    _loading = true;
-    notifyListeners();
-    try {
-      final response = await _enrollmentsRepository.fetchEnrollments(page: page, token: token ?? "");
+  int _currentPage = 1;
+  bool _hasNextPage = true;
+  bool _isFetchingMore = false;
 
-      if (response != null) {
-        try {
-          _enrollmentsListResponse = EnrollmentsListResponse.fromJson(response);
-          _error = ''; 
-        } catch (e) {
-          _error = 'Failed to parse response';
+  int get currentPage => _currentPage;
+  bool get hasNextPage => _hasNextPage;
+  bool get isFetchingMore => _isFetchingMore;
 
-        }
+  Future<void> fetchEnrollments({int? page, bool append = false}) async {
+  final sp = await SharedPrefs.instance;
+  final String? token = sp.getString("auth_token");
+
+  _loading = !append; // kalau append, jangan tampilkan loading utama
+  notifyListeners();
+
+  try {
+    final response = await _enrollmentsRepository.fetchEnrollments(page: page, token: token ?? "");
+
+    if (response != null) {
+      final newListResponse = EnrollmentsListResponse.fromJson(response);
+      
+      if (append && _enrollmentsListResponse != null) {
+        // Append data
+        _enrollmentsListResponse!.data.addAll(newListResponse.data);
+        _enrollmentsListResponse!.meta = newListResponse.meta;
       } else {
-        _error = 'Data not found or empty.';
+        _enrollmentsListResponse = newListResponse;
       }
-    } catch (e) {
-      _error = 'Failed to load data: $e';
-    } finally {
-      _loading = false;
-      notifyListeners();
+
+      _error = '';
+    } else {
+      _error = 'Data not found or empty.';
     }
+  } catch (e) {
+    _error = 'Failed to load data: $e';
+  } finally {
+    _loading = false;
+    notifyListeners();
   }
+}
 
   Future<void> postEnrollments({required int courseId, required BuildContext context}) async {
     final sp = await SharedPrefs.instance;
@@ -68,31 +80,24 @@ class EnrollmentsViewModel extends ChangeNotifier {
         token: token ?? "",
         courseId: courseId,
         data: data,
+        context: context,
       );
 
     try {
-      
 
       if (response != null && response['success'] == true) {
         _error = '';
         Utils.showToastification('Berhasil', 'Kamu berhasil mendaftar kelas.', true, context);
-        Navigator.pop(context, 'goToMyClass');
+        Navigator.pop(context);
       } else {
         _error = 'Gagal mendaftar kelas.';
-        Utils.showToastification('Gagal', 'Gagal mendaftar kelas, silahkan coba lagi.', false, context);
-        AppLogger.logError("Error: $response");
-        Navigator.pop(context, 'goToMyClass');
-
       }
     } catch (e) {
       _error = 'Failed to load data: $e';
-      Utils.showToastification('Gagal', 'Gagal mendaftar kelas, silahkan coba lagi.', false, context);
-      AppLogger.logError("Error: $e");
-      AppLogger.logError("Error: $response");
-      Navigator.pop(context, 'goToMyClass');
     } finally {
       _loading = false;
       notifyListeners();
     }
   }
+
 }

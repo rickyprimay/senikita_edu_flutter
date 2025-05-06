@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:widya/data/app_exceptions.dart';
 import 'package:widya/data/network/base_api_services.dart';
 import 'package:widya/res/widgets/logger.dart';
+import 'package:widya/utils/utils.dart';
 
 class NetworkApiServices extends BaseApiServices {
   @override
@@ -60,13 +62,14 @@ class NetworkApiServices extends BaseApiServices {
     }
   }
 
-  Future<dynamic> getPostApiResponseWithHeader(String url, Map<String, String> headers, dynamic data) async {
+  Future<dynamic> getPostApiResponseWithHeader(String url, Map<String, String> headers, dynamic data, BuildContext context) async {
     final response = await http.post(Uri.parse(url), headers: headers, body: jsonEncode(data),);
 
-     if (response.statusCode == 200) {
+     if (response.statusCode == 200 || response.statusCode == 201) {
        return jsonDecode(response.body);
     } else {
-      AppLogger.logError('Failed to load data ${response.statusCode}');
+      AppLogger.logError('Failed to load data : ${response.body}');
+      Utils.showToastification("Gagal", "Kamu telah terdaftar dalam kelas ini", false, context);
     }
   }
   
