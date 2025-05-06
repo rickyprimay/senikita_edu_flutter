@@ -35,6 +35,7 @@ class EnrollmentsViewModel extends ChangeNotifier {
           _error = ''; 
         } catch (e) {
           _error = 'Failed to parse response';
+          
         }
       } else {
         _error = 'Data not found or empty.';

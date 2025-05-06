@@ -116,15 +116,26 @@ class _CourseCardWithProgressState extends State<CourseCardWithProgress> {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      const SizedBox(height: 6),
+                      // const SizedBox(height: 6),
+                      // Text(
+                      //   widget.subtitle,
+                      //   style: AppFont.ralewaySubtitle.copyWith(
+                      //     fontSize: 12,
+                      //     color: Colors.grey,
+                      //     fontWeight: FontWeight.w500,
+                      //   ),
+                      //   maxLines: 2,
+                      //   overflow: TextOverflow.ellipsis,
+                      // ),
+                      const SizedBox(height: 4), 
                       Text(
-                        widget.subtitle,
-                        style: AppFont.ralewaySubtitle.copyWith(
-                          fontSize: 12,
-                          color: Colors.grey,
-                          fontWeight: FontWeight.w500,
+                        "Mentor Kelas: ${widget.author}",
+                        style: AppFont.nunitoSubtitle.copyWith(
+                          fontSize: 11,
+                          color: Colors.black.withAlpha(140),
+                          fontWeight: FontWeight.w400,
                         ),
-                        maxLines: 2,
+                        maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 10),

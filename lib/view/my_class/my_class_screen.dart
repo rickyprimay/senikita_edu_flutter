@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:widya/res/helpers/duration_formatter.dart';
 import 'package:widya/view/my_class/widget/course_card_progress_widget.dart';
 import 'package:widya/viewModel/enrollments_view_model.dart';
 import 'package:widya/res/widgets/colors.dart';
@@ -96,8 +97,8 @@ class MyClassScreen extends StatelessWidget {
                                     CourseCardWithProgress(
                                       title: enrollment.course.title,
                                       subtitle: enrollment.course.description,
-                                      duration: "2 jam 30 menit",
-                                      author: "Widya Author", 
+                                      duration: formatDuration(enrollment.course.duration),
+                                      author: enrollment.course.instructor?.name ?? "", 
                                       imageUrl: enrollment.course.thumbnail,
                                       progress: 0.22,
                                     ),

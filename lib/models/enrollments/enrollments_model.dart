@@ -7,7 +7,6 @@ class Enrollments {
   String status;
   String? completedAt;
   String createdAt;
-  String updatedAt;
   Course course;
 
   Enrollments({
@@ -17,7 +16,6 @@ class Enrollments {
     required this.status,
     this.completedAt,
     required this.createdAt,
-    required this.updatedAt,
     required this.course,
   });
 
@@ -29,7 +27,6 @@ class Enrollments {
       status: json['status'],
       completedAt: json['completed_at'],
       createdAt: json['created_at'],
-      updatedAt: json['updated_at'],
       course: Course.fromJson(json['course']),
     );
   }
