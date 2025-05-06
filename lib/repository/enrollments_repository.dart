@@ -10,6 +10,7 @@ class EnrollmentsRepository {
       final headers = {
         'Authorization': 'Bearer $token',
         'Accept': 'application/json',
+        'Content-Type': 'application/json'
       };
       final response = await _network.getGetApiResponseWithHeader(AppUrls.getEnrollments, headers);
       return response;
@@ -22,6 +23,7 @@ class EnrollmentsRepository {
     final headers = {
       'Authorization': 'Bearer $token',
       'Accept': 'application/json',
+      'Content-Type': 'application/json'
     };
     final response = await _network.getPostApiResponseWithHeader(AppUrls.postEnrollments, headers, data, context);
     return response;

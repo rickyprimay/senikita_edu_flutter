@@ -63,6 +63,8 @@ class EnrollmentsViewModel extends ChangeNotifier {
       "course_id": courseId,
     };
 
+    AppLogger.logInfo("Data being sent: $data");
+
     _loading = true;
     notifyListeners();
 
