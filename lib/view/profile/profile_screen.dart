@@ -75,7 +75,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   const SizedBox(height: 20),
                   ClipOval(
                     child: Image.network(
-                      photo ?? 'https://placehold.co/150x150/png',
+                      photo ?? 'https://eduapi.senikita.my.id/storage/defaultpic.png',
                       width: 80,
                       height: 80,
                       fit: BoxFit.cover,

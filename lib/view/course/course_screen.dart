@@ -106,7 +106,7 @@ class _CourseScreenState extends State<CourseScreen> {
                 Center(
                   child: Container(
                     width: double.infinity,
-                    height: 200,
+                    height: 300,
                     decoration: BoxDecoration(
                       color: AppColors.primary,
                       borderRadius: BorderRadius.circular(8),
@@ -427,14 +427,14 @@ class _CourseScreenState extends State<CourseScreen> {
                   children: List.generate(
                     4,
                     (index) => Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      padding: const EdgeInsets.symmetric(vertical: 8, horizontal:8),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             '${index + 1}.',
                             style: AppFont.ralewaySubtitle.copyWith(
-                              fontSize: 16,
+                              fontSize: 14,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
@@ -446,7 +446,7 @@ class _CourseScreenState extends State<CourseScreen> {
                                 Text(
                                   "Materi awalan untuk memulai menjadi penari ${index + 1}",
                                   style: AppFont.ralewaySubtitle.copyWith(
-                                    fontSize: 16,
+                                    fontSize: 14,
                                     fontWeight: FontWeight.w400,
                                   ),
                                 ),
@@ -454,7 +454,7 @@ class _CourseScreenState extends State<CourseScreen> {
                                 Text(
                                   "Video - ${formatDuration(courseDetail.duration)}",
                                   style: AppFont.ralewaySubtitle.copyWith(
-                                    fontSize: 14,
+                                    fontSize: 12,
                                     fontWeight: FontWeight.w400,
                                     color: Colors.grey,
                                   ),
@@ -466,6 +466,163 @@ class _CourseScreenState extends State<CourseScreen> {
                       ),
                     ),
                   ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  "Kelas ini terdiri dari:",
+                  style: AppFont.ralewaySubtitle.copyWith(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  children: [
+                    Icon(Icons.video_settings_rounded, size: 20, color: Colors.grey,),
+                    const SizedBox(width: 5),
+                    Text(
+                      "${formatDuration(courseDetail.duration)} berdasarkan video",
+                      style: AppFont.ralewaySubtitle.copyWith(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.secondary,
+                      ),
+                    )
+                  ],
+                ),
+                const SizedBox(height: 5),
+                Row(
+                  children: [
+                    Icon(Icons.flash_on, size: 20, color: Colors.grey,),
+                    const SizedBox(width: 5),
+                    Text(
+                      "2 Pre Test",
+                      style: AppFont.ralewaySubtitle.copyWith(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.secondary,
+                      ),
+                    )
+                  ],
+                ),
+                const SizedBox(height: 5),
+                Row(
+                  children: [
+                    Icon(Icons.help_outline, size: 20, color: Colors.grey,),
+                    const SizedBox(width: 5),
+                    Text(
+                      "Asisstant Pembelajaran",
+                      style: AppFont.ralewaySubtitle.copyWith(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.secondary,
+                      ),
+                    )
+                  ],
+                ),
+                const SizedBox(height: 5),
+                Row(
+                  children: [
+                    Icon(Icons.phone_android, size: 20, color: Colors.grey,),
+                    const SizedBox(width: 5),
+                    Text(
+                      "Akses di Smartphone, Website",
+                      style: AppFont.ralewaySubtitle.copyWith(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.secondary,
+                      ),
+                    )
+                  ],
+                ),
+                const SizedBox(height: 5),
+                Row(
+                  children: [
+                    Icon(Icons.check_circle_outline, size: 20, color: Colors.grey,),
+                    const SizedBox(width: 5),
+                    Text(
+                      "Sertifikat",
+                      style: AppFont.ralewaySubtitle.copyWith(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.secondary,
+                      ),
+                    )
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Requirements:",
+                      style: AppFont.ralewaySubtitle.copyWith(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 4),
+                          child: Icon(Icons.circle, size: 6, color: Colors.grey),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            "Harus memiliki perangkat yang mendukung video",
+                            style: AppFont.ralewaySubtitle.copyWith(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.secondary,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 4),
+                          child: Icon(Icons.circle, size: 6, color: Colors.grey),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            "Koneksi internet yang stabil",
+                            style: AppFont.ralewaySubtitle.copyWith(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.secondary,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 4),
+                          child: Icon(Icons.circle, size: 6, color: Colors.grey),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            "Memiliki alat musik yang sesuai dengan materi",
+                            style: AppFont.ralewaySubtitle.copyWith(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.secondary,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 )
               ],
             ),

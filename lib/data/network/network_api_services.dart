@@ -58,6 +58,20 @@ class NetworkApiServices extends BaseApiServices {
       rethrow;
     }
   }
+
+  Future<dynamic> getPostApiResponseWithHeader(String url, Map<String, String> headers, dynamic data) async {
+    try {
+      final response = await http.post(Uri.parse(url), headers: headers, body: data);
+
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      } else {
+        throw Exception('Failed to load data ${response.statusCode}');
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
   
   @override
   Future getDeleteApiResponse(String url, data) {

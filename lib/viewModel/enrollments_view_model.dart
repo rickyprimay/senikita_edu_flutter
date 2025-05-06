@@ -35,7 +35,34 @@ class EnrollmentsViewModel extends ChangeNotifier {
           _error = ''; 
         } catch (e) {
           _error = 'Failed to parse response';
-          
+
+        }
+      } else {
+        _error = 'Data not found or empty.';
+      }
+    } catch (e) {
+      _error = 'Failed to load data: $e';
+    } finally {
+      _loading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> pushEnrollments({required int courseId, dynamic data}) async {
+    final sp = await SharedPrefs.instance;
+    final String? token = sp.getString("auth_token");
+    
+    _loading = true;
+    notifyListeners();
+    try {
+      final response = await _enrollmentsRepository.pushEnrollments(token: token ?? "", courseId: courseId, data: data);
+
+      if (response != null) {
+        try {
+          _enrollmentsListResponse = EnrollmentsListResponse.fromJson(response);
+          _error = ''; 
+        } catch (e) {
+          _error = 'Failed to parse response';
         }
       } else {
         _error = 'Data not found or empty.';

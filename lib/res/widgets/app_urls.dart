@@ -31,5 +31,6 @@ class AppUrls {
   }
 
   static String getEnrollments = "$baseUrl/enrollments";
+  static String postEnrollments = "$baseUrl/enrollments";
 
 }
