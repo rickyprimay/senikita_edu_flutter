@@ -38,8 +38,13 @@ class Routes {
         return MaterialPageRoute(builder: (BuildContext context) => const SeniKitaScreen());
       case (RouteNames.seniKitaEdu):
         return MaterialPageRoute(builder: (BuildContext context) => const SeniKitaEduScreen());
-      case (RouteNames.Course):
-        return MaterialPageRoute(builder: (BuildContext context) => const CourseScreen());
+      case (RouteNames.course):
+        final args = settings.arguments as Map<String, dynamic>;
+        final courseId = args['courseId'] as int;
+      
+        return MaterialPageRoute(
+          builder: (BuildContext context) => CourseScreen(courseId: courseId),
+        );
       default:
         return MaterialPageRoute(
           builder: (_) => const Scaffold(

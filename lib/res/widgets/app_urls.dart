@@ -26,6 +26,10 @@ class AppUrls {
     return url;
   }
 
+  static String getCourseDetail(int courseId) {
+    return "$baseUrl/courses/$courseId";
+  }
+
   static String getEnrollments = "$baseUrl/enrollments";
 
 }

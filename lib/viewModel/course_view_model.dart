@@ -17,7 +17,8 @@ class CourseViewModel with ChangeNotifier {
   List<Course>? _courses;
   List<Course>? get courses => _courses;
 
-  
+  Course? _courseDetail;
+  Course? get courseDetail => _courseDetail;
 
   Future<void> fetchCourses({int? categoryId}) async {
     final sp = await SharedPrefs.instance;
@@ -45,4 +46,29 @@ class CourseViewModel with ChangeNotifier {
       notifyListeners();  
     }
   }
+
+  Future<void> fetchCourseDetail(int courseId) async {
+    _loading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      final response = await _courseRepository.fetchCourseDetail(courseId);
+      AppLogger.logInfo('📥 Course Detail Response: $response');
+
+      final courseDetailResponse = Course.fromJson(response['data']);
+      
+      _courseDetail = courseDetailResponse;
+
+      _loading = false;
+      notifyListeners();
+      AppLogger.logInfo('📥 Course Detail: ${_courseDetail?.title}');
+    } catch (e) {
+      AppLogger.logError('Error fetching course detail: $e');
+      _loading = false;
+      _error = e.toString();
+      notifyListeners();
+    }
+  }
+
 }

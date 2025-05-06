@@ -14,4 +14,14 @@ class CourseRepository {
       rethrow; 
     }
   }
+
+  Future<dynamic> fetchCourseDetail(int courseId) async {
+    try {
+      final url = AppUrls.getCourseDetail(courseId);
+      final response = await _network.getGetApiResponse(url);
+      return response;
+    } catch (e) {
+      rethrow; 
+    }
+  }
 }

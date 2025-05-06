@@ -11,6 +11,7 @@ class CourseCard extends StatefulWidget {
   final String author;
   final String? imageUrl;
   final String level;
+  final VoidCallback? onTap; 
 
   const CourseCard({
     super.key,
@@ -22,6 +23,7 @@ class CourseCard extends StatefulWidget {
     required this.author,
     this.imageUrl,
     required this.level,
+    this.onTap, 
   });
 
   @override
@@ -43,15 +45,16 @@ class _CourseCardState extends State<CourseCard> {
       onTapDown: (_) => _setPressed(true),
       onTapUp: (_) => _setPressed(false),
       onTapCancel: () => _setPressed(false),
+      onTap: widget.onTap, 
       child: AnimatedScale(
-        scale: _isPressed ? 0.97 : 1.0, 
+        scale: _isPressed ? 0.97 : 1.0,
         duration: const Duration(milliseconds: 150),
         curve: Curves.easeOut,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
           curve: Curves.easeInOut,
           decoration: BoxDecoration(
-            color: _isPressed ? AppColors.tertiary.withAlpha(80) : Colors.white, 
+            color: _isPressed ? AppColors.tertiary.withAlpha(80) : Colors.white,
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
               color: AppColors.primary.withAlpha(120),
@@ -106,8 +109,7 @@ class _CourseCardState extends State<CourseCard> {
               ),
               Expanded(
                 child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+                  padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -122,17 +124,17 @@ class _CourseCardState extends State<CourseCard> {
                       Text(
                         widget.subtitle,
                         style: AppFont.ralewaySubtitle.copyWith(
-                            fontSize: 12,
-                            color: Colors.grey,
-                            fontWeight: FontWeight.w500),
+                          fontSize: 12,
+                          color: Colors.grey,
+                          fontWeight: FontWeight.w500,
+                        ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 8),
                       Row(
                         children: [
-                          Icon(Icons.timer,
-                              size: 14, color: AppColors.tertiary),
+                          Icon(Icons.timer, size: 14, color: AppColors.tertiary),
                           const SizedBox(width: 4),
                           Text(
                             widget.duration,

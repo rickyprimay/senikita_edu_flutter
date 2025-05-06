@@ -6,6 +6,7 @@ import 'package:widya/res/helpers/duration_formatter.dart';
 import 'package:widya/res/widgets/colors.dart';
 import 'package:widya/res/widgets/fonts.dart';
 import 'package:widya/res/widgets/loading.dart';
+import 'package:widya/utils/routes/routes_names.dart';
 import 'package:widya/view/home/widget/category_slider_widget.dart';
 import 'package:widya/view/home/widget/course_card_widget.dart';
 import 'package:widya/viewModel/course_view_model.dart'; 
@@ -140,7 +141,7 @@ class HomeScreen extends StatelessWidget {
               Expanded(
                 child: Consumer<CourseViewModel>(
                   builder: (context, courseViewModel, child) {
-                    Future<void> _refreshCourses() async {
+                    Future<void> refreshCourses() async {
                       await courseViewModel.fetchCourses();
                     }
 
@@ -149,13 +150,13 @@ class HomeScreen extends StatelessWidget {
                     }
 
                     if (courseViewModel.error != null && (courseViewModel.courses == null || courseViewModel.courses!.isEmpty)) {
-                      return Center(child: Text("Error: ${courseViewModel.error}"));
+                      return Center(child: Text("Error: ${courseViewModel.error}", style: AppFont.ralewayBodyLarge));
                     }
 
                     final courses = courseViewModel.courses;
 
                     return LiquidPullToRefresh(
-                      onRefresh: _refreshCourses,
+                      onRefresh: refreshCourses,
                       showChildOpacityTransition: false,
                       color: AppColors.primary,
                       height: 60,
@@ -194,6 +195,9 @@ class HomeScreen extends StatelessWidget {
                                       author: course.instructor?.name ?? "",
                                       imageUrl: course.thumbnail,
                                       level: course.level,
+                                      onTap: () {
+                                        Navigator.of(context, rootNavigator: true).pushNamed(RouteNames.course, arguments: {'courseId': course.id});
+                                      },
                                     ),
                                     const SizedBox(height: 20),
                                   ],
