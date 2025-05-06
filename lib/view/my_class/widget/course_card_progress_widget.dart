@@ -8,7 +8,8 @@ class CourseCardWithProgress extends StatefulWidget {
   final String duration;
   final String author;
   final String? imageUrl;
-  final double progress; 
+  final double progress;
+  final VoidCallback? onTap; 
 
   const CourseCardWithProgress({
     super.key,
@@ -18,6 +19,7 @@ class CourseCardWithProgress extends StatefulWidget {
     required this.author,
     this.imageUrl,
     required this.progress,
+    this.onTap, 
   });
 
   @override
@@ -39,7 +41,12 @@ class _CourseCardWithProgressState extends State<CourseCardWithProgress> {
 
     return GestureDetector(
       onTapDown: (_) => _setPressed(true),
-      onTapUp: (_) => _setPressed(false),
+      onTapUp: (_) {
+        _setPressed(false);
+        if (widget.onTap != null) {
+          widget.onTap!(); 
+        }
+      },
       onTapCancel: () => _setPressed(false),
       child: AnimatedScale(
         scale: _isPressed ? 0.97 : 1.0,
@@ -116,18 +123,7 @@ class _CourseCardWithProgressState extends State<CourseCardWithProgress> {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      // const SizedBox(height: 6),
-                      // Text(
-                      //   widget.subtitle,
-                      //   style: AppFont.ralewaySubtitle.copyWith(
-                      //     fontSize: 12,
-                      //     color: Colors.grey,
-                      //     fontWeight: FontWeight.w500,
-                      //   ),
-                      //   maxLines: 2,
-                      //   overflow: TextOverflow.ellipsis,
-                      // ),
-                      const SizedBox(height: 4), 
+                      const SizedBox(height: 4),
                       Text(
                         "Mentor Kelas: ${widget.author}",
                         style: AppFont.nunitoSubtitle.copyWith(

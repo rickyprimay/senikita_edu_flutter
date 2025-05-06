@@ -7,16 +7,12 @@ class InfoCardWidget extends StatelessWidget {
   final String title;
   final String label;
   final String value;
-  final String tag;
-  final Color tagColor;
 
   const InfoCardWidget({
     required this.icon,
     required this.title,
     required this.label,
     required this.value,
-    required this.tag,
-    required this.tagColor,
   });
 
   @override
@@ -34,22 +30,22 @@ class InfoCardWidget extends StatelessWidget {
           ),
         ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: AppColors.primary.withAlpha(44),
-                    shape: BoxShape.circle,
+            Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary.withAlpha(44),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(icon, color: AppColors.primary, size: 24),
                   ),
-                  child: Icon(icon, color: AppColors.primary, size: 24),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
+                  const SizedBox(height: 8), // Space between icon and title
+                  Text(
                     title,
                     style: AppFont.crimsonTextSubtitle.copyWith(
                       fontSize: 14,
@@ -57,55 +53,27 @@ class InfoCardWidget extends StatelessWidget {
                       color: Colors.grey[800],
                     ),
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            Text(
-              value,
-              style: AppFont.crimsonTextSubtitle.copyWith(
-                fontSize: 24,
-                fontWeight: FontWeight.w700,
-                color: Colors.black87,
+                ],
               ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 16),
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [tagColor.withAlpha(200), tagColor.withAlpha(255)],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.primary.withAlpha(42),
-                        spreadRadius: 2,
-                        blurRadius: 6,
-                        offset: Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: Text(
-                    tag,
-                    style: AppFont.nunitoSubtitle.copyWith(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.white,
-                    ),
+                Text(
+                  value,
+                  style: AppFont.crimsonTextSubtitle.copyWith(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.customGreen,
                   ),
                 ),
-                const SizedBox(width: 10),
                 Text(
                   label,
-                  style: AppFont.nunitoSubtitle.copyWith(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.grey[700],
+                  style: AppFont.crimsonTextSubtitle.copyWith(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.customRed,
                   ),
                 ),
               ],

@@ -27,6 +27,9 @@ dependencies:
   liquid_pull_refresh: ^1.0.6
   liquid_pull_to_refresh: ^3.0.1
   intl: ^0.20.2
+  infinite_scroll_pagination: ^5.0.0
+  youtube_player_flutter: ^9.1.1
+  android_intent_plus: ^5.3.0
 
 dev_dependencies:
   flutter_test:

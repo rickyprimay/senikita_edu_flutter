@@ -8,5 +8,6 @@ class RouteNames {
   static const String seniKita = "senikita_screen";
   static const String seniKitaEdu = "senikita_edu_screen";
   static const String course = "course_screen";
+  static const String classDetail = "class_detail_screen";
 
 }

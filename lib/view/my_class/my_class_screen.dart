@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:widya/res/helpers/duration_formatter.dart';
+import 'package:widya/utils/routes/routes_names.dart';
 import 'package:widya/view/my_class/widget/course_card_progress_widget.dart';
 import 'package:widya/viewModel/enrollments_view_model.dart';
 import 'package:widya/res/widgets/colors.dart';
@@ -8,67 +9,8 @@ import 'package:widya/res/widgets/fonts.dart';
 import 'package:widya/res/widgets/loading.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 
-class MyClassScreen extends StatefulWidget {
+class MyClassScreen extends StatelessWidget {
   const MyClassScreen({super.key});
-
-  @override
-  State<MyClassScreen> createState() => _MyClassScreenState();
-}
-
-class _MyClassScreenState extends State<MyClassScreen> {
-  late ScrollController _scrollController;
-  int currentPage = 1;
-  bool isLoadingMore = false;
-  bool hasNextPage = true;
-
-  @override
-  void initState() {
-    super.initState();
-    _scrollController = ScrollController();
-    _scrollController.addListener(_onScroll);
-  }
-
-  void _onScroll() {
-    if (!_scrollController.hasClients || isLoadingMore || !hasNextPage) return;
-
-    final threshold = 200.0; // pixels before bottom to trigger load more
-    final maxScroll = _scrollController.position.maxScrollExtent;
-    final currentScroll = _scrollController.position.pixels;
-
-    if (maxScroll - currentScroll <= threshold) {
-      _loadMore();
-    }
-  }
-
-  Future<void> _loadMore() async {
-    final enrollmentsVM = Provider.of<EnrollmentsViewModel>(context, listen: false);
-    final pagination = enrollmentsVM.enrollmentsListResponse?.meta?.pagination;
-
-    if (pagination != null && pagination.links.next != null) {
-      setState(() {
-        isLoadingMore = true;
-      });
-      currentPage = pagination.currentPage + 1;
-      await enrollmentsVM.fetchEnrollments(page: currentPage, append: true);
-
-      // Update hasNextPage status
-      final updatedPagination = enrollmentsVM.enrollmentsListResponse?.meta?.pagination;
-      hasNextPage = updatedPagination?.links.next != null;
-
-      setState(() {
-        isLoadingMore = false;
-      });
-    } else {
-      hasNextPage = false;
-    }
-  }
-
-  @override
-  void dispose() {
-    _scrollController.removeListener(_onScroll);
-    _scrollController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -90,30 +32,33 @@ class _MyClassScreenState extends State<MyClassScreen> {
                   ),
                 ),
                 padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
-                child: Center(
-                  child: Text(
-                    'Kelas Saya',
-                    style: AppFont.crimsonTextSubtitle.copyWith(
-                      color: Colors.white,
-                      fontSize: 20,
+                child: Column(
+                  children: [
+                    Center(
+                      child: Text(
+                        'Kelas Saya',
+                        style: AppFont.crimsonTextSubtitle.copyWith(
+                          color: Colors.white,
+                          fontSize: 20,
+                        ),
+                      ),
                     ),
-                  ),
+                  ],
                 ),
               ),
+              // Content Section
               Expanded(
                 child: Consumer<EnrollmentsViewModel>(
                   builder: (context, enrollmentsViewModel, child) {
                     Future<void> refreshEnrollments() async {
-                      currentPage = 1;
-                      hasNextPage = true;
                       await enrollmentsViewModel.fetchEnrollments();
                     }
 
-                    if (enrollmentsViewModel.loading && enrollmentsViewModel.enrollments.isEmpty) {
+                    if (enrollmentsViewModel.loading && (enrollmentsViewModel.enrollments.isEmpty)) {
                       return Loading(opacity: 0.5);
                     }
 
-                    if (enrollmentsViewModel.error != null && enrollmentsViewModel.enrollments.isEmpty) {
+                    if (enrollmentsViewModel.error != null && (enrollmentsViewModel.enrollments.isEmpty)) {
                       return Center(child: Text("Error: ${enrollmentsViewModel.error}"));
                     }
 
@@ -124,8 +69,8 @@ class _MyClassScreenState extends State<MyClassScreen> {
                       showChildOpacityTransition: true,
                       color: AppColors.primary,
                       height: 60,
-                      backgroundColor: Colors.white,
-                      animSpeedFactor: 2.0,
+                      backgroundColor: Colors.white,     
+                      animSpeedFactor: 2.0,        
                       child: (enrollments.isEmpty)
                           ? ListView(
                               physics: const AlwaysScrollableScrollPhysics(),
@@ -135,26 +80,17 @@ class _MyClassScreenState extends State<MyClassScreen> {
                                   child: Center(
                                     child: Text(
                                       "Tidak ada kelas yang terdaftar.",
-                                      style: AppFont.ralewaySubtitle.copyWith(
-                                          fontSize: 16, fontWeight: FontWeight.w500),
+                                      style: AppFont.ralewaySubtitle.copyWith(fontSize: 16, fontWeight: FontWeight.w500),
                                     ),
                                   ),
                                 ),
                               ],
                             )
                           : ListView.builder(
-                              controller: _scrollController,
                               padding: const EdgeInsets.all(20),
-                              itemCount: enrollments.length + (isLoadingMore ? 1 : 0),
+                              itemCount: enrollments.length,
                               physics: const AlwaysScrollableScrollPhysics(),
                               itemBuilder: (context, index) {
-                                if (index == enrollments.length) {
-                                  return const Padding(
-                                    padding: EdgeInsets.symmetric(vertical: 16),
-                                    child: Center(child: CircularProgressIndicator()),
-                                  );
-                                }
-
                                 final enrollment = enrollments[index];
 
                                 return Column(
@@ -163,9 +99,12 @@ class _MyClassScreenState extends State<MyClassScreen> {
                                       title: enrollment.course.title,
                                       subtitle: enrollment.course.description,
                                       duration: formatDuration(enrollment.course.duration),
-                                      author: enrollment.course.instructor?.name ?? "",
+                                      author: enrollment.course.instructor?.name ?? "", 
                                       imageUrl: enrollment.course.thumbnail,
                                       progress: 0.22,
+                                      onTap: () {
+                                        Navigator.of(context, rootNavigator: true).pushNamed(RouteNames.classDetail);
+                                      },
                                     ),
                                     const SizedBox(height: 16),
                                   ],

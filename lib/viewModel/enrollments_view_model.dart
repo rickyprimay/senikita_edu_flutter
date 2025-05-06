@@ -23,46 +23,33 @@ class EnrollmentsViewModel extends ChangeNotifier {
     return _enrollmentsListResponse?.data ?? [];
   }
 
-  int _currentPage = 1;
-  bool _hasNextPage = true;
-  bool _isFetchingMore = false;
-
-  int get currentPage => _currentPage;
-  bool get hasNextPage => _hasNextPage;
-  bool get isFetchingMore => _isFetchingMore;
-
-  Future<void> fetchEnrollments({int? page, bool append = false}) async {
-  final sp = await SharedPrefs.instance;
-  final String? token = sp.getString("auth_token");
-
-  _loading = !append; // kalau append, jangan tampilkan loading utama
-  notifyListeners();
-
-  try {
-    final response = await _enrollmentsRepository.fetchEnrollments(page: page, token: token ?? "");
-
-    if (response != null) {
-      final newListResponse = EnrollmentsListResponse.fromJson(response);
-      
-      if (append && _enrollmentsListResponse != null) {
-        // Append data
-        _enrollmentsListResponse!.data.addAll(newListResponse.data);
-        _enrollmentsListResponse!.meta = newListResponse.meta;
-      } else {
-        _enrollmentsListResponse = newListResponse;
-      }
-
-      _error = '';
-    } else {
-      _error = 'Data not found or empty.';
-    }
-  } catch (e) {
-    _error = 'Failed to load data: $e';
-  } finally {
-    _loading = false;
+  Future<void> fetchEnrollments({int? page}) async {
+    final sp = await SharedPrefs.instance;
+    final String? token = sp.getString("auth_token");
+    
+    _loading = true;
     notifyListeners();
+    try {
+      final response = await _enrollmentsRepository.fetchEnrollments(page: page, token: token ?? "");
+
+      if (response != null) {
+        try {
+          _enrollmentsListResponse = EnrollmentsListResponse.fromJson(response);
+          _error = ''; 
+        } catch (e) {
+          _error = 'Failed to parse response';
+
+        }
+      } else {
+        _error = 'Data not found or empty.';
+      }
+    } catch (e) {
+      _error = 'Failed to load data: $e';
+    } finally {
+      _loading = false;
+      notifyListeners();
+    }
   }
-}
 
   Future<void> postEnrollments({required int courseId, required BuildContext context}) async {
     final sp = await SharedPrefs.instance;
@@ -99,5 +86,4 @@ class EnrollmentsViewModel extends ChangeNotifier {
       notifyListeners();
     }
   }
-
 }

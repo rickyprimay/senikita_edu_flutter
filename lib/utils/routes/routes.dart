@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 import 'package:widya/res/widgets/discover_list.dart';
 import 'package:widya/utils/routes/routes_names.dart';
+import 'package:widya/view/class_detail/class_detail_screen.dart';
 import 'package:widya/view/course/course_screen.dart';
 import 'package:widya/view/discover/discover_screen.dart';
 import 'package:widya/view/home/home_screen.dart';
@@ -51,6 +52,8 @@ class Routes {
             categoryName: categoryName,
           ),
         );
+      case (RouteNames.classDetail):
+        return MaterialPageRoute(builder: (BuildContext context) => const ClassDetailScreen());
       default:
         return MaterialPageRoute(
           builder: (_) => const Scaffold(

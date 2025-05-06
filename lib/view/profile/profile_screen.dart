@@ -120,10 +120,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             child: InfoCardWidget(
                               title: "Kelas dimiliki",
                               icon: Icons.library_books,
-                              label: "Belum selesai",
+                              label: "4 Belum selesai",
                               value: "2 Sudah selesai",
-                              tag: "4",
-                              tagColor: AppColors.customRed,
                             ),
                           ),
                         ],
