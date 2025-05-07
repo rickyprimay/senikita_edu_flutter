@@ -454,7 +454,7 @@ class _CourseScreenState extends State<CourseScreen> {
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
-                                  "Video - $courseDetail.duration}",
+                                  "Video - ${courseDetail.duration}",
                                   style: AppFont.ralewaySubtitle.copyWith(
                                     fontSize: 12,
                                     fontWeight: FontWeight.w400,
