@@ -46,7 +46,7 @@ class AppUrls {
   static String getEnrollments = "$baseUrl/enrollments";
 
   static String getenrollmentsMore({int? page}) {
-    String url = "$baseUrl/courses";
+    String url = "$baseUrl/enrollments";
     
     if (page != null) {
       url += "?page=$page";

@@ -8,7 +8,7 @@ class CourseCardWithProgress extends StatefulWidget {
   final String duration;
   final String author;
   final String? imageUrl;
-  final double progress;
+  final int progress;
   final VoidCallback? onTap; 
 
   const CourseCardWithProgress({
@@ -136,7 +136,7 @@ class _CourseCardWithProgressState extends State<CourseCardWithProgress> {
                       ),
                       const SizedBox(height: 10),
                       LinearProgressIndicator(
-                        value: widget.progress,
+                        value: widget.progress / 100,
                         color: AppColors.tertiary,
                         backgroundColor: Colors.grey[200],
                         minHeight: 6,

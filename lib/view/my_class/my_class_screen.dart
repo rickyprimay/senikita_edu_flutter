@@ -144,7 +144,7 @@ class _MyClassScreenState extends State<MyClassScreen> {
                                       duration: enrollment.course.duration,
                                       author: enrollment.course.instructor.name,
                                       imageUrl: enrollment.course.thumbnail,
-                                      progress: 0.22,
+                                      progress: enrollment.completionStats?.completionPercentage ?? 0,
                                       onTap: () {
                                         Navigator.of(context, rootNavigator: true).pushNamed(RouteNames.classDetail);
                                       },

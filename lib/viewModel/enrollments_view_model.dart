@@ -61,6 +61,7 @@ class EnrollmentsViewModel extends ChangeNotifier {
     if (_loading) return;
     final sp = await SharedPrefs.instance;
     final String? token = sp.getString("auth_token");
+    AppLogger.logInfo("url: ${AppUrls.getenrollmentsMore(page: _currentPage + 1)}");
 
     _loading = true;
     notifyListeners();
