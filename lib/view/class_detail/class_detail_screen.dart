@@ -1,3 +1,4 @@
+// Tambahkan import ini kalau belum ada
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:widya/res/widgets/loading.dart';
@@ -29,6 +30,9 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> {
   YoutubePlayerController? _youtubeController;
   bool _isContentLoading = false;
   bool _isChatOpen = false;
+
+  // Tambahkan list untuk simpan selected lectures
+  final List<int> _selectedLectureIndices = [];
 
   @override
   void initState() {
@@ -63,7 +67,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> {
         flags: const YoutubePlayerFlags(autoPlay: false, mute: false),
       );
     } else {
-      _youtubeController = null; 
+      _youtubeController = null;
     }
   }
 
@@ -99,14 +103,14 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> {
 
   void _openChat() async {
     setState(() {
-      _isChatOpen = true; 
+      _isChatOpen = true;
     });
 
     showChatPopUp(context);
 
     if (mounted) {
       setState(() {
-        _isChatOpen = false; 
+        _isChatOpen = false;
       });
     }
   }
@@ -137,7 +141,6 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> {
           body: SafeArea(
             child: Consumer<LessonViewModel>(
               builder: (context, viewModel, child) {
-
                 if (viewModel.error != null) {
                   return Center(child: Text('Error: ${viewModel.error}'));
                 }
@@ -150,136 +153,157 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> {
                 final selectedLesson = lessons[_selectedIndex ?? 0];
 
                 return _isChatOpen
-                ? const Center(
-                    child: Text(
-                      'Chat sedang aktif.\nKonten kelas dijeda sementara.',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 16, color: Colors.grey),
-                    ),
-                  )
-                : Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _isContentLoading
-                        ? Text("")
-                        : selectedLesson.type == 'lesson' && selectedLesson.videoUrl != null && _youtubeController != null
-                            ? YoutubePlayer(
-                                controller: _youtubeController!,
-                                showVideoProgressIndicator: true,
-                                progressIndicatorColor: AppColors.primary,
-                              )
-                            : selectedLesson.type == 'lesson'
-                                ? Expanded(
-                                    child: SingleChildScrollView(
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(16.0),
-                                        child: Text(
-                                          selectedLesson.content ?? '',
+                    ? const Center(
+                        child: Text(
+                          'Chat sedang aktif.\nKonten kelas dijeda sementara.',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 16, color: Colors.grey),
+                        ),
+                      )
+                    : Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _isContentLoading
+                              ? Text("")
+                              : selectedLesson.type == 'lesson' &&
+                                      selectedLesson.videoUrl != null &&
+                                      _youtubeController != null
+                                  ? YoutubePlayer(
+                                      controller: _youtubeController!,
+                                      showVideoProgressIndicator: true,
+                                      progressIndicatorColor: AppColors.primary,
+                                    )
+                                  : selectedLesson.type == 'lesson'
+                                      ? Expanded(
+                                          child: SingleChildScrollView(
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(16.0),
+                                              child: Text(
+                                                selectedLesson.content ?? '',
+                                                style: AppFont.ralewaySubtitle.copyWith(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w400,
+                                                  color: Colors.black,
+                                                ),
+                                                textAlign: TextAlign.justify,
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      : Container(),
+
+                          Container(
+                            padding: const EdgeInsets.all(16),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(widget.courseName,
+                                    style: AppFont.crimsonTextHeader.copyWith(
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.black,
+                                    )),
+                                const SizedBox(height: 4),
+                                Text(widget.courseDescription,
+                                    style: AppFont.ralewayHeader.copyWith(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w400,
+                                      color: Colors.grey,
+                                    )),
+                              ],
+                            ),
+                          ),
+
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  padding: const EdgeInsets.symmetric(vertical: 12),
+                                  decoration: const BoxDecoration(
+                                    border: Border(
+                                      bottom: BorderSide(color: AppColors.primary, width: 2),
+                                    ),
+                                  ),
+                                  child: Text('Materi',
+                                      style: AppFont.crimsonTextHeader.copyWith(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.black,
+                                      )),
+                                ),
+                              ),
+                              Expanded(
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  padding: const EdgeInsets.symmetric(vertical: 12),
+                                  child: Text('Selengkapnya',
+                                      style: AppFont.crimsonTextHeader.copyWith(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.grey,
+                                      )),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const Divider(color: Colors.grey, height: 1),
+
+                          Expanded(
+                            child: ListView.builder(
+                              itemCount: lessons.length,
+                              itemBuilder: (context, index) {
+                                final lesson = lessons[index];
+                                final isSelected = _selectedIndex == index;
+                                final isSelectedLecture = _selectedLectureIndices.contains(index);
+
+                                return AnimatedContainer(
+                                  duration: const Duration(milliseconds: 200),
+                                  color: isSelected ? AppColors.primary.withAlpha(55) : Colors.transparent,
+                                  child: InkWell(
+                                    onTap: () => _updateSelectedContent(index),
+                                    splashColor: AppColors.primary.withAlpha(44),
+                                    highlightColor: AppColors.primary.withAlpha(22),
+                                    child: ListTile(
+                                      leading: IconButton(
+                                        icon: Icon(
+                                          isSelectedLecture
+                                              ? Icons.check_circle_outline
+                                              : Icons.circle_outlined,
+                                          color: AppColors.primary,
+                                        ),
+                                        onPressed: () {
+                                          setState(() {
+                                            if (isSelectedLecture) {
+                                              _selectedLectureIndices.remove(index);
+                                            } else {
+                                              _selectedLectureIndices.add(index);
+                                            }
+                                          });
+                                        },
+                                      ),
+                                      title: Text(lesson.title ?? '',
                                           style: AppFont.ralewaySubtitle.copyWith(
                                             fontSize: 16,
-                                            fontWeight: FontWeight.w400,
+                                            fontWeight: FontWeight.w500,
                                             color: Colors.black,
-                                          ),
-                                          textAlign: TextAlign.justify,
+                                          )),
+                                      subtitle: Text(
+                                        'Video ${lesson.duration != null ? ' - ${lesson.duration} menit' : ''}',
+                                        style: AppFont.nunitoSubtitle.copyWith(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.grey,
                                         ),
                                       ),
                                     ),
-                                  )
-                                : Container(),
-
-                    Container(
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(widget.courseName,
-                              style: AppFont.crimsonTextHeader.copyWith(
-                                fontSize: 22,
-                                fontWeight: FontWeight.w700,
-                                color: Colors.black,
-                              )),
-                          const SizedBox(height: 4),
-                          Text(widget.courseDescription,
-                              style: AppFont.ralewayHeader.copyWith(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w400,
-                                color: Colors.grey,
-                              )),
-                        ],
-                      ),
-                    ),
-
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            alignment: Alignment.center,
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                            decoration: const BoxDecoration(
-                              border: Border(
-                                bottom: BorderSide(color: AppColors.primary, width: 2),
-                              ),
-                            ),
-                            child: Text('Materi',
-                                style: AppFont.crimsonTextHeader.copyWith(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.black,
-                                )),
-                          ),
-                        ),
-                        Expanded(
-                          child: Container(
-                            alignment: Alignment.center,
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                            child: Text('Selengkapnya',
-                                style: AppFont.crimsonTextHeader.copyWith(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.grey,
-                                )),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const Divider(color: Colors.grey, height: 1),
-
-                    Expanded(
-                      child: ListView.builder(
-                        itemCount: lessons.length,
-                        itemBuilder: (context, index) {
-                          final lesson = lessons[index];
-                          final isSelected = _selectedIndex == index;
-                          return AnimatedContainer(
-                            duration: const Duration(milliseconds: 200),
-                            color: isSelected ? AppColors.primary.withAlpha(55) : Colors.transparent,
-                            child: InkWell(
-                              onTap: () => _updateSelectedContent(index),
-                              splashColor: AppColors.primary.withAlpha(44),
-                              highlightColor: AppColors.primary.withAlpha(22),
-                              child: ListTile(
-                                title: Text(lesson.title ?? '',
-                                    style: AppFont.ralewaySubtitle.copyWith(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.black,
-                                    )),
-                                subtitle: Text(
-                                  'Video ${lesson.duration != null ? ' - ${lesson.duration} menit' : ''}',
-                                  style: AppFont.nunitoSubtitle.copyWith(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.grey,
                                   ),
-                                ),
-                              ),
+                                );
+                              },
                             ),
-                          );
-                        },
-                      ),
-                    ),
-                  ],
-                );
+                          ),
+                        ],
+                      );
               },
             ),
           ),
