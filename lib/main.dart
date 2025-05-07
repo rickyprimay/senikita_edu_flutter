@@ -33,6 +33,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => CategoryViewModel()),
         ChangeNotifierProvider(create: (_) => CategoryProvider()),
         ChangeNotifierProvider(create: (_) => CourseViewModel()),
+        ChangeNotifierProvider(create: (_) => CourseViewModel()..fetchCourses()),
         ChangeNotifierProvider(create: (_) => LoginProvider()),
         ChangeNotifierProvider(create: (_) => EnrollmentsViewModel()),
         ChangeNotifierProvider(create: (_) => LessonViewModel()),

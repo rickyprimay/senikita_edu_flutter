@@ -6,7 +6,7 @@ class AppUrls {
 
   static const getCategory = "$baseUrl/categories";
 
-  static String getCourse({int? categoryId, String? search}) {
+  static String getCourse({int? categoryId, String? search, int? page}) {
     String url = "$baseUrl/courses";
     
     List<String> queryParameters = [];
@@ -19,8 +19,21 @@ class AppUrls {
       queryParameters.add("search=$search");
     }
 
+    if (page != null) {
+      queryParameters.add("?page=$page");
+    }
+
     if (queryParameters.isNotEmpty) {
       url += "?${queryParameters.join('&')}";
+    }
+    return url;
+  }
+
+  static String getCourseMore({int? page}) {
+    String url = "$baseUrl/courses";
+    
+    if (page != null) {
+      url += "?page=$page";
     }
 
     return url;
@@ -36,5 +49,6 @@ class AppUrls {
   static String getCourseLessons(int courseId) {
     return "$baseUrl/course/lessons/$courseId";
   }
+
 
 }

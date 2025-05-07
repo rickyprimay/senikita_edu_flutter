@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:widya/res/helpers/duration_formatter.dart';
 import 'package:widya/utils/routes/routes_names.dart';
 import 'package:widya/view/my_class/widget/course_card_progress_widget.dart';
 import 'package:widya/viewModel/enrollments_view_model.dart';
@@ -122,7 +121,7 @@ class MyClassScreen extends StatelessWidget {
                                       title: enrollment.course.title,
                                       subtitle: enrollment.course.description,
                                       duration: enrollment.course.duration,
-                                      author: enrollment.course.instructor?.name ?? "", 
+                                      author: enrollment.course.instructor.name, 
                                       imageUrl: enrollment.course.thumbnail,
                                       progress: 0.22,
                                       onTap: () {

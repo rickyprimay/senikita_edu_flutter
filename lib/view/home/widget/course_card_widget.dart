@@ -3,7 +3,6 @@ import 'package:widya/res/widgets/colors.dart';
 import 'package:widya/res/widgets/fonts.dart';
 
 class CourseCard extends StatefulWidget {
-  final Color color;
   final String title;
   final String subtitle;
   final String duration;
@@ -15,7 +14,6 @@ class CourseCard extends StatefulWidget {
 
   const CourseCard({
     super.key,
-    required this.color,
     required this.title,
     required this.subtitle,
     required this.duration,
@@ -77,7 +75,6 @@ class _CourseCardState extends State<CourseCard> {
                 height: 80,
                 margin: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: widget.color,
                   borderRadius: BorderRadius.circular(15),
                   border: Border.all(
                     color: AppColors.primary.withAlpha(120),

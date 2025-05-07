@@ -22,7 +22,13 @@ class CourseViewModel with ChangeNotifier {
   Course? _courseDetail;
   Course? get courseDetail => _courseDetail;
 
-  Future<void> fetchCourses({int? categoryId}) async {
+  int _currentPage = 1;
+  int get currentPage => _currentPage;
+
+  bool _hasMore = true;
+  bool get hasMore => _hasMore;
+
+  Future<void> fetchCourses({int? categoryId, int? page}) async {
     final sp = await SharedPrefs.instance;
     final String? token = sp.getString("auth_token");
     _loading = true;
@@ -30,7 +36,7 @@ class CourseViewModel with ChangeNotifier {
     notifyListeners();  
 
     try {
-      final response = await _courseRepository.fetchCourse(categoryId: categoryId);
+      final response = await _courseRepository.fetchCourse(categoryId: categoryId, page: page);
       AppLogger.logInfo('Token: $token');
       
       final courseListResponse = CourseListResponse.fromJson(response);
@@ -43,6 +49,34 @@ class CourseViewModel with ChangeNotifier {
       _loading = false;
       _error = e.toString();
       notifyListeners();  
+    }
+  }
+
+  Future<void> appendNewCourses() async {
+    if (_loading) return;
+
+    _loading = true;
+    notifyListeners();
+
+    try {
+      final nextPage = _currentPage + 1;
+      final response = await _courseRepository.fetchMoreCourse(page: nextPage);
+      final courseListResponse = CourseListResponse.fromJson(response);
+
+      if (courseListResponse.data.isNotEmpty) {
+        _courses = [...?_courses, ...courseListResponse.data];
+        _currentPage = nextPage;
+      } else {
+        _hasMore = false;
+      }
+
+      _loading = false;
+      notifyListeners();
+    } catch (e) {
+      _loading = false;
+      _error = e.toString();
+      AppLogger.logError("appendNewCourses error: $e");
+      notifyListeners();
     }
   }
 
@@ -67,6 +101,11 @@ class CourseViewModel with ChangeNotifier {
       _error = e.toString();
       notifyListeners();
     }
+  }
+
+  Future<void> resetCourses() async {
+  _currentPage = 1;
+    await fetchCourses(page: 1);
   }
 
 }

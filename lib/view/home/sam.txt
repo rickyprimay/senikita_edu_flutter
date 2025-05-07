@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:provider/provider.dart';
+import 'package:widya/models/course/course_model.dart';
 import 'package:widya/res/widgets/colors.dart';
 import 'package:widya/res/widgets/fonts.dart';
 import 'package:widya/res/widgets/loading.dart';
@@ -19,7 +21,12 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
 
-  final controller = ScrollController();
+  final CourseViewModel courseViewModel = CourseViewModel();
+
+  late final PagingController<int, Course> _pagingController = PagingController<int, Course>(
+    getNextPageKey: (state) => (state.keys?.last ?? 0 ) + 1,
+    fetchPage: (pageKey) => courseViewModel.fetchCoursesForPaging(page: pageKey),
+  );
 
   String? _name;
   String? _photo;
@@ -40,25 +47,15 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _loadUserData();
-
-    controller.addListener(() {
-      if (controller.position.maxScrollExtent == controller.offset) {
-        final courseViewModel = Provider.of<CourseViewModel>(context, listen: false);
-        courseViewModel.appendNewCourses();
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return 
-      Scaffold(
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => CourseViewModel()..fetchCourses()),
+      ],
+      child: Scaffold(
         backgroundColor: const Color(0xFFF5F5F5),
         body: SafeArea(
           top: false,
@@ -172,9 +169,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Consumer<CourseViewModel>(
                   builder: (context, courseViewModel, child) {
                     Future<void> refreshCourses() async {
-                      final courseViewModel = Provider.of<CourseViewModel>(context, listen: false);
-                      await courseViewModel.resetCourses();
+                      await courseViewModel.fetchCourses();
                     }
+
                     if (courseViewModel.loading && (courseViewModel.courses == null || courseViewModel.courses!.isEmpty)) {
                       return Loading(opacity: 0.5);
                     }
@@ -230,51 +227,43 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                               ],
                             )
-                          : ListView.builder(
-                              controller: controller,
-                              padding: const EdgeInsets.all(20),
-                              itemCount: courses.length + (courseViewModel.hasMore ? 1 : 0),
-                              physics: const AlwaysScrollableScrollPhysics(),
-                              itemBuilder: (context, index) {
-                                if (index < courses.length) {
-                                  final course = courses[index];
-
-                                  return Column(
-                                    children: [
-                                      CourseCard(
-                                        title: course.title,
-                                        subtitle: course.description,
-                                        duration: course.duration,
-                                        icon: Icons.music_note,
-                                        author: course.instructor.name,
-                                        imageUrl: course.thumbnail,
-                                        level: course.level,
-                                        onTap: () {
-                                          Navigator.of(context, rootNavigator: true).pushNamed(
-                                            RouteNames.course,
-                                            arguments: {
-                                              'courseId': course.id,
-                                              'instructorName': course.instructor.name,
-                                              'categoryName': course.category.join(', '), 
+                          : PagingListener(
+                              controller: _pagingController,
+                              builder: (context, state, fetchNextPage) => Padding(
+                                padding: const EdgeInsets.all(20), 
+                                child: PagedListView<int, Course>(
+                                  state: state,
+                                  fetchNextPage: fetchNextPage,
+                                  builderDelegate: PagedChildBuilderDelegate<Course>(
+                                    itemBuilder: (context, item, index) {
+                                      return Column(
+                                        children: [
+                                          CourseCard(
+                                            title: item.title,
+                                            subtitle: item.description,
+                                            duration: item.duration,
+                                            icon: Icons.music_note,
+                                            author: item.instructor.name,
+                                            imageUrl: item.thumbnail,
+                                            level: item.level,
+                                            onTap: () {
+                                              Navigator.of(context, rootNavigator: true).pushNamed(
+                                                RouteNames.course,
+                                                arguments: {
+                                                  'courseId': item.id,
+                                                  'instructorName': item.instructor.name,
+                                                  'categoryName': item.category.join(', '),
+                                                },
+                                              );
                                             },
-                                          );
-                                        },
-                                      ),
-                                      const SizedBox(height: 20),
-                                    ],
-                                  );
-
-                                } else {
-                                  return Padding(
-                                    padding: const EdgeInsets.symmetric(vertical: 32),
-                                    child: Center(
-                                      child: courseViewModel.hasMore 
-                                        ? const CircularProgressIndicator()
-                                        : const Text("Semua data sudah dimuat"),
-                                    ),
-                                  );
-                                }
-                              },
+                                          ),
+                                          const SizedBox(height: 20),
+                                        ],
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ),
                             ),
                     );
                   },
@@ -283,6 +272,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
         ),
-      );
+      ),
+    );
   }
 }

@@ -64,8 +64,8 @@ class _SeniKitaEduScreenState extends State<SeniKitaEduScreen> {
               color: Colors.white,
             ),
             onPressed: () => setState(() {
-                  _launched = _launchInBrowser(toLaunch);
-                }),
+              _launched = _launchInBrowser(toLaunch);
+            }),
           ),
         ],
       ),
