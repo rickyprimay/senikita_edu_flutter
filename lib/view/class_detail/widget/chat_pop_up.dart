@@ -1,10 +1,24 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:widya/res/widgets/colors.dart';
 import 'package:widya/res/widgets/fonts.dart';
+import 'package:widya/viewModel/in_class_view_model.dart';
+import 'package:widya/res/widgets/logger.dart';
+import 'package:flutter_gemini/flutter_gemini.dart';
 
 final TextEditingController _chatController = TextEditingController();
 
+class ChatMessage {
+  final String text;
+  final bool isUser;
+
+  ChatMessage({required this.text, required this.isUser});
+}
+
 void showChatPopUp(BuildContext context) {
+  final inClassViewModel = InClassViewModel();
+
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
@@ -18,87 +32,242 @@ void showChatPopUp(BuildContext context) {
         minChildSize: 0.4,
         maxChildSize: 0.9,
         builder: (context, scrollController) {
-          return Column(
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                child: Text(
-                  'Chat dengan WiChat',
-                  style: AppFont.crimsonTextHeader.copyWith(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
-              const Divider(height: 1),
-              Expanded(
-                child: ListView.builder(
-                  controller: scrollController,
-                  itemCount: 1,
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                      leading: const CircleAvatar(
-                        backgroundImage: AssetImage('assets/common/chatbot.png'),
-                      ),
-                      title: Text(
-                        'WiChat',
-                        style: AppFont.ralewaySubtitle.copyWith(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black,
-                        ),
-                      ),
-                      subtitle: Text(
-                        'Halo, aku WiChat, asisten virtualmu. Apa yang bisa aku bantu hari ini?',
-                        style: AppFont.nunitoSubtitle.copyWith(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400,
-                          color: Colors.grey,
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-              const Divider(height: 1),
-              Padding(
-                padding: MediaQuery.of(context).viewInsets.add(
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                    ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        controller: _chatController,
-                        decoration: InputDecoration(
-                          hintText: 'Ketik pesan...',
-                          hintStyle: AppFont.ralewaySubtitle.copyWith(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.grey,
-                          ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 8,
-                          ),
-                        ),
-                      ),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.send, color: AppColors.primary),
-                      onPressed: () {},
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          );
+          return _ChatBody(viewModel: inClassViewModel);
         },
       );
     },
   );
+}
+
+class _ChatBody extends StatefulWidget {
+  final InClassViewModel viewModel;
+  const _ChatBody({required this.viewModel});
+
+  @override
+  State<_ChatBody> createState() => _ChatBodyState();
+}
+
+class _ChatBodyState extends State<_ChatBody> {
+  final List<ChatMessage> _messages = [
+    ChatMessage(
+      text: 'Halo, aku WiChat, asisten virtualmu. Apa yang bisa aku bantu hari ini?',
+      isUser: false,
+    ),
+  ];
+
+  bool _isSending = false;
+  final Gemini _gemini = Gemini.instance;
+  String? _userPhotoUrl; 
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserPhoto();
+  }
+
+  Future<void> _loadUserPhoto() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _userPhotoUrl = prefs.getString('user_photo');
+    });
+  }
+
+  void _sendMessage() async {
+    FocusScope.of(context).unfocus();
+    final text = _chatController.text.trim();
+    if (text.isNotEmpty) {
+      setState(() {
+        _messages.add(ChatMessage(text: text, isUser: true));
+        _messages.add(ChatMessage(text: 'Loading...', isUser: false));
+        _chatController.clear();
+        _isSending = true;
+      });
+
+      final String userMessageWithPrompt = '$systemPrompt\n\n$text';
+
+      try {
+        final response = await _gemini.text(userMessageWithPrompt);
+        if (response?.output != null) {
+          setState(() {
+            _messages.removeLast();
+            _messages.add(ChatMessage(text: response!.output!, isUser: false));
+          });
+        } else {
+          setState(() {
+            _messages.removeLast();
+            _messages.add(ChatMessage(text: 'Maaf, ada masalah dalam memproses pesan.', isUser: false));
+          });
+          AppLogger.logError('Gemini response output is null');
+        }
+      } catch (e) {
+        setState(() {
+          _messages.removeLast();
+          _messages.add(ChatMessage(text: 'Terjadi kesalahan: $e', isUser: false));
+        });
+        AppLogger.logError('Error sending message to Gemini: $e');
+      } finally {
+        setState(() {
+          _isSending = false;
+        });
+      }
+    }
+  }
+
+  final String systemPrompt = (
+    "Kamu adalah asisten AI di platform Widya bernama WiChat, bagian dari SeniKita, yang mendampingi pengguna dalam mempelajari seni "
+    "seperti musik, tari, dan kriya. Tugasmu adalah menjawab pertanyaan pengguna dengan cara yang menyenangkan, sabar, dan mendukung. "
+    "Berikan penjelasan yang jelas, mudah dipahami, dan sebisa mungkin bantu langsung di dalam platform, tanpa menyarankan mereka untuk mencari bantuan di luar platform seperti guru privat atau kursus lainnya."
+  );
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Container(
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          child: Text(
+            'Chat dengan WiChat',
+            style: AppFont.crimsonTextHeader.copyWith(
+              fontSize: 18,
+              fontWeight: FontWeight.w700,
+              color: Colors.black,
+            ),
+          ),
+        ),
+        const Divider(height: 1),
+        Expanded(
+          child: ListView.builder(
+            padding: const EdgeInsets.all(12),
+            itemCount: _messages.length,
+            itemBuilder: (context, index) {
+              final message = _messages[index];
+              final isUser = message.isUser;
+
+              final bubbleColor = isUser
+                  ? AppColors.primary.withOpacity(0.8)
+                  : message.text == 'Loading...'
+                      ? Colors.grey.shade400
+                      : Colors.grey.shade300;
+              final textColor = isUser ? Colors.white : Colors.black;
+
+              final avatar = isUser
+                  ? (_userPhotoUrl != null && _userPhotoUrl!.isNotEmpty
+                      ? NetworkImage(_userPhotoUrl!)
+                      : const AssetImage('assets/common/default_user.png'))
+                  : const AssetImage('assets/common/chatbot.png');
+
+              return Row(
+                mainAxisAlignment: isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (!isUser) ...[
+                    CircleAvatar(
+                      backgroundImage: avatar as ImageProvider,
+                      radius: 16,
+                    ),
+                    const SizedBox(width: 8),
+                  ],
+                  Flexible(
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(vertical: 4),
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: bubbleColor,
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: message.text == 'Loading...'
+                          ? const LoadingDots()
+                          : Text(
+                              message.text,
+                              style: AppFont.nunitoSubtitle.copyWith(
+                                color: textColor,
+                                fontSize: 14,
+                              ),
+                            ),
+                    ),
+                  ),
+                  if (isUser) ...[
+                    const SizedBox(width: 8),
+                    CircleAvatar(
+                      backgroundImage: avatar as ImageProvider,
+                      radius: 16,
+                    ),
+                  ],
+                ],
+              );
+            },
+          ),
+        ),
+        const Divider(height: 1),
+        Padding(
+          padding: MediaQuery.of(context).viewInsets.add(const EdgeInsets.symmetric(horizontal: 8, vertical: 8)),
+          child: Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: _chatController,
+                  decoration: InputDecoration(
+                    hintText: 'Ketik pesan...',
+                    hintStyle: AppFont.ralewaySubtitle.copyWith(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.grey,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  ),
+                ),
+              ),
+              IconButton(
+                icon: Icon(Icons.send, color: _isSending ? Colors.grey : AppColors.primary),
+                onPressed: _isSending ? null : _sendMessage,
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class LoadingDots extends StatefulWidget {
+  const LoadingDots({super.key});
+
+  @override
+  _LoadingDotsState createState() => _LoadingDotsState();
+}
+
+class _LoadingDotsState extends State<LoadingDots> {
+  late final Timer _timer;
+  int _dotCount = 1;
+
+  @override
+  void initState() {
+    super.initState();
+    _timer = Timer.periodic(const Duration(milliseconds: 500), (timer) {
+      setState(() {
+        _dotCount = (_dotCount % 3) + 1; 
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    String dots = '.' * _dotCount;
+    return Text(
+      'Loading$dots',
+      style: AppFont.nunitoSubtitle.copyWith(
+        color: Colors.black,
+        fontSize: 14,
+      ),
+    );
+  }
 }

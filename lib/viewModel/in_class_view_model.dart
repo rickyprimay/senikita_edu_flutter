@@ -11,39 +11,107 @@ class InClassViewModel {
     "Berikan penjelasan yang jelas, mudah dipahami, dan sebisa mungkin bantu langsung di dalam platform, tanpa menyarankan mereka untuk mencari bantuan di luar platform seperti guru privat atau kursus lainnya."
   );
 
-  Future<void> generateContent(String userInput) async {
-    final url = Uri.parse("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=$geminiApiKey");
+  final String geminiEndpoint = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
 
-    final body = json.encode({
-      "model": "gemini-2.0-flash",
-      "messages": [
+  Future<void> generateContent(String userInput) async {
+    final uri = Uri.parse('$geminiEndpoint?key=$geminiApiKey');
+
+    final Map<String, dynamic> requestBody = {
+      "contents": [
         {
           "role": "system",
-          "content": systemPrompt,
+          "parts": [
+            {"text": systemPrompt}
+          ]
         },
         {
           "role": "user",
-          "content": userInput,
+          "parts": [
+            {"text": userInput}
+          ]
         }
       ]
-    });
+    };
 
     try {
       final response = await http.post(
-        url,
-        headers: {'Content-Type': 'application/json'},
-        body: body,
+        uri,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(requestBody),
       );
 
       if (response.statusCode == 200) {
-        final responseBody = json.decode(response.body);
-        String generatedContent = responseBody['choices'][0]['message']['content'];
-        AppLogger.logDebug("Generated Content: $generatedContent");
+        final data = jsonDecode(response.body);
+        final candidates = data['candidates'] as List<dynamic>?;
+
+        if (candidates != null && candidates.isNotEmpty) {
+          final content = candidates[0]['content'];
+          final parts = content['parts'] as List<dynamic>?;
+          final generatedText = parts != null && parts.isNotEmpty ? parts[0]['text'] : null;
+
+          if (generatedText != null) {
+            AppLogger.logInfo('Generated response: $generatedText');
+          } else {
+            AppLogger.logError('No text content generated.');
+          }
+        } else {
+          AppLogger.logError('No candidates returned.');
+        }
       } else {
-        AppLogger.logError("Failed to generate content: ${response.statusCode}");
+        AppLogger.logError('Request failed: ${response.statusCode} ${response.reasonPhrase}');
+        AppLogger.logError('Response body: ${response.body}');
       }
-    } catch (error) {
-      AppLogger.logError("Error: $error");
+    } catch (e) {
+      AppLogger.logError('Error during API call: $e');
     }
   }
+  Future<String?> generateContentAndReturnResponse(String userInput) async {
+  final uri = Uri.parse('$geminiEndpoint?key=$geminiApiKey');
+
+  final Map<String, dynamic> requestBody = {
+    "contents": [
+      {
+        "role": "system",
+        "parts": [
+          {"text": systemPrompt}
+        ]
+      },
+      {
+        "role": "user",
+        "parts": [
+          {"text": userInput}
+        ]
+      }
+    ]
+  };
+
+  try {
+    final response = await http.post(
+      uri,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(requestBody),
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      final candidates = data['candidates'] as List<dynamic>?;
+
+      if (candidates != null && candidates.isNotEmpty) {
+        final content = candidates[0]['content'];
+        final parts = content['parts'] as List<dynamic>?;
+        final generatedText = parts != null && parts.isNotEmpty ? parts[0]['text'] : null;
+        return generatedText;
+      }
+    } else {
+      AppLogger.logError('Request failed: ${response.statusCode} ${response.reasonPhrase}');
+      AppLogger.logError('Response body: ${response.body}');
+    }
+  } catch (e) {
+    AppLogger.logError('Error during API call: $e');
+  }
+  return null;
+}
+
 }

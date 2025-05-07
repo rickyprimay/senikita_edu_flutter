@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:widya/res/widgets/loading.dart';
 import 'package:widya/view/class_detail/widget/chat_pop_up.dart';
-import 'package:widya/viewModel/in_class_view_model.dart';
 import 'package:widya/viewModel/lesson_view_model.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:widya/res/widgets/colors.dart';
@@ -28,7 +27,8 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> {
   late LessonViewModel lessonViewModel;
   int? _selectedIndex;
   YoutubePlayerController? _youtubeController;
-  bool _isContentLoading = false; // Untuk transisi loading saat ganti video/materi
+  bool _isContentLoading = false;
+  bool _isChatOpen = false;
 
   @override
   void initState() {
@@ -56,14 +56,14 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> {
 
   void _initializeYoutubeController(String? videoUrl) {
     final videoId = YoutubePlayer.convertUrlToId(videoUrl ?? '');
-    _youtubeController?.dispose(); // Dispose controller lama
+    _youtubeController?.dispose();
     if (videoId != null && videoId.isNotEmpty) {
       _youtubeController = YoutubePlayerController(
         initialVideoId: videoId,
         flags: const YoutubePlayerFlags(autoPlay: false, mute: false),
       );
     } else {
-      _youtubeController = null; // Jika bukan video, null-kan controller
+      _youtubeController = null; 
     }
   }
 
@@ -83,7 +83,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> {
       _youtubeController = null;
     }
 
-    await Future.delayed(const Duration(milliseconds: 300)); // Efek transisi halus
+    await Future.delayed(const Duration(milliseconds: 300));
     if (mounted) {
       setState(() {
         _isContentLoading = false;
@@ -97,8 +97,18 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> {
     super.dispose();
   }
 
-  void _openChat() {
+  void _openChat() async {
+    setState(() {
+      _isChatOpen = true; 
+    });
+
     showChatPopUp(context);
+
+    if (mounted) {
+      setState(() {
+        _isChatOpen = false; 
+      });
+    }
   }
 
   @override
@@ -127,9 +137,6 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> {
           body: SafeArea(
             child: Consumer<LessonViewModel>(
               builder: (context, viewModel, child) {
-                if (viewModel.loading) {
-                  return const Center(child: CircularProgressIndicator());
-                }
 
                 if (viewModel.error != null) {
                   return Center(child: Text('Error: ${viewModel.error}'));
@@ -142,11 +149,19 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> {
 
                 final selectedLesson = lessons[_selectedIndex ?? 0];
 
-                return Column(
+                return _isChatOpen
+                ? const Center(
+                    child: Text(
+                      'Chat sedang aktif.\nKonten kelas dijeda sementara.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 16, color: Colors.grey),
+                    ),
+                  )
+                : Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _isContentLoading
-                        ? const Center(child: CircularProgressIndicator())
+                        ? Text("")
                         : selectedLesson.type == 'lesson' && selectedLesson.videoUrl != null && _youtubeController != null
                             ? YoutubePlayer(
                                 controller: _youtubeController!,
@@ -172,7 +187,6 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> {
                                   )
                                 : Container(),
 
-                    // Course info
                     Container(
                       padding: const EdgeInsets.all(16),
                       child: Column(
@@ -195,7 +209,6 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> {
                       ),
                     ),
 
-                    // Materi tab
                     Row(
                       children: [
                         Expanded(
@@ -231,7 +244,6 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> {
                     ),
                     const Divider(color: Colors.grey, height: 1),
 
-                    // Daftar Materi List
                     Expanded(
                       child: ListView.builder(
                         itemCount: lessons.length,
@@ -278,7 +290,6 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> {
           ),
         ),
 
-        // Optional Loading overlay (biar halus saat fetch/ganti content)
         if (_isContentLoading) const Loading(opacity: 0.5),
       ],
     );
