@@ -233,7 +233,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           : ListView.builder(
                               controller: controller,
                               padding: const EdgeInsets.all(20),
-                              itemCount: courses.length + (courseViewModel.hasMore ? 1 : 0),
+                              itemCount: courses.length + 1,
                               physics: const AlwaysScrollableScrollPhysics(),
                               itemBuilder: (context, index) {
                                 if (index < courses.length) {

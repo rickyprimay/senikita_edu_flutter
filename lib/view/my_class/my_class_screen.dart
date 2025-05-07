@@ -130,7 +130,7 @@ class _MyClassScreenState extends State<MyClassScreen> {
                         : ListView.builder(
                             controller: controller,
                             padding: const EdgeInsets.all(20),
-                            itemCount: enrollments.length,
+                            itemCount: enrollments.length + 1,
                             physics: const AlwaysScrollableScrollPhysics(),
                             itemBuilder: (context, index) {
                               if (index < enrollments.length) {
