@@ -8,6 +8,7 @@ import 'package:widya/res/widgets/loading.dart';
 import 'package:widya/res/widgets/logger.dart';
 import 'package:widya/viewModel/course_view_model.dart';
 import 'package:widya/viewModel/enrollments_view_model.dart';
+import 'package:widya/viewModel/lesson_view_model.dart';
 
 class CourseScreen extends StatefulWidget {
   final int courseId;
@@ -38,6 +39,7 @@ class _CourseScreenState extends State<CourseScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final viewModel = Provider.of<CourseViewModel>(context, listen: false);
       Provider.of<EnrollmentsViewModel>(context, listen: false);
+      Provider.of<LessonViewModel>(context, listen: false).fetchLessonByCourseId(widget.courseId);
       viewModel.fetchCourseDetail(widget.courseId);
     });
   }
@@ -52,6 +54,7 @@ class _CourseScreenState extends State<CourseScreen> {
   Widget build(BuildContext context) {
     final viewModel = context.watch<CourseViewModel>();
     final enrollmentsViewModel = context.watch<EnrollmentsViewModel>(); 
+    final lessonViewModel = context.watch<LessonViewModel>();
     final courseDetail = viewModel.courseDetail;
 
     return Stack(
@@ -435,48 +438,53 @@ class _CourseScreenState extends State<CourseScreen> {
                   ],
                 ),
                 Column(
-                  children: List.generate(
-                    4,
-                    (index) => Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8, horizontal:8),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '${index + 1}.',
-                            style: AppFont.ralewaySubtitle.copyWith(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Materi awalan untuk memulai menjadi penari ${index + 1}",
-                                  style: AppFont.ralewaySubtitle.copyWith(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w400,
+                  children: lessonViewModel.lessons != null
+                      ? List.generate(
+                          lessonViewModel.lessons!.length,
+                          (index) {
+                            final lesson = lessonViewModel.lessons![index];
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '${index + 1}.',
+                                    style: AppFont.ralewaySubtitle.copyWith(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                    ),
                                   ),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  "Video - ${courseDetail.duration}",
-                                  style: AppFont.ralewaySubtitle.copyWith(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w400,
-                                    color: Colors.grey,
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          lesson.title, 
+                                          style: AppFont.ralewaySubtitle.copyWith(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          "Video - ${lesson.duration} Menit",
+                                          style: AppFont.ralewaySubtitle.copyWith(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w400,
+                                            color: Colors.grey,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        )
+                      : [], 
                 ),
                 const SizedBox(height: 8),
                 Text(
@@ -598,6 +606,70 @@ class _CourseScreenState extends State<CourseScreen> {
                     ),
                   ],
                 ),
+                const SizedBox(height: 8),
+                Text(
+                  "Pengajar",
+                  style: AppFont.ralewaySubtitle.copyWith(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  "Pengajar Kelas ini adalah ${widget.instructorName}",
+                  style: AppFont.ralewaySubtitle.copyWith(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.secondary,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Row(
+                  children: [
+                    Container(
+                      width: 100,
+                      height: 100,
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: AppColors.primary, 
+                          width: 1,
+                        ),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: Image.network(
+                          courseDetail.instructor.photo ?? 'https://eduapi.senikita.my.id/storage/defaultpic.png',
+                          width: 100,
+                          height: 100,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) => Container(
+                            width: 100,
+                            height: 100,
+                            color: Colors.grey,
+                            child: const Icon(
+                              Icons.error,
+                              color: Colors.white,
+                              size: 40,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        courseDetail.instructor.expertise ?? '',
+                        style: AppFont.ralewaySubtitle.copyWith(
+                          fontSize: 14,
+                          color: Colors.black,
+                        ),
+                        maxLines: 10,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                )
               ],
             ),
           );

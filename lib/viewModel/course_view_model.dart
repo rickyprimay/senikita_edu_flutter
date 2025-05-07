@@ -4,9 +4,11 @@ import 'package:widya/models/course/course_model.dart';
 import 'package:widya/repository/course_repository.dart';
 import 'package:widya/res/widgets/logger.dart';
 import 'package:widya/res/widgets/shared_preferences.dart';
+import 'package:widya/viewModel/lesson_view_model.dart';
 
 class CourseViewModel with ChangeNotifier {
   final CourseRepository _courseRepository = CourseRepository();
+  final LessonViewModel lessonViewModel = LessonViewModel();
 
   bool _loading = false;  
   bool get loading => _loading;
@@ -29,7 +31,6 @@ class CourseViewModel with ChangeNotifier {
 
     try {
       final response = await _courseRepository.fetchCourse(categoryId: categoryId);
-      AppLogger.logInfo('📥 Course Response: $response');
       AppLogger.logInfo('Token: $token');
       
       final courseListResponse = CourseListResponse.fromJson(response);
@@ -38,9 +39,7 @@ class CourseViewModel with ChangeNotifier {
 
       _loading = false;
       notifyListeners();
-      AppLogger.logInfo('📥 Course List: ${_courses?.length} courses loaded');
     } catch (e) {
-      AppLogger.logError('Error fetching courses: $e');
       _loading = false;
       _error = e.toString();
       notifyListeners();  
@@ -54,17 +53,16 @@ class CourseViewModel with ChangeNotifier {
 
     try {
       final response = await _courseRepository.fetchCourseDetail(courseId);
-      AppLogger.logInfo('📥 Course Detail Response: $response');
 
       final courseDetailResponse = Course.fromJson(response['data']);
       
       _courseDetail = courseDetailResponse;
+      lessonViewModel.fetchLessonByCourseId(courseId);
 
       _loading = false;
       notifyListeners();
-      AppLogger.logInfo('📥 Course Detail: ${_courseDetail?.title}');
+      
     } catch (e) {
-      AppLogger.logError('Error fetching course detail: $e');
       _loading = false;
       _error = e.toString();
       notifyListeners();

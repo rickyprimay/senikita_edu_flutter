@@ -30,7 +30,11 @@ class AppUrls {
     return "$baseUrl/courses/$courseId";
   }
 
-  static String getEnrollments = "$baseUrl/enrollments?limit=2";
+  static String getEnrollments = "$baseUrl/enrollments";
   static String postEnrollments = "$baseUrl/enrollments";
+
+  static String getCourseLessons(int courseId) {
+    return "$baseUrl/course/lessons/$courseId";
+  }
 
 }
