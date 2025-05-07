@@ -53,7 +53,14 @@ class Routes {
           ),
         );
       case (RouteNames.classDetail):
-        return MaterialPageRoute(builder: (BuildContext context) => const ClassDetailScreen());
+        final args = settings.arguments as Map<String, dynamic>;
+        final courseId = args['courseId'] as int;
+
+        return MaterialPageRoute( 
+          builder: (BuildContext context) => ClassDetailScreen(
+            courseId: courseId,
+          )
+        );
       default:
         return MaterialPageRoute(
           builder: (_) => const Scaffold(

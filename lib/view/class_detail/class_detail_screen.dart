@@ -7,14 +7,19 @@ import 'package:widya/res/widgets/colors.dart';
 import 'package:widya/res/widgets/fonts.dart';
 
 class ClassDetailScreen extends StatefulWidget {
-  const ClassDetailScreen({super.key});
+  final int courseId;
+
+  const ClassDetailScreen({
+    super.key,
+    required this.courseId,
+  });
 
   @override
   State<ClassDetailScreen> createState() => _ClassDetailScreenState();
 }
 
 class _ClassDetailScreenState extends State<ClassDetailScreen> {
-  final LessonViewModel viewModel = LessonViewModel();
+  final LessonViewModel lessonViewModel = LessonViewModel();
   final List<Map<String, dynamic>> lectures = [
     {
       'title': 'Teknik Fingerpicking Lanjutan',
@@ -56,6 +61,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> {
   @override
   void initState() {
     super.initState();
+    lessonViewModel.fetchLessonByCourseId(widget.courseId);
 
     _selectedIndex = 0;
     final firstLecture = lectures[0];

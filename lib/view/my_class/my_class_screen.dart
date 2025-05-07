@@ -146,7 +146,12 @@ class _MyClassScreenState extends State<MyClassScreen> {
                                       imageUrl: enrollment.course.thumbnail,
                                       progress: enrollment.completionStats?.completionPercentage ?? 0,
                                       onTap: () {
-                                        Navigator.of(context, rootNavigator: true).pushNamed(RouteNames.classDetail);
+                                        Navigator.of(context, rootNavigator: true).pushNamed(
+                                          RouteNames.classDetail,
+                                          arguments: {
+                                            'courseId': enrollment.course.id,
+                                          },
+                                        );
                                       },
                                     ),
                                     const SizedBox(height: 16),

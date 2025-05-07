@@ -4,6 +4,7 @@ import 'package:widya/models/lessons/lesson_list.dart';
 import 'package:widya/repository/lesson_repository.dart';
 import 'package:widya/res/widgets/app_urls.dart';
 import 'package:widya/res/widgets/logger.dart';
+import 'package:widya/res/widgets/shared_preferences.dart';
 
 class LessonViewModel with ChangeNotifier {
   final LessonRepository _lessonRepository = LessonRepository();
@@ -18,6 +19,8 @@ class LessonViewModel with ChangeNotifier {
   List<Lesson>? get lessons => _lessons;
 
   Future<void> fetchLessonByCourseId(int courseId) async {
+    final sp = await SharedPrefs.instance;
+    final String? token = sp.getString("auth_token");
     _loading = true;
     _error = null; 
     notifyListeners();  
@@ -25,7 +28,8 @@ class LessonViewModel with ChangeNotifier {
     AppLogger.logInfo("url: $url");
 
     try {
-      final response = await _lessonRepository.getCourseLessons(courseId);
+      final response = await _lessonRepository.getCourseLessons(courseId, token ?? "");
+      AppLogger.logInfo("response: $response");
 
       final lessonListResponse = LessonList.fromJson(response);
 

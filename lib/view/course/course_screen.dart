@@ -461,7 +461,7 @@ class _CourseScreenState extends State<CourseScreen> {
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          lesson.title, 
+                                          lesson.title?? "", 
                                           style: AppFont.ralewaySubtitle.copyWith(
                                             fontSize: 14,
                                             fontWeight: FontWeight.w400,
