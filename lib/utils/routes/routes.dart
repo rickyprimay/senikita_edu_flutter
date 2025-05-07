@@ -55,10 +55,14 @@ class Routes {
       case (RouteNames.classDetail):
         final args = settings.arguments as Map<String, dynamic>;
         final courseId = args['courseId'] as int;
+        final courseName = args['courseName'] as String;
+        final courseDescription = args['courseDescription'] as String;
 
         return MaterialPageRoute( 
           builder: (BuildContext context) => ClassDetailScreen(
             courseId: courseId,
+            courseName: courseName,
+            courseDescription: courseDescription,
           )
         );
       default:

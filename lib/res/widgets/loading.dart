@@ -45,7 +45,7 @@ class _LoadingState extends State<Loading> with SingleTickerProviderStateMixin {
     final int alpha = (widget.opacity * 255).round();
     
     return Scaffold(
-      backgroundColor: Colors.white.withOpacity(widget.opacity),
+      backgroundColor: Colors.white.withAlpha(alpha),
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,

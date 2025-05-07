@@ -150,6 +150,8 @@ class _MyClassScreenState extends State<MyClassScreen> {
                                           RouteNames.classDetail,
                                           arguments: {
                                             'courseId': enrollment.course.id,
+                                            'courseName': enrollment.course.title,
+                                            'courseDescription': enrollment.course.description,
                                           },
                                         );
                                       },

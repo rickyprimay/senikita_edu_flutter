@@ -35,7 +35,7 @@ void showChatPopUp(BuildContext context) {
               Expanded(
                 child: ListView.builder(
                   controller: scrollController,
-                  itemCount: 1, // You can expand this later
+                  itemCount: 1,
                   itemBuilder: (context, index) {
                     return ListTile(
                       leading: const CircleAvatar(
