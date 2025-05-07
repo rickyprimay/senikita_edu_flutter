@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:widya/models/enrollments/enrollments_model.dart';
 import 'package:widya/models/enrollments/enrollments_list_model.dart';
 import 'package:widya/repository/enrollments_repository.dart';
-import 'package:widya/res/widgets/app_urls.dart';
-import 'package:widya/res/widgets/logger.dart';
 import 'package:widya/res/widgets/shared_preferences.dart';
 import 'package:widya/utils/utils.dart';
 
@@ -61,7 +59,6 @@ class EnrollmentsViewModel extends ChangeNotifier {
     if (_loading) return;
     final sp = await SharedPrefs.instance;
     final String? token = sp.getString("auth_token");
-    AppLogger.logInfo("url: ${AppUrls.getenrollmentsMore(page: _currentPage + 1)}");
 
     _loading = true;
     notifyListeners();
@@ -85,7 +82,6 @@ class EnrollmentsViewModel extends ChangeNotifier {
     } catch (e) {
       _loading = false;
       _error = e.toString();
-      AppLogger.logError("appendNewEnrollments error: $e");
       notifyListeners();
     }
   }
@@ -98,12 +94,10 @@ class EnrollmentsViewModel extends ChangeNotifier {
       "course_id": courseId,
     };
 
-    AppLogger.logInfo("Data being sent: $data");
 
     _loading = true;
     notifyListeners();
 
-    AppLogger.logInfo("url: ${AppUrls.postEnrollments}");
     final response = await _enrollmentsRepository.postEnrollments(
         token: token ?? "",
         courseId: courseId,
