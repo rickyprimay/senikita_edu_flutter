@@ -23,6 +23,12 @@ class EnrollmentsViewModel extends ChangeNotifier {
     return _enrollmentsListResponse?.data ?? [];
   }
 
+  int _currentPage = 1;
+  int get currentPage => _currentPage;
+
+  bool _hasMore = true;
+  bool get hasMore => _hasMore;
+
   Future<void> fetchEnrollments({int? page}) async {
     final sp = await SharedPrefs.instance;
     final String? token = sp.getString("auth_token");
@@ -35,22 +41,50 @@ class EnrollmentsViewModel extends ChangeNotifier {
       if (response != null) {
         try {
           _enrollmentsListResponse = EnrollmentsListResponse.fromJson(response);
-          AppLogger.logInfo("enrollments: ${_enrollmentsListResponse?.data}");
           _error = null; 
         } catch (e) {
-          AppLogger.logError("Failed to parse enrollments response: $e");
           _error = 'Failed to parse response';
 
         }
       } else {
         _error = 'Data not found or empty.';
-        AppLogger.logError("enrollments: $_error");
       }
     } catch (e) {
       _error = 'Failed to load data: $e';
-      AppLogger.logError("enrollments: $_error");
     } finally {
       _loading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> appendNewEnrollments() async {
+    if (_loading) return;
+    final sp = await SharedPrefs.instance;
+    final String? token = sp.getString("auth_token");
+
+    _loading = true;
+    notifyListeners();
+
+    try {
+      final nextPage = _currentPage + 1;
+      final response = await _enrollmentsRepository.fetchMoreEnrollments(token: token ?? "", page: nextPage);
+      final enrollmentsListResponse = EnrollmentsListResponse.fromJson(response);
+
+      if (enrollmentsListResponse.data.isNotEmpty) {
+        _enrollmentsListResponse = EnrollmentsListResponse(
+          data: [...?_enrollmentsListResponse?.data, ...enrollmentsListResponse.data],
+        );
+        _currentPage = nextPage;
+      } else {
+        _hasMore = false;
+      }
+
+      _loading = false;
+      notifyListeners();
+    } catch (e) {
+      _loading = false;
+      _error = e.toString();
+      AppLogger.logError("appendNewEnrollments error: $e");
       notifyListeners();
     }
   }

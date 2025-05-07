@@ -44,11 +44,21 @@ class AppUrls {
   }
 
   static String getEnrollments = "$baseUrl/enrollments";
+
+  static String getenrollmentsMore({int? page}) {
+    String url = "$baseUrl/courses";
+    
+    if (page != null) {
+      url += "?page=$page";
+    }
+
+    return url;
+  }
+
   static String postEnrollments = "$baseUrl/enrollments";
 
   static String getCourseLessons(int courseId) {
     return "$baseUrl/course/lessons/$courseId";
   }
-
 
 }
