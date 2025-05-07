@@ -37,7 +37,7 @@ class _CourseScreenState extends State<CourseScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final viewModel = Provider.of<CourseViewModel>(context, listen: false);
-      final enrollmentsViewModel = Provider.of<EnrollmentsViewModel>(context, listen: false);
+      Provider.of<EnrollmentsViewModel>(context, listen: false);
       viewModel.fetchCourseDetail(widget.courseId);
     });
   }
@@ -152,6 +152,15 @@ class _CourseScreenState extends State<CourseScreen> {
                       fontWeight: FontWeight.w600,
                       color: Colors.white,
                     ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  "Telah di ikuti oleh ${courseDetail.enrolledCount} peserta",
+                  style: AppFont.ralewaySubtitle.copyWith(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.secondary,
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -400,7 +409,7 @@ class _CourseScreenState extends State<CourseScreen> {
                 Row(
                   children: [
                     Text(
-                      "4",
+                      "${courseDetail.lessonsCount}",
                       style: AppFont.nunitoFootnoteLarge.copyWith(
                         fontSize: 14,
                         fontWeight: FontWeight.w500,

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:provider/provider.dart';
 import 'package:widya/provider/home_provider.dart';
-import 'package:widya/res/helpers/duration_formatter.dart';
 import 'package:widya/res/widgets/colors.dart';
 import 'package:widya/res/widgets/fonts.dart';
 import 'package:widya/res/widgets/loading.dart';
@@ -105,7 +104,7 @@ class HomeScreen extends StatelessWidget {
                             borderRadius: BorderRadius.circular(15),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.1),
+                                color: Colors.black.withAlpha(22),
                                 blurRadius: 6,
                                 offset: const Offset(0, 3),
                               ),
@@ -215,7 +214,7 @@ class HomeScreen extends StatelessWidget {
                                       subtitle: course.description,
                                       duration: course.duration,
                                       icon: Icons.music_note,
-                                      author: course.instructor?.name ?? "",
+                                      author: course.instructor.name,
                                       imageUrl: course.thumbnail,
                                       level: course.level,
                                       onTap: () {
