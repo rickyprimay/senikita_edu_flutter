@@ -126,4 +126,9 @@ class EnrollmentsViewModel extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  Future<void> resetEnrollments() async {
+    _currentPage = 1;
+    await fetchEnrollments(page: 1);
+  }
 }

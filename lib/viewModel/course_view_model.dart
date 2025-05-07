@@ -104,7 +104,7 @@ class CourseViewModel with ChangeNotifier {
   }
 
   Future<void> resetCourses() async {
-  _currentPage = 1;
+    _currentPage = 1;
     await fetchCourses(page: 1);
   }
 

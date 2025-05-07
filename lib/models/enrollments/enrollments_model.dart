@@ -1,4 +1,5 @@
 import 'package:widya/models/course/course_model.dart';
+import 'package:widya/models/enrollments/completion_stats.dart';
 
 class Enrollments {
   int id;
@@ -7,6 +8,7 @@ class Enrollments {
   String status;
   String? completedAt;
   String createdAt;
+  CompletionStats? completionStats;
   Course course;
 
   Enrollments({
@@ -16,6 +18,7 @@ class Enrollments {
     required this.status,
     this.completedAt,
     required this.createdAt,
+    this.completionStats,
     required this.course,
   });
 
@@ -27,6 +30,7 @@ class Enrollments {
       status: json['status'],
       completedAt: json['completed_at'],
       createdAt: json['created_at'],
+      completionStats: json['completion_stats'] != null ? CompletionStats.fromJson(json['completion_stats']) : null,
       course: Course.fromJson(json['course']),
     );
   }
