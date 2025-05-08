@@ -8,7 +8,7 @@ class CourseCardWithProgress extends StatefulWidget {
   final String duration;
   final String author;
   final String? imageUrl;
-  final int progress;
+  final double progress;
   final VoidCallback? onTap; 
 
   const CourseCardWithProgress({
@@ -37,7 +37,7 @@ class _CourseCardWithProgressState extends State<CourseCardWithProgress> {
 
   @override
   Widget build(BuildContext context) {
-    final percentage = (widget.progress * 100).toStringAsFixed(0);
+    final percentage = (widget.progress).toStringAsFixed(0);
 
     return GestureDetector(
       onTapDown: (_) => _setPressed(true),

@@ -45,15 +45,19 @@ class EnrollmentsViewModel extends ChangeNotifier {
         try {
           _enrollmentsListResponse = EnrollmentsListResponse.fromJson(response);
           _error = null; 
+          AppLogger.logInfo("Response: ${response.toString()}");
         } catch (e) {
           _error = 'Failed to parse response';
+          AppLogger.logError("Error parsing enrollments: $e");
 
         }
       } else {
         _error = 'Data not found or empty.';
+        AppLogger.logError("Error: Data not found or empty.");
       }
     } catch (e) {
       _error = 'Failed to load data: $e';
+      AppLogger.logError("Error fetching enrollments: $e");
     } finally {
       _loading = false;
       notifyListeners();
@@ -63,26 +67,15 @@ class EnrollmentsViewModel extends ChangeNotifier {
   Future<void> fetchTotalEnrollments() async {
     final sp = await SharedPrefs.instance;
     final String? token = sp.getString("auth_token");
-
-    _loading = true;
-    notifyListeners();
-
     try {
       final response = await _enrollmentsRepository.fetchTotalEnrollments(token ?? "");
-      AppLogger.logInfo('Total Enrollments: $response');
       if (response != null) {
-        _totalEnrollments = ListTotalEnrollments.fromJson(response);
-        _error = null; 
-      } else {
-        _error = 'Data not found or empty.';
-        AppLogger.logError('Data not found or empty.');
+        _totalEnrollments = ListTotalEnrollments.fromJson(response.data);
+        _error = null;
+        notifyListeners();
       }
     } catch (e) {
-      _error = 'Failed to load data: $e';
-      AppLogger.logError('Failed to load data: $e');
-    } finally {
-      _loading = false;
-      notifyListeners();
+      _error = 'Error: $e';
     }
   }
  

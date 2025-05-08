@@ -26,7 +26,7 @@ class ClassDetailScreen extends StatefulWidget {
   State<ClassDetailScreen> createState() => _ClassDetailScreenState();
 }
 
-class _ClassDetailScreenState extends State<ClassDetailScreen> {
+class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProviderStateMixin {
   late LessonViewModel lessonViewModel;
   int? _selectedIndex;
   YoutubePlayerController? _youtubeController;
@@ -35,11 +35,14 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> {
 
   final List<int> _selectedLectureIndices = [];
 
+  late TabController _tabController;
+
   @override
   void initState() {
     super.initState();
     lessonViewModel = Provider.of<LessonViewModel>(context, listen: false);
     _fetchLessons();
+    _tabController = TabController(length: 2, vsync: this);
   }
 
   void _fetchLessons() async {
@@ -99,6 +102,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> {
   @override
   void dispose() {
     _youtubeController?.dispose();
+    _tabController.dispose();
     super.dispose();
   }
 
@@ -117,7 +121,6 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> {
   }
 
   void quickAlertShow(int index) {
-    final isSelectedLecture = _selectedLectureIndices.contains(index);
 
     QuickAlert.show(
       context: context,

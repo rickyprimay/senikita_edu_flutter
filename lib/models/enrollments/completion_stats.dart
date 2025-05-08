@@ -1,7 +1,7 @@
 class CompletionStats {
   final int totalLessons;
   final int completedLessons;
-  final int completionPercentage;
+  final double completionPercentage;
 
   CompletionStats({
     required this.totalLessons,
@@ -13,7 +13,9 @@ class CompletionStats {
     return CompletionStats(
       totalLessons: json['total_lessons'] as int,
       completedLessons: json['completed_lessons'] as int,
-      completionPercentage: json['completion_percentage'] as int,
+      completionPercentage: (json['completion_percentage'] is int)
+          ? (json['completion_percentage'] as int).toDouble()
+          : json['completion_percentage'] as double,
     );
   }
 
