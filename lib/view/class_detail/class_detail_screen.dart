@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
+import 'package:widya/models/lessons/lesson.dart';
 import 'package:widya/res/widgets/loading.dart';
 import 'package:widya/utils/utils.dart';
 import 'package:widya/view/class_detail/widget/chat_pop_up.dart';
@@ -163,6 +164,62 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
     );
   }
 
+  Widget moreInfo(Lesson selectedLesson) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 12.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 8),
+          Text(
+            selectedLesson.title ?? '',  
+            style: AppFont.crimsonTextSubtitle.copyWith(
+              fontSize: 20,
+              fontWeight: FontWeight.w500,
+              color: AppColors.primary,
+            ),
+            textAlign: TextAlign.justify,
+          ),
+          const SizedBox(height: 2),
+          Row(
+            children: [
+              const Icon(Icons.access_time, size: 14, color: AppColors.primary),
+              const SizedBox(width: 4),
+              Text(
+                'Durasi ${selectedLesson.duration ?? '30 menit'} Menit',  // Use lesson duration
+                style: AppFont.nunitoSubtitle.copyWith(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400,
+                  color: AppColors.secondary,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Text(
+            selectedLesson.description ?? 'Pada kesempatan kali ini kita akan belajar pergerakan tangan', // Use lesson description
+            style: AppFont.ralewaySubtitle.copyWith(
+              fontSize: 14,
+              fontWeight: FontWeight.w400,
+              color: AppColors.secondary,
+            ),
+            textAlign: TextAlign.justify,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Isi Konten : ',
+            style: AppFont.ralewaySubtitle.copyWith(
+              fontSize: 12,
+              fontWeight: FontWeight.w400,
+              color: AppColors.secondary,
+            ),
+            textAlign: TextAlign.justify,
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -204,6 +261,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
                     ),
                   );
                 }
+
                 final lessons = viewModel.lessons;
                 if (lessons == null || lessons.isEmpty) {
                   return Center(
@@ -285,96 +343,104 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
                             ),
                           ),
 
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  alignment: Alignment.center,
-                                  padding: const EdgeInsets.symmetric(vertical: 12),
-                                  decoration: const BoxDecoration(
-                                    border: Border(
-                                      bottom: BorderSide(color: AppColors.primary, width: 2),
+                          // TabBar Section
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: TabBar(
+                              controller: _tabController,
+                              indicatorColor: AppColors.primary,
+                              labelColor: Colors.black,
+                              unselectedLabelColor: Colors.grey,
+                              tabs: [
+                                Tab(
+                                  child: Text(
+                                    'Materi',
+                                    style: AppFont.crimsonTextHeader.copyWith(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w700,
                                     ),
                                   ),
-                                  child: Text('Materi',
-                                      style: AppFont.crimsonTextHeader.copyWith(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w700,
-                                        color: Colors.black,
-                                      )),
                                 ),
-                              ),
-                              Expanded(
-                                child: Container(
-                                  alignment: Alignment.center,
-                                  padding: const EdgeInsets.symmetric(vertical: 12),
-                                  child: Text('Selengkapnya',
-                                      style: AppFont.crimsonTextHeader.copyWith(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.grey,
-                                      )),
+                                Tab(
+                                  child: Text(
+                                    'Selengkapnya',
+                                    style: AppFont.crimsonTextHeader.copyWith(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
+
                           const Divider(color: Colors.grey, height: 1),
 
+                          // TabBarView Section
                           Expanded(
-                            child: ListView.builder(
-                              itemCount: lessons.length,
-                              itemBuilder: (context, index) {
-                                final lesson = lessons[index];
-                                final isSelected = _selectedIndex == index;
-                                final isSelectedLecture = _selectedLectureIndices.contains(index);
+                            child: TabBarView(
+                              controller: _tabController,
+                              children: [
+                                // "Materi" Tab content
+                                ListView.builder(
+                                  itemCount: lessons.length,
+                                  itemBuilder: (context, index) {
+                                    final lesson = lessons[index];
+                                    final isSelected = _selectedIndex == index;
+                                    final isSelectedLecture = _selectedLectureIndices.contains(index);
 
-                                return AnimatedContainer(
-                                  duration: const Duration(milliseconds: 200),
-                                  color: isSelected ? AppColors.primary.withAlpha(55) : Colors.transparent,
-                                  child: InkWell(
-                                    onTap: () {
-                                      if (_selectedIndex != index) {
-                                        _updateSelectedContent(index);
-                                      }
-                                    },
-                                    splashColor: AppColors.primary.withAlpha(44),
-                                    highlightColor: AppColors.primary.withAlpha(22),
-                                    child: ListTile(
-                                      leading: (lesson.isCompleted ?? false) || isSelectedLecture
-                                      ? Icon(Icons.check_circle, color: AppColors.primary)
-                                      : IconButton(
-                                          icon: Icon(
-                                            isSelectedLecture
-                                                ? Icons.check_circle_outline
-                                                : Icons.circle_outlined,
-                                            color: AppColors.primary,
-                                          ),
-                                          onPressed: () {
-                                            if (index == _selectedIndex) {
-                                              quickAlertShow(index);
-                                            } else {
-                                              Utils.showToastification("Gagal", "Selesaikan hanya bisa diakses di sesi yang sedang dipelajari", false, context);
-                                            }
+                                    return AnimatedContainer(
+                                      duration: const Duration(milliseconds: 200),
+                                      color: isSelected ? AppColors.primary.withAlpha(55) : Colors.transparent,
+                                      child: InkWell(
+                                        onTap: () {
+                                          if (_selectedIndex != index) {
+                                            _updateSelectedContent(index);
                                           }
-                                        ),
-                                      title: Text(lesson.title ?? '',
-                                          style: AppFont.ralewaySubtitle.copyWith(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w500,
-                                            color: Colors.black,
-                                          )),
-                                      subtitle: Text(
-                                        'Video ${lesson.duration != null ? ' - ${lesson.duration} menit' : ''}',
-                                        style: AppFont.nunitoSubtitle.copyWith(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w500,
-                                          color: Colors.grey,
+                                        },
+                                        splashColor: AppColors.primary.withAlpha(44),
+                                        highlightColor: AppColors.primary.withAlpha(22),
+                                        child: ListTile(
+                                          leading: (lesson.isCompleted ?? false) || isSelectedLecture
+                                          ? Icon(Icons.check_circle, color: AppColors.primary)
+                                          : IconButton(
+                                              icon: Icon(
+                                                isSelectedLecture
+                                                    ? Icons.check_circle_outline
+                                                    : Icons.circle_outlined,
+                                                color: AppColors.primary,
+                                              ),
+                                              onPressed: () {
+                                                if (index == _selectedIndex) {
+                                                  quickAlertShow(index);
+                                                } else {
+                                                  Utils.showToastification("Gagal", "Selesaikan hanya bisa diakses di sesi yang sedang dipelajari", false, context);
+                                                }
+                                              }
+                                            ),
+                                          title: Text(lesson.title ?? '',
+                                              style: AppFont.ralewaySubtitle.copyWith(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w500,
+                                                color: Colors.black,
+                                              )),
+                                          subtitle: Text(
+                                            'Video ${lesson.duration != null ? ' - ${lesson.duration} menit' : ''}',
+                                            style: AppFont.nunitoSubtitle.copyWith(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w500,
+                                              color: Colors.grey,
+                                            ),
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  ),
-                                );
-                              },
+                                    );
+                                  },
+                                ),
+
+                                // "Selengkapnya" Tab content
+                                moreInfo(selectedLesson),
+                              ],
                             ),
                           ),
                         ],
