@@ -7,6 +7,7 @@ import 'package:widya/view/profile/widget/profile_info_tile_widget.dart';
 import 'package:widya/viewModel/auth_view_model.dart';
 import 'package:quickalert/quickalert.dart';
 import 'package:widya/view/profile/widget/info_card_widget.dart';
+import 'package:widya/viewModel/enrollments_view_model.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -17,6 +18,7 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   final authVM = AuthViewModel();
+  EnrollmentsViewModel enrollmentsViewModel = EnrollmentsViewModel();
 
   String? name;
   String? photo;
@@ -26,6 +28,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     super.initState();
     _loadUserData();
+    enrollmentsViewModel.fetchTotalEnrollments();
   }
 
   Future<void> _loadUserData() async {
@@ -120,8 +123,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             child: InfoCardWidget(
                               title: "Kelas dimiliki",
                               icon: Icons.library_books,
-                              label: "4 Belum selesai",
-                              value: "2 Sudah selesai",
+                              label: "${enrollmentsViewModel.totalEnrollments?.data.totalCourse} Belum selesai",
+                              value: "${enrollmentsViewModel.totalEnrollments?.data.totalCourseCompleted} Sudah selesai",
                             ),
                           ),
                         ],
