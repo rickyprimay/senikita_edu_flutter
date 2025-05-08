@@ -16,7 +16,7 @@ class ChatMessage {
   ChatMessage({required this.text, required this.isUser});
 }
 
-void showChatPopUp(BuildContext context) {
+Widget showChatPopUp(BuildContext context) {
   final inClassViewModel = InClassViewModel();
 
   showModalBottomSheet(
@@ -37,6 +37,8 @@ void showChatPopUp(BuildContext context) {
       );
     },
   );
+
+  return Container();
 }
 
 class _ChatBody extends StatefulWidget {
