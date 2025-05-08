@@ -249,6 +249,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         author: course.instructor.name,
                                         imageUrl: course.thumbnail,
                                         level: course.level,
+                                        isEnrolled: course.isEnrolled ?? false,
                                         onTap: () {
                                           Navigator.of(context, rootNavigator: true).pushNamed(
                                             RouteNames.course,
@@ -256,6 +257,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                               'courseId': course.id,
                                               'instructorName': course.instructor.name,
                                               'categoryName': course.category.join(', '), 
+                                              'isEnrroled': course.isEnrolled
                                             },
                                           );
                                         },

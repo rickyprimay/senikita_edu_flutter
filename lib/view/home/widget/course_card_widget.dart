@@ -10,6 +10,7 @@ class CourseCard extends StatefulWidget {
   final String author;
   final String? imageUrl;
   final String level;
+  final bool isEnrolled;
   final VoidCallback? onTap; 
 
   const CourseCard({
@@ -21,6 +22,7 @@ class CourseCard extends StatefulWidget {
     required this.author,
     this.imageUrl,
     required this.level,
+    required this.isEnrolled,
     this.onTap, 
   });
 

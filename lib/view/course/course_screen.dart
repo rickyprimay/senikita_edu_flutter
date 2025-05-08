@@ -14,12 +14,14 @@ class CourseScreen extends StatefulWidget {
   final int courseId;
   final String instructorName;
   final String categoryName;
+  final bool isEnrolled;
 
   const CourseScreen({
     super.key,
     required this.courseId,
     required this.instructorName,
     required this.categoryName,
+    required this.isEnrolled,
   });
 
   @override
@@ -233,93 +235,117 @@ class _CourseScreenState extends State<CourseScreen> {
                   ],
                 ),
                 const SizedBox(height: 8),
-                Row(
+                Column(
                   children: [
-                    Text(
-                      "Rp 0",
-                      style: AppFont.crimsonTextHeader.copyWith(
-                        fontSize: 40,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      "Rp 1.000.000",
-                      style: AppFont.crimsonTextHeader.copyWith(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w400,
-                        color: AppColors.secondary,
-                        decoration: TextDecoration.lineThrough,
-                        decorationThickness: 1,
+                    widget.isEnrolled
+                        ? Row(
+                            children: [
+                              Text(
+                                "Rp 0",
+                                style: AppFont.crimsonTextHeader.copyWith(
+                                  fontSize: 40,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                "Rp 1.000.000",
+                                style: AppFont.crimsonTextHeader.copyWith(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w400,
+                                  color: AppColors.secondary,
+                                  decoration: TextDecoration.lineThrough,
+                                  decorationThickness: 1,
+                                ),
+                              ),
+                            ],
+                          )
+                        : 
+                        const SizedBox(height: 8),
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                "Kamu sudah terdaftar di kelas ini",
+                                style: AppFont.ralewaySubtitle.copyWith(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w700,
+                                  color: AppColors.secondary,
+                                ),
+                              ),
+                            ],
+                          ),
+                    const SizedBox(height: 2),
+                    widget.isEnrolled
+                        ? Text(
+                            "Kelas ini gratis untuk semua pengguna, silahkan klik tombol dibawah ini untuk mendaftar.",
+                            style: AppFont.ralewaySubtitle.copyWith(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.customRed,
+                            ),
+                          )
+                        : const SizedBox.shrink(),
+                    const SizedBox(height: 8),
+                    widget.isEnrolled
+                        ? Center(
+                            child: SizedBox(
+                              width: double.infinity,
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  enrollmentsViewModel.postEnrollments(
+                                    courseId: widget.courseId,
+                                    context: context,
+                                  );
+                                  AppLogger.logInfo("course Id: ${widget.courseId}");
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: AppColors.primary,
+                                  padding: const EdgeInsets.symmetric(vertical: 14),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                                child: Text(
+                                  "Daftar Kelas",
+                                  style: AppFont.ralewaySubtitle.copyWith(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          )
+                        : const SizedBox.shrink(),
+                    const SizedBox(height: 8),
+                    Center(
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () {},
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              side: const BorderSide(color: Colors.black, width: 1),
+                            ),
+                            backgroundColor: Colors.transparent,
+                            foregroundColor: Colors.black,
+                            elevation: 0,
+                          ),
+                          child: Text(
+                            "Lanjut Ke kelas?",
+                            style: AppFont.ralewaySubtitle.copyWith(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ],
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  "Kelas ini gratis untuk semua pengguna, silahkan klik tombol dibawah ini untuk mendaftar.",
-                  style: AppFont.ralewaySubtitle.copyWith(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.customRed,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Center(
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        enrollmentsViewModel.postEnrollments(
-                          courseId: widget.courseId,
-                          context: context,
-                        );
-                        AppLogger.logInfo("course Id: ${widget.courseId}");
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary,
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      child: Text(
-                        "Daftar Kelas",
-                        style: AppFont.ralewaySubtitle.copyWith(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Center(
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () {},
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          side: const BorderSide(color: Colors.black, width: 1),
-                        ),
-                        backgroundColor: Colors.transparent,
-                        foregroundColor: Colors.black,
-                        elevation: 0,
-                      ),
-                      child: Text(
-                        "Tambahkan ke Bookmark",
-                        style: AppFont.ralewaySubtitle.copyWith(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                  ),
                 ),
                 const SizedBox(height: 14),
                 Container(
@@ -560,7 +586,7 @@ class _CourseScreenState extends State<CourseScreen> {
                     Icon(Icons.check_circle_outline, size: 20, color: Colors.grey,),
                     const SizedBox(width: 5),
                     Text(
-                      "Sertifikat",
+                      courseDetail.certificateAvailable == 1 ? "Sertifikat" : "Tanpa Sertifikat",
                       style: AppFont.ralewaySubtitle.copyWith(
                         fontSize: 14,
                         fontWeight: FontWeight.w500,

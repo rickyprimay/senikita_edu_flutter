@@ -44,12 +44,14 @@ class Routes {
         final courseId = args['courseId'] as int;
         final instructorName = args['instructorName'] as String;
         final categoryName = args['categoryName'] as String;
+        final isEnrolled = (args['isEnrolled'] as bool?) ?? false;
 
         return MaterialPageRoute(
           builder: (BuildContext context) => CourseScreen(
             courseId: courseId,
             instructorName: instructorName,
             categoryName: categoryName,
+            isEnrolled: isEnrolled,
           ),
         );
       case (RouteNames.classDetail):
