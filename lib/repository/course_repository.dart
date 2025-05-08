@@ -4,11 +4,15 @@ import 'package:widya/res/widgets/app_urls.dart';
 class CourseRepository {
   final NetworkApiServices _network = NetworkApiServices();
 
-  Future<dynamic> fetchCourse({int? categoryId, String? search, int? page}) async {
+  Future<dynamic> fetchCourse({int? categoryId, String? search, int? page, required token}) async {
     try {
+      final headers = {
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      };
       final url = AppUrls.getCourse(categoryId: categoryId, search: search, page: page);
-      
-      final response = await _network.getGetApiResponse(url);
+      final response = await _network.getGetApiResponseWithHeader(url, headers);
       return response;
     } catch (e) {
       rethrow; 

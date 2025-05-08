@@ -19,6 +19,7 @@ class Course {
   final List<String>? requirements;
   final String? createdAt;
   final String? updatedAt;
+  final bool? isEnrolled;
 
   Course({
     required this.id,
@@ -39,6 +40,7 @@ class Course {
     this.requirements,
     this.createdAt,
     this.updatedAt,
+    this.isEnrolled,
   });
 
   factory Course.fromJson(Map<String, dynamic> json) {
@@ -61,6 +63,7 @@ class Course {
       requirements: json['requirements'] != null ? List<String>.from(json['requirements']) : null,
       createdAt: json['created_at'],
       updatedAt: json['updated_at'],
+      isEnrolled: json['is_enrolled'] ?? false,
     );
   }
 
@@ -84,6 +87,7 @@ class Course {
       'requirements': requirements != null ? List<String>.from(requirements!) : null,
       'created_at': createdAt,
       'updated_at': updatedAt,
+      'is_enrolled': isEnrolled,
     };
   }
 }

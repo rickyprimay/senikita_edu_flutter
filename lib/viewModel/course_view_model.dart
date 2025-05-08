@@ -36,8 +36,8 @@ class CourseViewModel with ChangeNotifier {
     notifyListeners();  
 
     try {
-      final response = await _courseRepository.fetchCourse(categoryId: categoryId, page: page);
-      AppLogger.logInfo('Token: $token');
+      final response = await _courseRepository.fetchCourse(categoryId: categoryId, page: page, token: token ?? "");
+      AppLogger.logInfo("Response: $response");
       
       final courseListResponse = CourseListResponse.fromJson(response);
 

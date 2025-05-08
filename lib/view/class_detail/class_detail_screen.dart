@@ -201,7 +201,6 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> {
                     ),
                   );
                 }
-
                 final lessons = viewModel.lessons;
                 if (lessons == null || lessons.isEmpty) {
                   return Center(
