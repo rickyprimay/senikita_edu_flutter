@@ -33,6 +33,20 @@ class EnrollmentsRepository {
     }
   }
 
+  Future<dynamic> fetchTotalEnrollments(String token) async {
+    try {
+      final headers = {
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      };
+      final response = await _network.getGetApiResponseWithHeader(AppUrls.getTotalEnrollments, headers);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<dynamic> postEnrollments({required String token, required int courseId, dynamic data, required BuildContext context}) async {
     final headers = {
       'Authorization': 'Bearer $token',

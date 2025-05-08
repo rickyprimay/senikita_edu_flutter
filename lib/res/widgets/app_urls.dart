@@ -55,6 +55,8 @@ class AppUrls {
     return url;
   }
 
+  static const String getTotalEnrollments = '$baseUrl/enrollments/total-course';
+
   static String postEnrollments = "$baseUrl/enrollments";
 
   static String getCourseLessons(int courseId) {

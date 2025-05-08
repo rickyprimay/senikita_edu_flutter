@@ -216,6 +216,13 @@ class _ChatBodyState extends State<_ChatBody> {
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                      borderSide: BorderSide(
+                        color: AppColors.primary,
+                        width: 1,
+                      ),
+                    ),
                     contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   ),
                 ),
