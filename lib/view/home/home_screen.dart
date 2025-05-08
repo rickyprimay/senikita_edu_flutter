@@ -20,6 +20,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
 
   final controller = ScrollController();
+  final TextEditingController _searchController = TextEditingController();
 
   String? _name;
   String? _photo;
@@ -143,8 +144,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ],
                       ),
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
                       child: TextField(
+                        controller: _searchController,
                         style: AppFont.ralewaySubtitle.copyWith(
                           fontSize: 16,
                           color: Colors.black,
@@ -156,7 +158,20 @@ class _HomeScreenState extends State<HomeScreen> {
                             color: Colors.grey,
                           ),
                           border: InputBorder.none,
-                          suffixIcon: const Icon(Icons.search, color: Colors.grey),
+                          contentPadding: EdgeInsets.symmetric(vertical: 12),
+                          suffixIcon: IconButton(
+                            icon: const Icon(Icons.search, color: AppColors.secondary),
+                            onPressed: () {
+                              final searchQuery = _searchController.text;
+                              if (searchQuery.isNotEmpty) {
+                                final courseViewModel = Provider.of<CourseViewModel>(context, listen: false);
+                                courseViewModel.searchCourses(searchQuery);
+                              } else {
+                                final courseViewModel = Provider.of<CourseViewModel>(context, listen: false);
+                                courseViewModel.resetCourses();
+                              }
+                            },
+                          ),
                         ),
                       ),
                     ),

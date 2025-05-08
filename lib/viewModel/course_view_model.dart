@@ -52,6 +52,31 @@ class CourseViewModel with ChangeNotifier {
     }
   }
 
+  Future<void> searchCourses(String searchQuery) async {
+    final sp = await SharedPrefs.instance;
+    final String? token = sp.getString("auth_token");
+
+    _loading = true;
+    _error = null; 
+    notifyListeners();  
+
+    try {
+      final response = await _courseRepository.fetchCourse(search: searchQuery, token: token ?? "");
+      AppLogger.logInfo("Search Response: $response");
+
+      final courseListResponse = CourseListResponse.fromJson(response);
+
+      _courses = courseListResponse.data;
+
+      _loading = false;
+      notifyListeners();
+    } catch (e) {
+      _loading = false;
+      _error = e.toString();
+      notifyListeners();  
+    }
+  }
+
   Future<void> appendNewCourses() async {
     if (_loading) return;
 
