@@ -28,14 +28,11 @@ class ClassDetailScreen extends StatefulWidget {
 }
 
 class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProviderStateMixin {
-  // Controllers
   late TabController _tabController;
   YoutubePlayerController? _youtubeController;
   
-  // View Model
   late LessonViewModel _lessonViewModel;
   
-  // StateNotifiers instead of booleans with setState
   final ValueNotifier<bool> _isContentLoadingNotifier = ValueNotifier<bool>(true);
   final ValueNotifier<bool> _isChatOpenNotifier = ValueNotifier<bool>(false);
   final ValueNotifier<int?> _selectedIndexNotifier = ValueNotifier<int?>(null);
@@ -102,7 +99,11 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
   void _openChat() {
     _isChatOpenNotifier.value = true;
 
-    showChatPopUp(context);
+    final selectedIndex = _selectedIndexNotifier.value ?? 0;
+    final currentLesson = _lessonViewModel.lessons?[selectedIndex];
+    final lessonName = currentLesson?.title ?? 'Lesson';
+
+    showChatPopUp(context, widget.courseName, lessonName);
 
     Future.delayed(const Duration(milliseconds: 300), () {
       if (mounted) {

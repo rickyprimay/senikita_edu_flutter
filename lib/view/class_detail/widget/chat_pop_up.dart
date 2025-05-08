@@ -16,7 +16,7 @@ class ChatMessage {
   ChatMessage({required this.text, required this.isUser});
 }
 
-Widget showChatPopUp(BuildContext context) {
+Widget showChatPopUp(BuildContext context, String courseName, String lessonName) {
   final inClassViewModel = InClassViewModel();
 
   showModalBottomSheet(
@@ -32,7 +32,11 @@ Widget showChatPopUp(BuildContext context) {
         minChildSize: 0.4,
         maxChildSize: 0.9,
         builder: (context, scrollController) {
-          return _ChatBody(viewModel: inClassViewModel);
+          return _ChatBody(
+            viewModel: inClassViewModel,
+            courseName: courseName,
+            lessonName: lessonName,
+          );
         },
       );
     },
@@ -43,7 +47,13 @@ Widget showChatPopUp(BuildContext context) {
 
 class _ChatBody extends StatefulWidget {
   final InClassViewModel viewModel;
-  const _ChatBody({required this.viewModel});
+  final String courseName;
+  final String lessonName;
+  const _ChatBody({
+    required this.viewModel,
+    required this.courseName,
+    required this.lessonName,
+  });
 
   @override
   State<_ChatBody> createState() => _ChatBodyState();
@@ -115,11 +125,16 @@ class _ChatBodyState extends State<_ChatBody> {
     }
   }
 
-  final String systemPrompt = (
-    "Kamu adalah asisten AI di platform Widya bernama WiChat, bagian dari SeniKita, yang mendampingi pengguna dalam mempelajari seni "
-    "seperti musik, tari, dan kriya. Tugasmu adalah menjawab pertanyaan pengguna dengan cara yang menyenangkan, sabar, dan mendukung. "
-    "Berikan penjelasan yang jelas, mudah dipahami, dan sebisa mungkin bantu langsung di dalam platform, tanpa menyarankan mereka untuk mencari bantuan di luar platform seperti guru privat atau kursus lainnya."
-  );
+  String get systemPrompt {
+    return "Kamu adalah WiChat, asisten AI di platform pembelajaran kesenian bernama Widya, yang merupakan bagian dari platform SeniKita — marketplace produk dan jasa kesenian daerah Indonesia. "
+           "Tugasmu adalah mendampingi pengguna dalam mempelajari seni di setiap kelasnya, seperti musik, tari, dan kriya. "
+           "Saat ini, pengguna sedang mengikuti kelas '${widget.courseName}' dan mempelajari materi '${widget.lessonName}'. "
+           "Tugasmu adalah menjawab pertanyaan pengguna dengan cara yang menyenangkan, sabar, dan mendukung. "
+           "Berikan penjelasan yang jelas, mudah dipahami, dan sebisa mungkin bantu langsung di dalam platform. Jangan menyarankan mereka mencari bantuan di luar platform seperti guru privat atau kursus lainnya. "
+           "Jika ada pertanyaan yang tidak bisa kamu jawab, katakan dengan jujur bahwa kamu tidak tahu, dan sarankan mereka bertanya kepada instruktur mereka. "
+           "Jika ada pertanyaan yang tidak relevan dengan kelas, katakan bahwa itu tidak relevan, dan arahkan mereka untuk bertanya kepada instruktur mereka."
+           "Jangan jawab pertanyaan dengan sangat panjang";
+  }
 
   @override
   Widget build(BuildContext context) {
