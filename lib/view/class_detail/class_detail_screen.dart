@@ -1,9 +1,9 @@
-// Tambahkan import ini kalau belum ada
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
 import 'package:widya/res/widgets/loading.dart';
+import 'package:widya/utils/utils.dart';
 import 'package:widya/view/class_detail/widget/chat_pop_up.dart';
 import 'package:widya/viewModel/lesson_view_model.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
@@ -33,7 +33,6 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> {
   bool _isContentLoading = false;
   bool _isChatOpen = false;
 
-  // Tambahkan list untuk simpan selected lectures
   final List<int> _selectedLectureIndices = [];
 
   @override
@@ -119,7 +118,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> {
 
   void quickAlertShow(int index) {
     final isSelectedLecture = _selectedLectureIndices.contains(index);
-  
+
     QuickAlert.show(
       context: context,
       type: QuickAlertType.custom,
@@ -151,13 +150,11 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> {
       confirmBtnText: 'Yakin',
       onConfirmBtnTap: () {
         setState(() {
-          if (isSelectedLecture) {
-            _selectedLectureIndices.remove(index);
-          } else {
-            _selectedLectureIndices.add(index);
-          }
+          _selectedLectureIndices.add(index);
         });
-        Navigator.of(context).pop(); 
+        Navigator.of(context).pop();
+        lessonViewModel.postCompleteLesson(lessonViewModel.lessons![index].id ?? 0, context); 
+        Utils.showToastification("Berhasil", "Sesi berhasil diselesaikan", true, context);
       },
       confirmBtnColor: AppColors.primary,
     );
@@ -190,12 +187,36 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> {
             child: Consumer<LessonViewModel>(
               builder: (context, viewModel, child) {
                 if (viewModel.error != null) {
-                  return Center(child: Text('Error: ${viewModel.error}'));
+                  return Center(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24.0), 
+                      child: Text(
+                        "Error: Gagal Koneksi Ke Server",
+                        textAlign: TextAlign.center,
+                        style: AppFont.ralewaySubtitle.copyWith(
+                          fontSize: 16, 
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  );
                 }
 
                 final lessons = viewModel.lessons;
                 if (lessons == null || lessons.isEmpty) {
-                  return const Center(child: Text('No lessons available.'));
+                  return Center(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24.0), 
+                      child: Text(
+                        "Belum ada materi yang tersedia di kelas ini silahkan kembali lagi nanti",
+                        textAlign: TextAlign.center, 
+                        style: AppFont.ralewaySubtitle.copyWith(
+                          fontSize: 16, 
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  );
                 }
 
                 final selectedLesson = lessons[_selectedIndex ?? 0];
@@ -317,7 +338,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> {
                                     splashColor: AppColors.primary.withAlpha(44),
                                     highlightColor: AppColors.primary.withAlpha(22),
                                     child: ListTile(
-                                      leading: (lesson.isCompleted ?? false)
+                                      leading: (lesson.isCompleted ?? false) || isSelectedLecture
                                       ? Icon(Icons.check_circle, color: AppColors.primary)
                                       : IconButton(
                                           icon: Icon(
@@ -327,8 +348,12 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> {
                                             color: AppColors.primary,
                                           ),
                                           onPressed: () {
-                                            quickAlertShow(index);
-                                          },
+                                            if (index == _selectedIndex) {
+                                              quickAlertShow(index);
+                                            } else {
+                                              Utils.showToastification("Gagal", "Selesaikan hanya bisa diakses di sesi yang sedang dipelajari", false, context);
+                                            }
+                                          }
                                         ),
                                       title: Text(lesson.title ?? '',
                                           style: AppFont.ralewaySubtitle.copyWith(
