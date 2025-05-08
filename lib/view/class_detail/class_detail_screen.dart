@@ -207,7 +207,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
           ),
           const SizedBox(height: 8),
           Text(
-            'Isi Konten : ',
+            'Isi Konten : ${selectedLesson.content}',
             style: AppFont.ralewaySubtitle.copyWith(
               fontSize: 12,
               fontWeight: FontWeight.w400,
