@@ -265,23 +265,25 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> {
                                     splashColor: AppColors.primary.withAlpha(44),
                                     highlightColor: AppColors.primary.withAlpha(22),
                                     child: ListTile(
-                                      leading: IconButton(
-                                        icon: Icon(
-                                          isSelectedLecture
-                                              ? Icons.check_circle_outline
-                                              : Icons.circle_outlined,
-                                          color: AppColors.primary,
+                                      leading: (lesson.isCompleted ?? false)
+                                      ? Icon(Icons.check_circle, color: AppColors.primary)
+                                      : IconButton(
+                                          icon: Icon(
+                                            isSelectedLecture
+                                                ? Icons.check_circle_outline
+                                                : Icons.circle_outlined,
+                                            color: AppColors.primary,
+                                          ),
+                                          onPressed: () {
+                                            setState(() {
+                                              if (isSelectedLecture) {
+                                                _selectedLectureIndices.remove(index);
+                                              } else {
+                                                _selectedLectureIndices.add(index);
+                                              }
+                                            });
+                                          },
                                         ),
-                                        onPressed: () {
-                                          setState(() {
-                                            if (isSelectedLecture) {
-                                              _selectedLectureIndices.remove(index);
-                                            } else {
-                                              _selectedLectureIndices.add(index);
-                                            }
-                                          });
-                                        },
-                                      ),
                                       title: Text(lesson.title ?? '',
                                           style: AppFont.ralewaySubtitle.copyWith(
                                             fontSize: 16,
