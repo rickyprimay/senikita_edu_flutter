@@ -102,8 +102,10 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
     final selectedIndex = _selectedIndexNotifier.value ?? 0;
     final currentLesson = _lessonViewModel.lessons?[selectedIndex];
     final lessonName = currentLesson?.title ?? 'Lesson';
+    final lessonDescription = currentLesson?.description ?? 'Description';
+    final lessonContent = currentLesson?.content ?? 'Content';
 
-    showChatPopUp(context, widget.courseName, lessonName);
+    showChatPopUp(context, widget.courseName, widget.courseDescription, lessonName, lessonDescription, lessonContent);
 
     Future.delayed(const Duration(milliseconds: 300), () {
       if (mounted) {

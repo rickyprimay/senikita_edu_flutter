@@ -16,7 +16,14 @@ class ChatMessage {
   ChatMessage({required this.text, required this.isUser});
 }
 
-Widget showChatPopUp(BuildContext context, String courseName, String lessonName) {
+Widget showChatPopUp(
+  BuildContext context,
+  String courseName,
+  String courseDescription,
+  String lessonName,
+  String lessonDescription,
+  String lessonContent,
+) {
   final inClassViewModel = InClassViewModel();
 
   showModalBottomSheet(
@@ -35,7 +42,10 @@ Widget showChatPopUp(BuildContext context, String courseName, String lessonName)
           return _ChatBody(
             viewModel: inClassViewModel,
             courseName: courseName,
+            courseDescription: courseDescription,
             lessonName: lessonName,
+            lessonDescription: lessonDescription,
+            lessonContent: lessonContent,
           );
         },
       );
@@ -48,11 +58,17 @@ Widget showChatPopUp(BuildContext context, String courseName, String lessonName)
 class _ChatBody extends StatefulWidget {
   final InClassViewModel viewModel;
   final String courseName;
+  final String courseDescription;
   final String lessonName;
+  final String lessonDescription;
+  final String lessonContent;
   const _ChatBody({
     required this.viewModel,
     required this.courseName,
+    required this.courseDescription,
     required this.lessonName,
+    required this.lessonDescription,
+    required this.lessonContent,
   });
 
   @override
@@ -95,7 +111,7 @@ class _ChatBodyState extends State<_ChatBody> {
         _isSending = true;
       });
 
-      final String userMessageWithPrompt = '$systemPrompt\n\n$text';
+      final String userMessageWithPrompt = getSystemPrompt(text);
 
       try {
         final response = await _gemini.text(userMessageWithPrompt);
@@ -125,15 +141,21 @@ class _ChatBodyState extends State<_ChatBody> {
     }
   }
 
-  String get systemPrompt {
-    return "Kamu adalah WiChat, asisten AI di platform pembelajaran kesenian bernama Widya, yang merupakan bagian dari platform SeniKita — marketplace produk dan jasa kesenian daerah Indonesia. "
-           "Tugasmu adalah mendampingi pengguna dalam mempelajari seni di setiap kelasnya, seperti musik, tari, dan kriya. "
-           "Saat ini, pengguna sedang mengikuti kelas '${widget.courseName}' dan mempelajari materi '${widget.lessonName}'. "
-           "Tugasmu adalah menjawab pertanyaan pengguna dengan cara yang menyenangkan, sabar, dan mendukung. "
-           "Berikan penjelasan yang jelas, mudah dipahami, dan sebisa mungkin bantu langsung di dalam platform. Jangan menyarankan mereka mencari bantuan di luar platform seperti guru privat atau kursus lainnya. "
-           "Jika ada pertanyaan yang tidak bisa kamu jawab, katakan dengan jujur bahwa kamu tidak tahu, dan sarankan mereka bertanya kepada instruktur mereka. "
-           "Jika ada pertanyaan yang tidak relevan dengan kelas, katakan bahwa itu tidak relevan, dan arahkan mereka untuk bertanya kepada instruktur mereka."
-           "Jangan jawab pertanyaan dengan sangat panjang";
+  String getSystemPrompt(String userQuestion) {
+    return "Peran kamu adalah WiChat, asisten AI di platform pembelajaran kesenian Widya (bagian dari SeniKita, marketplace produk dan jasa kesenian daerah Indonesia). "
+           "Tugas kamu adalah mendampingi pengguna dalam belajar seni, seperti musik, tari, kriya, dan masih banyak lagi. "
+           "Berikut adalah konteks kelas yang sedang diikuti pengguna: "
+           "- Nama Kelas: '${widget.courseName}' "
+           "- Deskripsi Kelas: '${widget.courseDescription}' "
+           "- Materi Saat Ini: '${widget.lessonName}' "
+           "- Deskripsi Materi: '${widget.lessonDescription}' "
+           "- Isi Materi: '${widget.lessonContent}' "
+           "Pertanyaan yang diajukan pengguna: '$userQuestion' "
+           "Kamu harus menjawab pertanyaan tersebut dengan cara yang ramah, sabar, mendukung, dan menyenangkan. "
+           "Berikan jawaban yang jelas, ringkas, dan mudah dipahami. Fokus untuk membantu langsung di dalam platform, tanpa menyarankan bantuan eksternal seperti guru privat atau kursus lainnya. "
+           "Jika ada pertanyaan yang tidak bisa kamu jawab, akui dengan jujur bahwa kamu tidak tahu dan sarankan bertanya kepada instruktur mereka. "
+           "Jika ada pertanyaan yang tidak relevan dengan materi atau kelas, katakan bahwa pertanyaan tersebut tidak relevan dan sarankan bertanya kepada instruktur mereka. "
+           "Usahakan jawaban kamu tidak terlalu panjang. Prioritaskan jawaban yang langsung membantu dan tidak bertele-tele.";
   }
 
   @override
