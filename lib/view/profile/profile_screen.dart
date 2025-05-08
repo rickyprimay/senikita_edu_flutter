@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:widya/res/widgets/colors.dart';
 import 'package:widya/res/widgets/fonts.dart';
 import 'package:widya/res/widgets/shared_preferences.dart';
@@ -18,7 +19,6 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   final authVM = AuthViewModel();
-  EnrollmentsViewModel enrollmentsViewModel = EnrollmentsViewModel();
 
   String? name;
   String? photo;
@@ -28,7 +28,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     super.initState();
     _loadUserData();
-    enrollmentsViewModel.fetchTotalEnrollments();
   }
 
   Future<void> _loadUserData() async {
@@ -39,6 +38,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       photo = prefs.getString("user_photo");
       email = prefs.getString("user_email");
     });
+    await Provider.of<EnrollmentsViewModel>(context, listen: false).fetchTotalEnrollments();
   }
 
   @override
@@ -117,17 +117,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     const SizedBox(height: 20),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: InfoCardWidget(
-                              title: "Kelas dimiliki",
-                              icon: Icons.library_books,
-                              label: "${enrollmentsViewModel.totalEnrollments?.data.totalCourse} Belum selesai",
-                              value: "${enrollmentsViewModel.totalEnrollments?.data.totalCourseCompleted} Sudah selesai",
-                            ),
-                          ),
-                        ],
+                      child: Consumer<EnrollmentsViewModel>(
+                        builder: (context, viewModel, child) {
+                          final totalEnrollments = viewModel.totalEnrollments;
+                          final notCompleted = totalEnrollments?.data.totalCourse;
+                          final completed = totalEnrollments?.data.totalCourseCompleted;
+                    
+                          bool isDataLoaded = notCompleted != null && completed != null;
+                    
+                          return Row(
+                            children: [
+                              Expanded(
+                                child: InfoCardWidget(
+                                  title: "Kelas dimiliki",
+                                  icon: Icons.library_books,
+                                  label: isDataLoaded
+                                      ? "$notCompleted Belum selesai"
+                                      : "Memuat...",
+                                  value: isDataLoaded
+                                      ? "$completed Sudah selesai"
+                                      : "Memuat...",
+                                ),
+                              ),
+                            ],
+                          );
+                        },
                       ),
                     ),
                     const SizedBox(height: 20),
