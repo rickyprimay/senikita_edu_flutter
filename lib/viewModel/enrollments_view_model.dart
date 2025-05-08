@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:widya/models/enrollments/enrollments_model.dart';
 import 'package:widya/models/enrollments/enrollments_list_model.dart';
+import 'package:widya/models/enrollments/list_total_enrollments.dart';
 import 'package:widya/repository/enrollments_repository.dart';
+import 'package:widya/res/widgets/logger.dart';
 import 'package:widya/res/widgets/shared_preferences.dart';
 import 'package:widya/utils/utils.dart';
 
@@ -26,6 +28,9 @@ class EnrollmentsViewModel extends ChangeNotifier {
 
   bool _hasMore = true;
   bool get hasMore => _hasMore;
+
+  ListTotalEnrollments? _totalEnrollments;
+  ListTotalEnrollments? get totalEnrollments => _totalEnrollments;
 
   Future<void> fetchEnrollments({int? page}) async {
     final sp = await SharedPrefs.instance;
@@ -55,6 +60,32 @@ class EnrollmentsViewModel extends ChangeNotifier {
     }
   }
 
+  Future<void> fetchTotalEnrollments() async {
+    final sp = await SharedPrefs.instance;
+    final String? token = sp.getString("auth_token");
+
+    _loading = true;
+    notifyListeners();
+
+    try {
+      final response = await _enrollmentsRepository.fetchTotalEnrollments(token ?? "");
+      AppLogger.logInfo('Total Enrollments: $response');
+      if (response != null) {
+        _totalEnrollments = ListTotalEnrollments.fromJson(response);
+        _error = null; 
+      } else {
+        _error = 'Data not found or empty.';
+        AppLogger.logError('Data not found or empty.');
+      }
+    } catch (e) {
+      _error = 'Failed to load data: $e';
+      AppLogger.logError('Failed to load data: $e');
+    } finally {
+      _loading = false;
+      notifyListeners();
+    }
+  }
+ 
   Future<void> appendNewEnrollments() async {
     if (_loading) return;
     final sp = await SharedPrefs.instance;
