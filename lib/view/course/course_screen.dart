@@ -6,6 +6,7 @@ import 'package:widya/res/widgets/colors.dart';
 import 'package:widya/res/widgets/fonts.dart';
 import 'package:widya/res/widgets/loading.dart';
 import 'package:widya/res/widgets/logger.dart';
+import 'package:widya/utils/routes/routes_names.dart';
 import 'package:widya/viewModel/course_view_model.dart';
 import 'package:widya/viewModel/enrollments_view_model.dart';
 import 'package:widya/viewModel/lesson_view_model.dart';
@@ -323,7 +324,19 @@ class _CourseScreenState extends State<CourseScreen> {
                       child: SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.pop(context); 
+                            Future.delayed(Duration.zero, () {
+                              Navigator.of(context, rootNavigator: true).pushNamed(
+                                RouteNames.classDetail,
+                                arguments: {
+                                  'courseId': widget.courseId,
+                                  'courseName': courseDetail.title,
+                                  'courseDescription': courseDetail.description,
+                                },
+                              );
+                            });
+                          },
                           style: ElevatedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(vertical: 14),
                             shape: RoundedRectangleBorder(
