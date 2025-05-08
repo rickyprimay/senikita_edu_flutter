@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:widya/data/network/network_api_services.dart';
 import 'package:widya/res/widgets/app_urls.dart';
 import 'package:widya/res/widgets/logger.dart';
@@ -16,6 +17,21 @@ class LessonRepository {
       return response;
     } catch (e) {
       AppLogger.logDebug("Error fetching course lessons: $e");
+      rethrow;
+    }
+  }
+
+  Future<dynamic> postCompleteLesson(int lessonId, String token, BuildContext context) async {
+    try {
+      final headers = {
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      };
+      final response = await _network.getPostApiResponseWithHeader(AppUrls.postCompleteLesson(lessonId), headers, null, context);
+      return response;
+    } catch (e) {
+      AppLogger.logDebug("Error completing lesson: $e");
       rethrow;
     }
   }

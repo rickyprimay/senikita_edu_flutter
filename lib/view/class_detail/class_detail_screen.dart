@@ -1,6 +1,8 @@
 // Tambahkan import ini kalau belum ada
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:quickalert/models/quickalert_type.dart';
+import 'package:quickalert/widgets/quickalert_dialog.dart';
 import 'package:widya/res/widgets/loading.dart';
 import 'package:widya/view/class_detail/widget/chat_pop_up.dart';
 import 'package:widya/viewModel/lesson_view_model.dart';
@@ -113,6 +115,52 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> {
         _isChatOpen = false;
       });
     }
+  }
+
+  void quickAlertShow(int index) {
+    final isSelectedLecture = _selectedLectureIndices.contains(index);
+  
+    QuickAlert.show(
+      context: context,
+      type: QuickAlertType.custom,
+      widget: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              'Apakah kamu yakin ingin menyeslesaikan sesi ini?',
+              style: AppFont.crimsonTextSubtitle.copyWith(
+                fontSize: 18,
+                fontWeight: FontWeight.w700,
+                color: AppColors.primary,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Jika kamu menyelesaikan sesi ini, kamu bisa mengakses lagi namun tidak bisa membatalkan status selesainya.',
+              style: AppFont.crimsonTextSubtitle.copyWith(
+                fontSize: 14,
+                color: AppColors.secondary,
+              ),
+              textAlign: TextAlign.justify,
+            ),
+          ],
+        ),
+      ),
+      confirmBtnText: 'Yakin',
+      onConfirmBtnTap: () {
+        setState(() {
+          if (isSelectedLecture) {
+            _selectedLectureIndices.remove(index);
+          } else {
+            _selectedLectureIndices.add(index);
+          }
+        });
+        Navigator.of(context).pop(); 
+      },
+      confirmBtnColor: AppColors.primary,
+    );
   }
 
   @override
@@ -261,7 +309,11 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> {
                                   duration: const Duration(milliseconds: 200),
                                   color: isSelected ? AppColors.primary.withAlpha(55) : Colors.transparent,
                                   child: InkWell(
-                                    onTap: () => _updateSelectedContent(index),
+                                    onTap: () {
+                                      if (_selectedIndex != index) {
+                                        _updateSelectedContent(index);
+                                      }
+                                    },
                                     splashColor: AppColors.primary.withAlpha(44),
                                     highlightColor: AppColors.primary.withAlpha(22),
                                     child: ListTile(
@@ -275,13 +327,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> {
                                             color: AppColors.primary,
                                           ),
                                           onPressed: () {
-                                            setState(() {
-                                              if (isSelectedLecture) {
-                                                _selectedLectureIndices.remove(index);
-                                              } else {
-                                                _selectedLectureIndices.add(index);
-                                              }
-                                            });
+                                            quickAlertShow(index);
                                           },
                                         ),
                                       title: Text(lesson.title ?? '',

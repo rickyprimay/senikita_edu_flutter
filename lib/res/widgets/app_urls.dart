@@ -63,4 +63,8 @@ class AppUrls {
     return "$baseUrl/course/lessons/$courseId";
   }
 
+  static String postCompleteLesson(int lessonId) {
+    return "$baseUrl/lessons/$lessonId/complete";
+  }
+
 }

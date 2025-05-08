@@ -49,4 +49,27 @@ class LessonViewModel with ChangeNotifier {
     }
   }
 
+  Future<void> postCompleteLesson(int lessonId, BuildContext context) async {
+    final sp = await SharedPrefs.instance;
+    final String? token = sp.getString("auth_token");
+    _loading = true;
+    _error = null; 
+    notifyListeners();  
+    AppLogger.logInfo("lessonId: $lessonId");
+
+    try {
+      final response = await _lessonRepository.postCompleteLesson(lessonId, token ?? "", context);
+      AppLogger.logInfo("response: $response");
+
+      _loading = false;
+      notifyListeners();
+
+    } catch (e) {
+      _loading = false;
+      AppLogger.logError("Error completing lesson: $e");
+      _error = e.toString();
+      notifyListeners();  
+    }
+  }
+
 }
