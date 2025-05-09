@@ -33,8 +33,11 @@ class LessonViewModel with ChangeNotifier {
 
       final lessonListResponse = LessonList.fromJson(response);
 
-
       _lessons = lessonListResponse.data;
+      
+      if (_lessons != null) {
+        _lessons!.sort((a, b) => (a.order ?? 0).compareTo(b.order ?? 0));
+      }
 
       AppLogger.logInfo("lessons: ${_lessons?.length}");
 

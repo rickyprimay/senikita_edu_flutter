@@ -48,17 +48,42 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
   
   Future<void> _fetchLessons() async {
     _isContentLoadingNotifier.value = true;
-    
+
     await _lessonViewModel.fetchLessonByCourseId(widget.courseId);
-    
+
     if (!mounted) return;
-    
+
     final lessons = _lessonViewModel.lessons;
     if (lessons != null && lessons.isNotEmpty) {
-      _selectedIndexNotifier.value = 0;
-      _initializeYoutubeController(lessons[0].videoUrl);
+      lessons.sort((a, b) => (a.order ?? 0).compareTo(b.order ?? 0));
+
+      int selectedIndex = 0;
+      bool foundIncomplete = false;
+
+      for (int i = 0; i < lessons.length; i++) {
+        if (lessons[i].isCompleted == false) {
+          selectedIndex = i;
+          foundIncomplete = true;
+          break;
+        }
+      }
+
+      if (!foundIncomplete && lessons.isNotEmpty) {
+        int highestOrder = lessons.fold(0, (max, lesson) => 
+            (lesson.order ?? 0) > max ? (lesson.order ?? 0) : max);
+
+        for (int i = 0; i < lessons.length; i++) {
+          if ((lessons[i].order ?? 0) == highestOrder) {
+            selectedIndex = i;
+            break;
+          }
+        }
+      }
+
+      _selectedIndexNotifier.value = selectedIndex;
+      _initializeYoutubeController(lessons[selectedIndex].videoUrl);
     }
-    
+
     _isContentLoadingNotifier.value = false;
   }
   
@@ -225,52 +250,115 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
         
         return AnimatedContainer(
           duration: const Duration(milliseconds: 200),
-          color: isSelected ? AppColors.primary.withAlpha(55) : Colors.transparent,
+          padding: const EdgeInsets.all(12),
+          margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+          decoration: BoxDecoration(
+            color: isSelected ? AppColors.primary.withAlpha(20) : Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: isSelected ? AppColors.primary.withAlpha(70) : Colors.grey.withAlpha(70),
+            ),
+          ),
           child: InkWell(
+            borderRadius: BorderRadius.circular(12),
             onTap: () {
               if (selectedIndex != index) {
                 _updateSelectedContent(index);
               }
             },
-            splashColor: AppColors.primary.withAlpha(44),
-            highlightColor: AppColors.primary.withAlpha(22),
-            child: ListTile(
-              leading: isLectureCompleted
-                ? Icon(Icons.check_circle, color: AppColors.primary)
-                : IconButton(
-                    icon: Icon(
-                      isLectureCompleted ? Icons.check_circle_outline : Icons.circle_outlined,
-                      color: AppColors.primary,
-                    ),
-                    onPressed: () {
-                      if (index == selectedIndex) {
-                        _markLessonAsComplete(index);
-                      } else {
-                        Utils.showToastification(
-                          "Gagal", 
-                          "Selesaikan hanya bisa diakses di sesi yang sedang dipelajari", 
-                          false, 
-                          context
-                        );
-                      }
-                    }
-                  ),
-              title: Text(
-                lesson.title ?? '',
-                style: AppFont.ralewaySubtitle.copyWith(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black,
-                )
-              ),
-              subtitle: Text(
-                'Video ${lesson.duration != null ? ' - ${lesson.duration} menit' : ''}',
-                style: AppFont.nunitoSubtitle.copyWith(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.grey,
+            splashColor: AppColors.primary.withAlpha(30),
+            highlightColor: AppColors.primary.withAlpha(15),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 6),
+                  child: isLectureCompleted
+                      ? Icon(Icons.check_circle, color: AppColors.primary)
+                      : IconButton(
+                          padding: EdgeInsets.zero,
+                          icon: Icon(
+                            isSelected ? Icons.circle_outlined : Icons.circle_outlined,
+                            color: AppColors.primary,
+                          ),
+                          onPressed: () {
+                            if (index == selectedIndex) {
+                              _markLessonAsComplete(index);
+                            } else {
+                              Utils.showToastification(
+                                "Gagal",
+                                "Selesaikan hanya bisa diakses di sesi yang sedang dipelajari",
+                                false,
+                                context,
+                              );
+                            }
+                          },
+                        ),
                 ),
-              ),
+                const SizedBox(width: 12),
+
+                // Text Content
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Flexible(
+                            child: Text(
+                              lesson.title ?? '',
+                              style: AppFont.ralewaySubtitle.copyWith(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ),
+                          if (isSelected)
+                            Container(
+                              margin: const EdgeInsets.only(left: 6),
+                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                              decoration: BoxDecoration(
+                                color: Colors.brown[700],
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              child: Text(
+                                'Saat Ini',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'Pada kesempatan kali ini kita akan belajar pergerakan tangan',
+                        style: AppFont.nunitoSubtitle.copyWith(
+                          fontSize: 13,
+                          color: Colors.grey[800],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                // Duration + Video Icon
+                Row(
+                  children: [
+                    Icon(Icons.access_time, size: 16, color: Colors.grey[700]),
+                    const SizedBox(width: 4),
+                    Text(
+                      '${lesson.duration ?? 10} menit',
+                      style: TextStyle(fontSize: 12, color: Colors.grey[800]),
+                    ),
+                    const SizedBox(width: 6),
+                    Icon(Icons.videocam, size: 16, color: Colors.grey[700]),
+                  ],
+                ),
+              ],
             ),
           ),
         );
@@ -495,7 +583,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
         ValueListenableBuilder<bool>(
           valueListenable: _isContentLoadingNotifier,
           builder: (context, isLoading, _) {
-            return isLoading ? const Loading(opacity: 0.5) : const SizedBox.shrink();
+            return isLoading ? const Loading(opacity: 1) : const SizedBox.shrink();
           },
         ),
       ],
