@@ -142,20 +142,29 @@ class _ChatBodyState extends State<_ChatBody> {
   }
 
   String getSystemPrompt(String userQuestion) {
+    List<ChatMessage> recentMessages = _messages.length > 6
+        ? _messages.sublist(_messages.length - 6)
+        : _messages;
+
+    String chatHistory = "";
+    for (var msg in recentMessages) {
+      final speaker = msg.isUser ? "Pengguna" : "WiChat";
+      chatHistory += "$speaker: ${msg.text}\n";
+    }
+
     return "Peran kamu adalah WiChat, asisten AI di platform pembelajaran kesenian Widya (bagian dari SeniKita, marketplace produk dan jasa kesenian daerah Indonesia). "
-           "Tugas kamu adalah mendampingi pengguna dalam belajar seni, seperti musik, tari, kriya, dan masih banyak lagi. "
+           "Tugas kamu adalah mendampingi pengguna dalam belajar seni, seperti musik, tari, kriya, dan masih banyak lagi.\n\n"
            "Berikut adalah konteks kelas yang sedang diikuti pengguna: "
            "- Nama Kelas: '${widget.courseName}' "
            "- Deskripsi Kelas: '${widget.courseDescription}' "
            "- Materi Saat Ini: '${widget.lessonName}' "
            "- Deskripsi Materi: '${widget.lessonDescription}' "
-           "- Isi Materi: '${widget.lessonContent}' "
-           "Pertanyaan yang diajukan pengguna: '$userQuestion' "
+           "- Isi Materi: '${widget.lessonContent}'\n\n"
+           "Berikut adalah riwayat percakapan sejauh ini:\n"
+           "$chatHistory\n"
+           "Pertanyaan terbaru dari pengguna: '$userQuestion'\n\n"
            "Kamu harus menjawab pertanyaan tersebut dengan cara yang ramah, sabar, mendukung, dan menyenangkan. "
-           "Berikan jawaban yang jelas, ringkas, dan mudah dipahami. Fokus untuk membantu langsung di dalam platform, tanpa menyarankan bantuan eksternal seperti guru privat atau kursus lainnya. "
-           "Jika ada pertanyaan yang tidak bisa kamu jawab, akui dengan jujur bahwa kamu tidak tahu dan sarankan bertanya kepada instruktur mereka. "
-           "Jika ada pertanyaan yang tidak relevan dengan materi atau kelas, katakan bahwa pertanyaan tersebut tidak relevan dan sarankan bertanya kepada instruktur mereka. "
-           "Usahakan jawaban kamu tidak terlalu panjang. Prioritaskan jawaban yang langsung membantu dan tidak bertele-tele.";
+           "Berikan jawaban yang jelas, ringkas, dan mudah dipahami.";
   }
 
   @override
@@ -218,8 +227,9 @@ class _ChatBodyState extends State<_ChatBody> {
                           ? const LoadingDots()
                           : Text(
                               message.text,
-                              style: AppFont.nunitoSubtitle.copyWith(
+                              style: AppFont.ralewaySubtitle.copyWith(
                                 color: textColor,
+                                fontWeight: FontWeight.w500,
                                 fontSize: 14,
                               ),
                             ),
@@ -310,7 +320,7 @@ class _LoadingDotsState extends State<LoadingDots> {
     String dots = '.' * _dotCount;
     return Text(
       'Loading$dots',
-      style: AppFont.nunitoSubtitle.copyWith(
+      style: AppFont.ralewaySubtitle.copyWith(
         color: Colors.black,
         fontSize: 14,
       ),
