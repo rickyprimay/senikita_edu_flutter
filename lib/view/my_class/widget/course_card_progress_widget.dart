@@ -1,4 +1,6 @@
+// Import tetap sama
 import 'package:flutter/material.dart';
+import 'package:widya/res/helpers/get_level_color.dart';
 import 'package:widya/res/widgets/colors.dart';
 import 'package:widya/res/widgets/fonts.dart';
 
@@ -9,7 +11,8 @@ class CourseCardWithProgress extends StatefulWidget {
   final String author;
   final String? imageUrl;
   final double progress;
-  final VoidCallback? onTap; 
+  final VoidCallback? onTap;
+  final String levelLabel;
 
   const CourseCardWithProgress({
     super.key,
@@ -19,7 +22,8 @@ class CourseCardWithProgress extends StatefulWidget {
     required this.author,
     this.imageUrl,
     required this.progress,
-    this.onTap, 
+    this.onTap,
+    required this.levelLabel,
   });
 
   @override
@@ -44,7 +48,7 @@ class _CourseCardWithProgressState extends State<CourseCardWithProgress> {
       onTapUp: (_) {
         _setPressed(false);
         if (widget.onTap != null) {
-          widget.onTap!(); 
+          widget.onTap!();
         }
       },
       onTapCancel: () => _setPressed(false),
@@ -86,26 +90,53 @@ class _CourseCardWithProgressState extends State<CourseCardWithProgress> {
                     width: 1,
                   ),
                 ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(15),
-                  child: (widget.imageUrl != null && widget.imageUrl!.isNotEmpty)
-                      ? Image.network(
-                          widget.imageUrl!,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            return const Icon(Icons.broken_image, color: Colors.grey, size: 40);
-                          },
-                          loadingBuilder: (context, child, loadingProgress) {
-                            if (loadingProgress == null) return child;
-                            return Center(
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
-                              ),
-                            );
-                          },
-                        )
-                      : const Icon(Icons.image, color: Colors.grey, size: 40),
+                child: Stack(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(15),
+                      child: (widget.imageUrl != null && widget.imageUrl!.isNotEmpty)
+                          ? Image.network(
+                              widget.imageUrl!,
+                              fit: BoxFit.cover,
+                              width: 100,
+                              height: 100,
+                              errorBuilder: (context, error, stackTrace) {
+                                return const Icon(Icons.broken_image, color: Colors.grey, size: 40);
+                              },
+                              loadingBuilder: (context, child, loadingProgress) {
+                                if (loadingProgress == null) return child;
+                                return Center(
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
+                                  ),
+                                );
+                              },
+                            )
+                          : const Icon(Icons.image, color: Colors.grey, size: 40),
+                    ),
+
+                    if (widget.levelLabel.isNotEmpty)
+                      Positioned(
+                        top: 6,
+                        left: 6,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: GetLevelColor(widget.levelLabel),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Text(
+                            '${widget.levelLabel[0].toUpperCase()}${widget.levelLabel.substring(1)}',
+                            style: AppFont.nunitoSubtitle.copyWith(
+                              fontSize: 10,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
               ),
               Expanded(

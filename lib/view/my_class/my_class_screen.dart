@@ -155,6 +155,7 @@ class _MyClassScreenState extends State<MyClassScreen> {
                                           },
                                         );
                                       },
+                                      levelLabel: enrollment.course.level,
                                     ),
                                     const SizedBox(height: 16),
                                   ],
