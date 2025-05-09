@@ -185,7 +185,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
   Widget _buildMoreInfo(Lesson selectedLesson) {
     return SingleChildScrollView(
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 12.0),
+        margin: const EdgeInsets.symmetric(horizontal: 22.0, vertical: 8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -345,7 +345,6 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
                   ),
                 ),
 
-                // Duration + Video Icon
                 Row(
                   children: [
                     Icon(Icons.access_time, size: 16, color: Colors.grey[700]),
