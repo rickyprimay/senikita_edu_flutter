@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:widya/models/lessons/lesson.dart';
-import 'package:widya/res/widgets/fonts.dart';
 import 'package:widya/res/widgets/loading.dart';
 import 'package:widya/res/widgets/svg_assets.dart';
 import 'package:widya/view/class_detail/widget/chat_pop_up_widget.dart';
@@ -12,6 +11,19 @@ import 'package:widya/view/class_detail/widget/course_header_widget.dart';
 import 'package:widya/viewModel/lesson_view_model.dart';
 import 'package:widya/res/widgets/colors.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+
+class ClassDetailState {
+  bool isLoading = true;
+  bool isChatOpen = false;
+  int? selectedIndex;
+  List<int> completedLectureIndices = [];
+  
+  void markLessonComplete(int index) {
+    if (!completedLectureIndices.contains(index)) {
+      completedLectureIndices.add(index);
+    }
+  }
+}
 
 class ClassDetailScreen extends StatefulWidget {
   final int courseId;
@@ -34,22 +46,27 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
   YoutubePlayerController? _youtubeController;
   
   late LessonViewModel _lessonViewModel;
+  final _state = ClassDetailState();
   
-  final ValueNotifier<bool> _isContentLoadingNotifier = ValueNotifier<bool>(true);
-  final ValueNotifier<bool> _isChatOpenNotifier = ValueNotifier<bool>(false);
-  final ValueNotifier<int?> _selectedIndexNotifier = ValueNotifier<int?>(null);
-  final ValueNotifier<List<int>> _selectedLectureIndicesNotifier = ValueNotifier<List<int>>([]);
+  bool _videoInitialized = false;
   
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
     _lessonViewModel = Provider.of<LessonViewModel>(context, listen: false);
-    _fetchLessons();
+    
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _fetchLessons();
+    });
   }
   
   Future<void> _fetchLessons() async {
-    _isContentLoadingNotifier.value = true;
+    if (mounted) {
+      setState(() {
+        _state.isLoading = true;
+      });
+    }
 
     await _lessonViewModel.fetchLessonByCourseId(widget.courseId);
 
@@ -59,11 +76,17 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
     if (lessons != null && lessons.isNotEmpty) {
       lessons.sort((a, b) => (a.order ?? 0).compareTo(b.order ?? 0));
       int selectedIndex = _findInitialLessonIndex(lessons);
-      _selectedIndexNotifier.value = selectedIndex;
-      _initializeYoutubeController(lessons[selectedIndex].videoUrl);
+      
+      setState(() {
+        _state.selectedIndex = selectedIndex;
+        _state.isLoading = false;
+      });
     }
-
-    _isContentLoadingNotifier.value = false;
+    else {
+      setState(() {
+        _state.isLoading = false;
+      });
+    }
   }
   
   int _findInitialLessonIndex(List<Lesson> lessons) {
@@ -88,47 +111,55 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
   }
   
   void _initializeYoutubeController(String? videoUrl) {
-    final videoId = YoutubePlayer.convertUrlToId(videoUrl ?? '');
-    _youtubeController?.dispose();
-    
-    if (videoId != null && videoId.isNotEmpty) {
-      _youtubeController = YoutubePlayerController(
-        initialVideoId: videoId,
-        flags: const YoutubePlayerFlags(
-          autoPlay: false,
-          mute: false,
-          loop: false,
-        ),
-      );
-    } else {
-      _youtubeController = null;
+    if (!_videoInitialized && videoUrl != null && videoUrl.isNotEmpty) {
+      final videoId = YoutubePlayer.convertUrlToId(videoUrl);
+      if (videoId != null && videoId.isNotEmpty) {
+        _youtubeController?.dispose();
+        _youtubeController = YoutubePlayerController(
+          initialVideoId: videoId,
+          flags: const YoutubePlayerFlags(
+            autoPlay: false,
+            mute: false,
+            loop: false,
+            enableCaption: false, 
+            forceHD: false,
+          ),
+        );
+        _videoInitialized = true;
+      }
     }
   }
   
-  Future<void> _updateSelectedContent(int index) async {
+  void _updateSelectedContent(int index) {
+    if (_state.selectedIndex == index) return; 
+    
     final lesson = _lessonViewModel.lessons?[index];
     if (lesson == null) return;
     
-    _isContentLoadingNotifier.value = true;
-    _selectedIndexNotifier.value = index;
+    setState(() {
+      _state.selectedIndex = index;
+      _state.isLoading = true;
+    });
     
-    if (lesson.videoUrl != null) {
-      _initializeYoutubeController(lesson.videoUrl);
-    } else {
-      _youtubeController?.dispose();
-      _youtubeController = null;
-    }
+    _videoInitialized = false;
+    _youtubeController?.dispose();
+    _youtubeController = null;
     
-    await Future.delayed(const Duration(milliseconds: 100));
-    if (mounted) {
-      _isContentLoadingNotifier.value = false;
-    }
+    Future.microtask(() {
+      if (mounted) {
+        setState(() {
+          _state.isLoading = false;
+        });
+      }
+    });
   }
   
   void _openChat() {
-    _isChatOpenNotifier.value = true;
+    setState(() {
+      _state.isChatOpen = true;
+    });
 
-    final selectedIndex = _selectedIndexNotifier.value ?? 0;
+    final selectedIndex = _state.selectedIndex ?? 0;
     final currentLesson = _lessonViewModel.lessons?[selectedIndex];
     final lessonName = currentLesson?.title ?? 'Lesson';
     final lessonDescription = currentLesson?.description ?? 'Description';
@@ -138,7 +169,9 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
 
     Future.delayed(const Duration(milliseconds: 300), () {
       if (mounted) {
-        _isChatOpenNotifier.value = false;
+        setState(() {
+          _state.isChatOpen = false;
+        });
       }
     });
   }
@@ -147,10 +180,6 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
   void dispose() {
     _youtubeController?.dispose();
     _tabController.dispose();
-    _isContentLoadingNotifier.dispose();
-    _isChatOpenNotifier.dispose();
-    _selectedIndexNotifier.dispose();
-    _selectedLectureIndicesNotifier.dispose();
     super.dispose();
   }
 
@@ -208,12 +237,8 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
           ),
         ),
         
-        ValueListenableBuilder<bool>(
-          valueListenable: _isContentLoadingNotifier,
-          builder: (context, isLoading, _) {
-            return isLoading ? const Loading(opacity: 1) : const SizedBox.shrink();
-          },
-        ),
+        if (_state.isLoading)
+          const Loading(opacity: 1),
       ],
     );
   }
@@ -230,110 +255,100 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
           return _buildEmptyState();
         }
 
-        return ValueListenableBuilder<bool>(
-          valueListenable: _isChatOpenNotifier,
-          builder: (context, isChatOpen, _) {
-            if (isChatOpen) {
-              return const Center(
-                child: Text(
-                  'Chat sedang aktif.\nKonten kelas dijeda sementara.',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 16, color: Colors.grey),
-                ),
-              );
-            }
-            
-            return _buildLessonContent(lessons);
-          },
-        );
+        if (_state.isChatOpen) {
+          return const Center(
+            child: Text(
+              'Chat sedang aktif.\nKonten kelas dijeda sementara.',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 16, color: Colors.grey),
+            ),
+          );
+        }
+        
+        return _buildLessonContent(lessons);
       },
     );
   }
 
   Widget _buildErrorState() {
-    return Center(
+    return const Center(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+        padding: EdgeInsets.symmetric(horizontal: 24.0),
         child: Text(
           "Error: Gagal Koneksi Ke Server",
           textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.titleMedium,
+          style: TextStyle(fontSize: 16),
         ),
       ),
     );
   }
 
   Widget _buildEmptyState() {
-    return Center(
+    return const Center(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+        padding: EdgeInsets.symmetric(horizontal: 24.0),
         child: Text(
           "Belum ada materi yang tersedia di kelas ini silahkan kembali lagi nanti",
           textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.titleMedium,
+          style: TextStyle(fontSize: 16),
         ),
       ),
     );
   }
 
   Widget _buildLessonContent(List<Lesson> lessons) {
-    return ValueListenableBuilder<int?>(
-      valueListenable: _selectedIndexNotifier,
-      builder: (context, selectedIndex, _) {
-        final actualSelectedIndex = selectedIndex ?? 0;
-        final selectedLesson = lessons[actualSelectedIndex];
+    final selectedIndex = _state.selectedIndex ?? 0;
+    final selectedLesson = lessons[selectedIndex];
+    
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (!_state.isLoading && selectedLesson.type == 'lesson') 
+          _buildLessonMedia(selectedLesson),
         
-        return ValueListenableBuilder<bool>(
-          valueListenable: _isContentLoadingNotifier,
-          builder: (context, isContentLoading, _) {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (!isContentLoading && selectedLesson.type == 'lesson')
-                  _buildLessonMedia(selectedLesson),
-                
-                CourseHeaderWidget(
-                  courseName: widget.courseName,
-                  courseDescription: widget.courseDescription,
-                ),
-                
-                _buildTabBar(),
-                
-                const Divider(color: Colors.grey, height: 1),
-                
-                Expanded(
-                  child: TabBarView(
-                    controller: _tabController,
-                    children: [
-                      ValueListenableBuilder<List<int>>(
-                        valueListenable: _selectedLectureIndicesNotifier,
-                        builder: (context, completedLectures, _) {
-                          return LessonListWidget(
-                            lessons: lessons,
-                            selectedIndex: actualSelectedIndex, 
-                            completedLectures: completedLectures,
-                            onLessonSelected: _updateSelectedContent,
-                            onMarkComplete: (index) => _markLessonAsComplete(index),
-                          );
-                        },
-                      ),
-                      LessonInfoWidget(lesson: selectedLesson),
-                    ],
-                  ),
-                ),
-              ],
-            );
-          },
-        );
-      },
+        RepaintBoundary(
+          child: CourseHeaderWidget(
+            courseName: widget.courseName,
+            courseDescription: widget.courseDescription,
+          ),
+        ),
+        
+        RepaintBoundary(
+          child: _buildTabBar(),
+        ),
+        
+        const Divider(color: Colors.grey, height: 1),
+        
+        Expanded(
+          child: TabBarView(
+            controller: _tabController,
+            children: [
+              LessonListWidget(
+                lessons: lessons,
+                selectedIndex: selectedIndex, 
+                completedLectures: _state.completedLectureIndices,
+                onLessonSelected: _updateSelectedContent,
+                onMarkComplete: _markLessonAsComplete,
+              ),
+              LessonInfoWidget(lesson: selectedLesson),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
   Widget _buildLessonMedia(Lesson lesson) {
+    if (lesson.videoUrl != null && !_videoInitialized) {
+      _initializeYoutubeController(lesson.videoUrl);
+    }
+    
     if (lesson.videoUrl != null && _youtubeController != null) {
-      return YoutubePlayerWidget(
-        controller: _youtubeController!,
-        isFullscreen: false,
+      return RepaintBoundary(
+        child: YoutubePlayerWidget(
+          controller: _youtubeController!,
+          isFullscreen: false,
+        ),
       );
     } else {
       return Expanded(
@@ -359,14 +374,11 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
         indicatorColor: AppColors.primary,
         labelColor: Colors.black,
         unselectedLabelColor: Colors.grey,
-        tabs: [
+        tabs: const [
           Tab(
             child: Text(
               'Materi',
-              style: AppFont.crimsonSubtitle.copyWith(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-              ),
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
             ),
           ),
           Tab(
@@ -377,10 +389,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
                 SizedBox(width: 4),
                 Text(
                   'Selengkapnya',
-                  style: AppFont.crimsonSubtitle.copyWith(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                 ),
               ],
             ),
@@ -391,9 +400,8 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
   }
   
   void _markLessonAsComplete(int index) {
-    final currentIndices = List<int>.from(_selectedLectureIndicesNotifier.value);
-    currentIndices.add(index);
-    _selectedLectureIndicesNotifier.value = currentIndices;
+    _state.markLessonComplete(index);
+    setState(() {}); 
     
     _lessonViewModel.postCompleteLesson(_lessonViewModel.lessons![index].id ?? 0, context);
   }
