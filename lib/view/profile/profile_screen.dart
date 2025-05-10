@@ -158,7 +158,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                       ),
                     ),
-                    ProfileInfoTile(icon: const Icon(Icons.email), title: "Email", subtitle: email ?? '', trailing: const Icon(Icons.info_outline, size: 18, color: AppColors.lightBrick)),
+                    ProfileInfoTile(icon: const Icon(Icons.email), title: "Email", subtitle: email ?? '', trailing: const Icon(Icons.info_outline, size: 18, color: AppColors.primary)),
                     const SizedBox(height: 10),
                     SizedBox(
                       width: double.infinity,
@@ -173,11 +173,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                       ),
                     ),
-                    ProfileInfoTile(icon: const Icon(Icons.help), title: "Bantuan", trailing: const Icon(Icons.arrow_forward_ios, size: 16, color: AppColors.lightBrick)),
+                    ProfileInfoTile(icon: const Icon(Icons.help), title: "Bantuan", trailing: const Icon(Icons.arrow_forward_ios, size: 16, color: AppColors.primary)),
                     ProfileInfoTile(
                       icon: const Icon(Icons.info),
                       title: "Tentang Widya",
-                      trailing: const Icon(Icons.arrow_forward_ios, size: 16, color: AppColors.lightBrick),
+                      trailing: const Icon(Icons.arrow_forward_ios, size: 16, color: AppColors.primary),
                       onTap: () {
                         Navigator.of(context, rootNavigator: true).pushNamed(RouteNames.seniKitaEdu);
                       },
@@ -185,7 +185,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ProfileInfoTile(
                       icon: Image.asset('assets/common/loading.png', width: 24, height: 24,),
                       title: "Tentang SeniKita Marketplace",
-                      trailing: const Icon(Icons.arrow_forward_ios, size: 16, color: AppColors.lightBrick),
+                      trailing: const Icon(Icons.arrow_forward_ios, size: 16, color: AppColors.primary),
                       onTap: () {
                         Navigator.of(context, rootNavigator: true).pushNamed(RouteNames.seniKita);
                       },
@@ -193,7 +193,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ProfileInfoTile(
                       icon: const Icon(Icons.logout),
                       title: "Log Out",
-                      trailing: const Icon(Icons.arrow_forward_ios, size: 16, color: AppColors.lightBrick),
+                      trailing: const Icon(Icons.arrow_forward_ios, size: 16, color: AppColors.primary),
                       onTap: () {
                         QuickAlert.show(
                           context: context,
