@@ -50,8 +50,6 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
   late LessonViewModel _lessonViewModel;
   final _state = ClassDetailState();
   
-  bool _videoInitialized = false;
-  
   @override
   void initState() {
     super.initState();
@@ -113,40 +111,37 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
   }
   
   void _initializeYoutubeController(String? videoUrl) {
-    if (!_videoInitialized && videoUrl != null && videoUrl.isNotEmpty) {
-      final videoId = YoutubePlayer.convertUrlToId(videoUrl);
-      if (videoId != null && videoId.isNotEmpty) {
-        _youtubeController?.dispose();
-        _youtubeController = YoutubePlayerController(
-          initialVideoId: videoId,
-          flags: const YoutubePlayerFlags(
-            autoPlay: false,
-            mute: false,
-            loop: false,
-            enableCaption: false, 
-            forceHD: false,
-          ),
-        );
-        _videoInitialized = true;
-      }
+    final videoId = YoutubePlayer.convertUrlToId(videoUrl ?? '');
+    if (videoId != null && videoId.isNotEmpty) {
+      _youtubeController?.dispose();
+      _youtubeController = YoutubePlayerController(
+        initialVideoId: videoId,
+        flags: const YoutubePlayerFlags(
+          autoPlay: false,
+          mute: false,
+          loop: false,
+          enableCaption: false,
+          forceHD: false,
+        ),
+      );
     }
   }
   
   void _updateSelectedContent(int index) {
-    if (_state.selectedIndex == index) return; 
-    
+    if (_state.selectedIndex == index) return;
+
     final lesson = _lessonViewModel.lessons?[index];
     if (lesson == null) return;
-    
+
     setState(() {
       _state.selectedIndex = index;
       _state.isLoading = true;
     });
-    
-    _videoInitialized = false;
+
     _youtubeController?.dispose();
     _youtubeController = null;
-    
+    _initializeYoutubeController(lesson.videoUrl); 
+
     Future.microtask(() {
       if (mounted) {
         setState(() {
@@ -342,7 +337,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
   }
 
   Widget _buildLessonMedia(Lesson lesson) {
-    if (lesson.videoUrl != null && !_videoInitialized) {
+    if (lesson.videoUrl != null) {
       _initializeYoutubeController(lesson.videoUrl);
     }
 
