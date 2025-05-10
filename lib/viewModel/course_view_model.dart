@@ -2,7 +2,6 @@ import 'package:flutter/widgets.dart';
 import 'package:widya/models/course/course_list_model.dart';
 import 'package:widya/models/course/course_model.dart';
 import 'package:widya/repository/course_repository.dart';
-import 'package:widya/res/widgets/logger.dart';
 import 'package:widya/res/widgets/shared_preferences.dart';
 import 'package:widya/viewModel/lesson_view_model.dart';
 
@@ -37,13 +36,12 @@ class CourseViewModel with ChangeNotifier {
 
     try {
       final response = await _courseRepository.fetchCourse(categoryId: categoryId, page: page, token: token ?? "");
-      AppLogger.logInfo("Response: $response");
 
       final courseListResponse = CourseListResponse.fromJson(response);
 
       _courses = courseListResponse.data;
-      _currentPage = page ?? 1;  // reset current page
-      _hasMore = true;           // reset hasMore dulu
+      _currentPage = page ?? 1;  
+      _hasMore = true;         
 
       if (response['meta'] != null && response['meta']['pagination'] != null) {
         final pagination = response['meta']['pagination'];
@@ -62,7 +60,6 @@ class CourseViewModel with ChangeNotifier {
     } catch (e) {
       _loading = false;
       _error = e.toString();
-      AppLogger.logError("Error fetching courses: $e");
       notifyListeners();
     }
   }
@@ -77,7 +74,6 @@ class CourseViewModel with ChangeNotifier {
 
     try {
       final response = await _courseRepository.fetchCourse(search: searchQuery, token: token ?? "");
-      AppLogger.logInfo("Search Response: $response");
 
       final courseListResponse = CourseListResponse.fromJson(response);
 
@@ -93,7 +89,7 @@ class CourseViewModel with ChangeNotifier {
   }
 
   Future<void> appendNewCourses() async {
-    if (_loading || !_hasMore) return; // <-- tambahkan ini!
+    if (_loading || !_hasMore) return;
 
     _loading = true;
     notifyListeners();
@@ -124,7 +120,6 @@ class CourseViewModel with ChangeNotifier {
     } catch (e) {
       _loading = false;
       _error = e.toString();
-      AppLogger.logError("appendNewCourses error: $e");
       notifyListeners();
     }
   }

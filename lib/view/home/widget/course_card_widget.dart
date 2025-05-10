@@ -113,7 +113,7 @@ class _CourseCardState extends State<CourseCard> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        widget.title,
+                        "${widget.title} dan status ${widget.isEnrolled ? 'Terdaftar' : 'Belum Terdaftar'}",
                         style: AppFont.crimsonTextHeader.copyWith(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,

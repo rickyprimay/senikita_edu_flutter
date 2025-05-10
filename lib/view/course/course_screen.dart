@@ -44,7 +44,7 @@ class _CourseScreenState extends State<CourseScreen> {
       Provider.of<EnrollmentsViewModel>(context, listen: false);
       Provider.of<LessonViewModel>(context, listen: false).fetchLessonByCourseId(widget.courseId);
       viewModel.fetchCourseDetail(widget.courseId);
-      AppLogger.logInfo("isEnrolked: ${widget.isEnrolled}");
+      AppLogger.logInfo("isEnrolled: ${widget.isEnrolled}");
     });
   }
 
@@ -239,61 +239,100 @@ class _CourseScreenState extends State<CourseScreen> {
                 const SizedBox(height: 8),
                 Column(
                   children: [
-                    !widget.isEnrolled
-                        ? Row(
+                    widget.isEnrolled
+                        ? Column(
                             children: [
-                              Text(
-                                "Rp 0",
-                                style: AppFont.crimsonTextHeader.copyWith(
-                                  fontSize: 40,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(width: 8),
-                              Text(
-                                "Rp 1.000.000",
-                                style: AppFont.crimsonTextHeader.copyWith(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w400,
-                                  color: AppColors.secondary,
-                                  decoration: TextDecoration.lineThrough,
-                                  decorationThickness: 1,
-                                ),
+                              const SizedBox(height: 8),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    "Kamu sudah terdaftar di kelas ini",
+                                    style: AppFont.ralewaySubtitle.copyWith(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w700,
+                                      color: AppColors.secondary,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
                           )
-                        : 
-                        const SizedBox(height: 8),
-                        Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                        : Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              Row(
+                                children: [
+                                  Text(
+                                    "Rp 0",
+                                    style: AppFont.crimsonTextHeader.copyWith(
+                                      fontSize: 40,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    "Rp 1.000.000",
+                                    style: AppFont.crimsonTextHeader.copyWith(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w400,
+                                      color: AppColors.secondary,
+                                      decoration: TextDecoration.lineThrough,
+                                      decorationThickness: 1,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 8),
                               Text(
-                                "Kamu sudah terdaftar di kelas ini",
+                                "Kelas ini gratis untuk semua pengguna, silahkan klik tombol dibawah ini untuk mendaftar. status kelas : ${widget.isEnrolled}",
                                 style: AppFont.ralewaySubtitle.copyWith(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w700,
-                                  color: AppColors.secondary,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.customRed,
                                 ),
                               ),
                             ],
                           ),
-                    const SizedBox(height: 2),
-                    !widget.isEnrolled
-                        ? Text(
-                            "Kelas ini gratis untuk semua pengguna, silahkan klik tombol dibawah ini untuk mendaftar.",
-                            style: AppFont.ralewaySubtitle.copyWith(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              color: AppColors.customRed,
-                            ),
-                          )
-                        : const SizedBox.shrink(),
                     const SizedBox(height: 8),
-                    !widget.isEnrolled
-                        ? Center(
-                            child: SizedBox(
-                              width: double.infinity,
-                              child: ElevatedButton(
+                    Center(
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: widget.isEnrolled
+                            ? ElevatedButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                  Future.delayed(Duration.zero, () {
+                                    Navigator.of(context, rootNavigator: true).pushNamed(
+                                      RouteNames.classDetail,
+                                      arguments: {
+                                        'courseId': widget.courseId,
+                                        'courseName': courseDetail.title,
+                                        'courseDescription': courseDetail.description,
+                                      },
+                                    );
+                                  });
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(vertical: 14),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    side: const BorderSide(color: Colors.black, width: 1),
+                                  ),
+                                  backgroundColor: Colors.transparent,
+                                  foregroundColor: Colors.black,
+                                  elevation: 0,
+                                ),
+                                child: Text(
+                                  "Lanjut Ke kelas?",
+                                  style: AppFont.ralewaySubtitle.copyWith(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              )
+                            : ElevatedButton(
                                 onPressed: () {
                                   enrollmentsViewModel.postEnrollments(
                                     courseId: widget.courseId,
@@ -317,44 +356,6 @@ class _CourseScreenState extends State<CourseScreen> {
                                   ),
                                 ),
                               ),
-                            ),
-                          )
-                        : Center(
-                      child: SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.pop(context); 
-                            Future.delayed(Duration.zero, () {
-                              Navigator.of(context, rootNavigator: true).pushNamed(
-                                RouteNames.classDetail,
-                                arguments: {
-                                  'courseId': widget.courseId,
-                                  'courseName': courseDetail.title,
-                                  'courseDescription': courseDetail.description,
-                                },
-                              );
-                            });
-                          },
-                          style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(vertical: 14),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              side: const BorderSide(color: Colors.black, width: 1),
-                            ),
-                            backgroundColor: Colors.transparent,
-                            foregroundColor: Colors.black,
-                            elevation: 0,
-                          ),
-                          child: Text(
-                            "Lanjut Ke kelas?",
-                            style: AppFont.ralewaySubtitle.copyWith(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ),
                       ),
                     ),
                   ],
@@ -499,7 +500,7 @@ class _CourseScreenState extends State<CourseScreen> {
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          lesson.title?? "", 
+                                          lesson.title ?? "", 
                                           style: AppFont.ralewaySubtitle.copyWith(
                                             fontSize: 14,
                                             fontWeight: FontWeight.w400,
@@ -507,7 +508,7 @@ class _CourseScreenState extends State<CourseScreen> {
                                         ),
                                         const SizedBox(height: 4),
                                         Text(
-                                          "Video - ${lesson.duration} Menit",
+                                          "Video - ${lesson.type ?? "lesson"}",  // Changed from lesson.duration to lesson.type
                                           style: AppFont.ralewaySubtitle.copyWith(
                                             fontSize: 12,
                                             fontWeight: FontWeight.w400,

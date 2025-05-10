@@ -2,7 +2,9 @@ import 'package:logger/logger.dart';
 
 class AppLogger {
   static final Logger _logger = Logger(
-    printer: PrettyPrinter(),
+    printer: PrettyPrinter(
+      lineLength: 5000
+    ),
   );
 
   static void logInfo(String message) {
