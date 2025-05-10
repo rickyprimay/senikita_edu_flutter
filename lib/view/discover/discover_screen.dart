@@ -69,12 +69,14 @@ class Discover extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PersistentTabView(
+    return 
+    PersistentTabView(
       context,
       controller: controller,
       screens: screens,
       items: _navBarsItems(),
       navBarStyle: NavBarStyle.style7,
+      backgroundColor: Colors.grey.shade100,
       navBarHeight: kBottomNavigationBarHeight * 1.4,
     );
   }
