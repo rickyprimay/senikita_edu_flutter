@@ -32,16 +32,30 @@ class CourseViewModel with ChangeNotifier {
     final sp = await SharedPrefs.instance;
     final String? token = sp.getString("auth_token");
     _loading = true;
-    _error = null; 
-    notifyListeners();  
+    _error = null;
+    notifyListeners();
 
     try {
       final response = await _courseRepository.fetchCourse(categoryId: categoryId, page: page, token: token ?? "");
       AppLogger.logInfo("Response: $response");
-      
+
       final courseListResponse = CourseListResponse.fromJson(response);
 
       _courses = courseListResponse.data;
+      _currentPage = page ?? 1;  // reset current page
+      _hasMore = true;           // reset hasMore dulu
+
+      if (response['meta'] != null && response['meta']['pagination'] != null) {
+        final pagination = response['meta']['pagination'];
+        final int totalPages = pagination['total_pages'] ?? 1;
+
+        // Kalau cuma 1 halaman, langsung set hasMore false
+        if (_currentPage >= totalPages || pagination['links']['next'] == null) {
+          _hasMore = false;
+        }
+      } else {
+        _hasMore = false;
+      }
 
       _loading = false;
       notifyListeners();
@@ -49,7 +63,7 @@ class CourseViewModel with ChangeNotifier {
       _loading = false;
       _error = e.toString();
       AppLogger.logError("Error fetching courses: $e");
-      notifyListeners();  
+      notifyListeners();
     }
   }
 
@@ -79,7 +93,7 @@ class CourseViewModel with ChangeNotifier {
   }
 
   Future<void> appendNewCourses() async {
-    if (_loading) return;
+    if (_loading || !_hasMore) return; // <-- tambahkan ini!
 
     _loading = true;
     notifyListeners();
@@ -92,6 +106,15 @@ class CourseViewModel with ChangeNotifier {
       if (courseListResponse.data.isNotEmpty) {
         _courses = [...?_courses, ...courseListResponse.data];
         _currentPage = nextPage;
+      }
+
+      if (response['meta'] != null && response['meta']['pagination'] != null) {
+        final pagination = response['meta']['pagination'];
+        final int totalPages = pagination['total_pages'] ?? 1;
+
+        if (_currentPage >= totalPages || pagination['links']['next'] == null) {
+          _hasMore = false;
+        }
       } else {
         _hasMore = false;
       }
@@ -131,6 +154,7 @@ class CourseViewModel with ChangeNotifier {
 
   Future<void> resetCourses() async {
     _currentPage = 1;
+    _hasMore = true;
     await fetchCourses(page: 1);
   }
 
