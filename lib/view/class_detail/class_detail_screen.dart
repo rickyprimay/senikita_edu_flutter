@@ -297,7 +297,6 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
                 ),
                 const SizedBox(width: 12),
 
-                // Text Content
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -334,13 +333,6 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
                         ],
                       ),
                       const SizedBox(height: 4),
-                      Text(
-                        'Pada kesempatan kali ini kita akan belajar pergerakan tangan',
-                        style: AppFont.nunitoSubtitle.copyWith(
-                          fontSize: 13,
-                          color: Colors.grey[800],
-                        ),
-                      ),
                     ],
                   ),
                 ),

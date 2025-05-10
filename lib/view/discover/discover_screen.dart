@@ -27,8 +27,8 @@ class Discover extends StatelessWidget {
         activeColorSecondary: Colors.white,
       ),
       PersistentBottomNavBarItem(
-        icon: const Icon(Icons.search),
-        title: "Cari",
+        icon: const Icon(Icons.class_),
+        title: "Kelas Saya",
         textStyle: AppFont.crimsonTextSubtitle.copyWith(
           fontSize: 12,
           fontWeight: FontWeight.w700,
@@ -38,8 +38,8 @@ class Discover extends StatelessWidget {
         activeColorSecondary: Colors.white
       ),
       PersistentBottomNavBarItem(
-        icon: const Icon(Icons.class_),
-        title: "Kelas Saya",
+        icon: const Icon(Icons.art_track),
+        title: "Karya Seni",
         textStyle: AppFont.crimsonTextSubtitle.copyWith(
           fontSize: 12,
           fontWeight: FontWeight.w700,

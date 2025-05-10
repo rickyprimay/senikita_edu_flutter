@@ -44,7 +44,7 @@ class InfoCardWidget extends StatelessWidget {
                     ),
                     child: Icon(icon, color: AppColors.primary, size: 24),
                   ),
-                  const SizedBox(height: 8), // Space between icon and title
+                  const SizedBox(height: 8), 
                   Text(
                     title,
                     style: AppFont.crimsonTextSubtitle.copyWith(
