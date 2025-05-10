@@ -10,6 +10,7 @@ import 'package:widya/view/home/home_screen.dart';
 import 'package:widya/view/login/login_screen.dart';
 import 'package:widya/view/my_class/my_class_screen.dart';
 import 'package:widya/view/profile/profile_screen.dart';
+import 'package:widya/view/quiz/quiz_screen.dart';
 import 'package:widya/view/senikita/senikita_screen.dart';
 import 'package:widya/view/senikita_edu/senikita_edu.dart';
 import 'package:widya/view/splash/splash_screen.dart';
@@ -42,6 +43,16 @@ class Routes {
         return MaterialPageRoute(builder: (BuildContext context) => const SeniKitaEduScreen());
       case (RouteNames.art):
         return MaterialPageRoute(builder: (BuildContext context) => const ArtScreen());
+      case (RouteNames.quiz):
+        final args = settings.arguments as Map<String, dynamic>;
+        final quizTitle = args['quizTitle'] as String;
+        final timeLimit = args['timeLimit'] as int;
+
+        return MaterialPageRoute(
+          builder: (BuildContext context) => QuizScreen(
+            quizTitle: quizTitle,
+            timeLimit: timeLimit,
+        ));
       case (RouteNames.course):
         final args = settings.arguments as Map<String, dynamic>;
         final courseId = args['courseId'] as int;

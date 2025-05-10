@@ -4,6 +4,7 @@ import 'package:widya/models/lessons/lesson.dart';
 import 'package:widya/res/widgets/fonts.dart';
 import 'package:widya/res/widgets/loading.dart';
 import 'package:widya/res/widgets/svg_assets.dart';
+import 'package:widya/utils/routes/routes_names.dart';
 import 'package:widya/view/class_detail/widget/chat_pop_up_widget.dart';
 import 'package:widya/view/class_detail/widget/youtube_player_widget.dart';
 import 'package:widya/view/class_detail/widget/lesson_list_widget.dart';
@@ -446,7 +447,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
                               style: AppFont.ralewaySubtitle.copyWith(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
-                                color: AppColors.secondary,
+                                color: A  ppColors.secondary,
                               ),
                             ),
                           ),
@@ -505,9 +506,17 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
                           offset: const Offset(0, 4),
                         ),
                       ],
-                    ),
+                    ),  
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.of(context, rootNavigator: true).pushNamed(
+                          RouteNames.quiz,
+                          arguments: {
+                            "quizTitle": lesson.title,
+                            "timeLimit": lesson.duration, 
+                          },
+                        );
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.primary,
                         foregroundColor: Colors.white,
