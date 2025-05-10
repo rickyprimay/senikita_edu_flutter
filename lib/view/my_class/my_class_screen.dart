@@ -47,14 +47,22 @@ class _MyClassScreenState extends State<MyClassScreen> {
           children: [
             Container(
               decoration: BoxDecoration(
-                color: AppColors.primary,
+                gradient: LinearGradient(
+                  colors: [
+                    AppColors.primary,
+                    AppColors.tertiary,
+                  ],
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                ),
                 borderRadius: const BorderRadius.vertical(bottom: Radius.circular(0)),
                 image: const DecorationImage(
                   image: AssetImage('assets/common/hero-texture2.png'),
                   fit: BoxFit.cover,
+                  opacity: 0.5,
                 ),
               ),
-              padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
+              padding: const EdgeInsets.fromLTRB(0, 40, 0, 20),
               child: Center(
                 child: Text(
                   'Kelas Saya',
