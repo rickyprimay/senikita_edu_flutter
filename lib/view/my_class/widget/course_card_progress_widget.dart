@@ -63,7 +63,7 @@ class _CourseCardWithProgressState extends State<CourseCardWithProgress> {
             color: _isPressed ? AppColors.tertiary.withAlpha(80) : Colors.white,
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
-              color: AppColors.primary.withAlpha(120),
+              color: Colors.grey.shade300,
               width: 1,
             ),
             boxShadow: _isPressed
