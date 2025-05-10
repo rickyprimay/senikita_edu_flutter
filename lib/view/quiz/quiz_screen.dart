@@ -104,20 +104,20 @@ class _QuizScreenState extends State<QuizScreen> {
                   style: AppFont.crimsonTextHeader.copyWith(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
-                    color: isPassed ? AppColors.primary : Colors.redAccent,
+                    color: isPassed ? AppColors.primary : AppColors.customRed,
                   ),
                 ),
 
                 const SizedBox(height: 24),
-
+                
                 Container(
                   width: 120,
                   height: 120,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: isPassed ? Colors.green.withOpacity(0.1) : Colors.red.withOpacity(0.1),
+                    color: isPassed ? AppColors.customGreen : Colors.red.withOpacity(0.1),
                     border: Border.all(
-                      color: isPassed ? Colors.green : Colors.redAccent,
+                      color: isPassed ? AppColors.customGreen : Colors.redAccent,
                       width: 3,
                     ),
                   ),
@@ -127,7 +127,7 @@ class _QuizScreenState extends State<QuizScreen> {
                       style: AppFont.crimsonTextHeader.copyWith(
                         fontSize: 32,
                         fontWeight: FontWeight.bold,
-                        color: isPassed ? Colors.green : Colors.redAccent,
+                        color: isPassed ? AppColors.customGreen : Colors.redAccent,
                       ),
                     ),
                   ),
@@ -360,7 +360,7 @@ class _QuizScreenState extends State<QuizScreen> {
                                   Navigator.pop(context);
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.redAccent,
+                                  backgroundColor: AppColors.customRed,
                                   foregroundColor: Colors.white,
                                   padding: const EdgeInsets.symmetric(vertical: 12),
                                   shape: RoundedRectangleBorder(

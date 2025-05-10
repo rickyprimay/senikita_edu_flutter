@@ -491,7 +491,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
                           RouteNames.quiz,
                           arguments: {
                             "quizTitle": lesson.title,
-                            "timeLimit": 1, 
+                            "timeLimit": lesson.duration, 
                           },
                         );
                       },
