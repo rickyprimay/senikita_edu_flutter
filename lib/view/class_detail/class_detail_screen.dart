@@ -373,13 +373,6 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
                       colors: [AppColors.primary.withOpacity(0.9), AppColors.tertiary.withOpacity(0.8)],
                     ),
                     borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        blurRadius: 10,
-                        offset: const Offset(0, 5),
-                      ),
-                    ],
                   ),
                   padding: const EdgeInsets.all(20),
                   child: Column(
@@ -423,14 +416,6 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
-                        blurRadius: 10,
-                        spreadRadius: 1,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
                     border: Border.all(color: AppColors.primary.withOpacity(0.2)),
                   ),
                   padding: const EdgeInsets.all(20),
@@ -499,13 +484,6 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
                     height: 50,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(25),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.primary.withOpacity(0.3),
-                          blurRadius: 10,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
                     ),  
                     child: ElevatedButton(
                       onPressed: () {
