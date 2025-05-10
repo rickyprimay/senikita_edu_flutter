@@ -80,7 +80,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     image: AssetImage('assets/common/hero-texture.png'),
                     fit: BoxFit.cover,
                     colorFilter: ColorFilter.mode(
-                      Colors.black.withOpacity(0.08),
+                      Colors.black.withAlpha(25),
                       BlendMode.dstATop,
                     ),
                   ),
