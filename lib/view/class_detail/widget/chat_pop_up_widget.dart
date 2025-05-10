@@ -169,121 +169,127 @@ class _ChatBodyState extends State<_ChatBody> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          padding: const EdgeInsets.symmetric(vertical: 12),
-          child: Text(
-            'Chat dengan WiChat',
-            style: AppFont.crimsonTextHeader.copyWith(
-              fontSize: 18,
-              fontWeight: FontWeight.w700,
-              color: Colors.black,
+    return Container(
+      decoration: const BoxDecoration(
+        color: Colors.white, 
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            child: Text(
+              'Chat dengan WiChat',
+              style: AppFont.crimsonTextHeader.copyWith(
+                fontSize: 18,
+                fontWeight: FontWeight.w700,
+                color: Colors.black,
+              ),
             ),
           ),
-        ),
-        const Divider(height: 1),
-        Expanded(
-          child: ListView.builder(
-            padding: const EdgeInsets.all(12),
-            itemCount: _messages.length,
-            itemBuilder: (context, index) {
-              final message = _messages[index];
-              final isUser = message.isUser;
-
-              final bubbleColor = isUser
-                  ? AppColors.primary.withOpacity(0.8)
-                  : message.text == 'Loading...'
-                      ? Colors.grey.shade400
-                      : Colors.grey.shade300;
-              final textColor = isUser ? Colors.white : Colors.black;
-
-              final avatar = isUser
-                  ? (_userPhotoUrl != null && _userPhotoUrl!.isNotEmpty
-                      ? NetworkImage(_userPhotoUrl!)
-                      : const AssetImage('assets/common/default_user.png'))
-                  : const AssetImage('assets/common/chatbot.png');
-
-              return Row(
-                mainAxisAlignment: isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (!isUser) ...[
-                    CircleAvatar(
-                      backgroundImage: avatar as ImageProvider,
-                      radius: 16,
-                    ),
-                    const SizedBox(width: 8),
-                  ],
-                  Flexible(
-                    child: Container(
-                      margin: const EdgeInsets.symmetric(vertical: 4),
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                      decoration: BoxDecoration(
-                        color: bubbleColor,
-                        borderRadius: BorderRadius.circular(16),
+          const Divider(height: 1),
+          Expanded(
+            child: ListView.builder(
+              padding: const EdgeInsets.all(12),
+              itemCount: _messages.length,
+              itemBuilder: (context, index) {
+                final message = _messages[index];
+                final isUser = message.isUser;
+      
+                final bubbleColor = isUser
+                    ? AppColors.primary.withOpacity(0.8)
+                    : message.text == 'Loading...'
+                        ? Colors.grey.shade400
+                        : Colors.grey.shade300;
+                final textColor = isUser ? Colors.white : Colors.black;
+      
+                final avatar = isUser
+                    ? (_userPhotoUrl != null && _userPhotoUrl!.isNotEmpty
+                        ? NetworkImage(_userPhotoUrl!)
+                        : const AssetImage('assets/common/default_user.png'))
+                    : const AssetImage('assets/common/chatbot.png');
+      
+                return Row(
+                  mainAxisAlignment: isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (!isUser) ...[
+                      CircleAvatar(
+                        backgroundImage: avatar as ImageProvider,
+                        radius: 16,
                       ),
-                      child: message.text == 'Loading...'
-                          ? const LoadingDots()
-                          : Text(
-                              message.text,
-                              style: AppFont.ralewaySubtitle.copyWith(
-                                color: textColor,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 14,
+                      const SizedBox(width: 8),
+                    ],
+                    Flexible(
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(vertical: 4),
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: bubbleColor,
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: message.text == 'Loading...'
+                            ? const LoadingDots()
+                            : Text(
+                                message.text,
+                                style: AppFont.ralewaySubtitle.copyWith(
+                                  color: textColor,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 14,
+                                ),
                               ),
-                            ),
-                    ),
-                  ),
-                  if (isUser) ...[
-                    const SizedBox(width: 8),
-                    CircleAvatar(
-                      backgroundImage: avatar as ImageProvider,
-                      radius: 16,
-                    ),
-                  ],
-                ],
-              );
-            },
-          ),
-        ),
-        const Divider(height: 1),
-        Padding(
-          padding: MediaQuery.of(context).viewInsets.add(const EdgeInsets.symmetric(horizontal: 8, vertical: 8)),
-          child: Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  controller: _chatController,
-                  decoration: InputDecoration(
-                    hintText: 'Ketik pesan...',
-                    hintStyle: AppFont.ralewaySubtitle.copyWith(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.grey,
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20),
-                      borderSide: BorderSide(
-                        color: AppColors.primary,
-                        width: 1,
                       ),
                     ),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    if (isUser) ...[
+                      const SizedBox(width: 8),
+                      CircleAvatar(
+                        backgroundImage: avatar as ImageProvider,
+                        radius: 16,
+                      ),
+                    ],
+                  ],
+                );
+              },
+            ),
+          ),
+          const Divider(height: 1),
+          Padding(
+            padding: MediaQuery.of(context).viewInsets.add(const EdgeInsets.symmetric(horizontal: 8, vertical: 8)),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _chatController,
+                    decoration: InputDecoration(
+                      hintText: 'Ketik pesan...',
+                      hintStyle: AppFont.ralewaySubtitle.copyWith(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.grey,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20),
+                        borderSide: BorderSide(
+                          color: AppColors.primary,
+                          width: 1,
+                        ),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    ),
                   ),
                 ),
-              ),
-              IconButton(
-                icon: Icon(Icons.send, color: _isSending ? Colors.grey : AppColors.primary),
-                onPressed: _isSending ? null : _sendMessage,
-              ),
-            ],
+                IconButton(
+                  icon: Icon(Icons.send, color: _isSending ? Colors.grey : AppColors.primary),
+                  onPressed: _isSending ? null : _sendMessage,
+                ),
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
