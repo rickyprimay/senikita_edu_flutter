@@ -152,10 +152,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   title: "Kelas dimiliki",
                                   icon: Icons.library_books,
                                   label: isDataLoaded
-                                      ? "$notCompleted Belum selesai"
+                                      ? "$notCompleted Belum"
                                       : "Memuat...",
                                   value: isDataLoaded
-                                      ? "$completed Sudah selesai"
+                                      ? "$completed Selesai"
                                       : "Memuat...",
                                 ),
                               ),
