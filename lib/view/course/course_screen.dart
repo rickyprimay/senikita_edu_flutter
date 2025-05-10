@@ -130,28 +130,27 @@ class _CourseScreenState extends State<CourseScreen> {
                   ),
                 ),
                 const SizedBox(height: 8),
-                Center(
-                  child: Text(
-                    courseDetail.title,
-                    style: AppFont.crimsonTextHeader.copyWith(
-                      fontSize: 26,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.black,
-                    ),
-                    textAlign: TextAlign.center,
+                Text(
+                  courseDetail.title,
+                  style: AppFont.crimsonTextHeader.copyWith(
+                    fontSize: 26,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.black,
                   ),
+                  textAlign: TextAlign.start,
                 ),
                 const SizedBox(height: 4),
                 Text(
                   courseDetail.description,
                   style: AppFont.ralewayFootnoteLarge,
+                  textAlign: TextAlign.justify,
                 ),
                 const SizedBox(height: 8),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
                     color: getLevelColor(courseDetail.level),
-                    borderRadius: BorderRadius.circular(4),
+                    borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
                     "${courseDetail.level[0].toUpperCase()}${courseDetail.level.substring(1)}",
@@ -245,7 +244,7 @@ class _CourseScreenState extends State<CourseScreen> {
                             children: [
                               const SizedBox(height: 8),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Text(
                                     "Kamu sudah terdaftar di kelas ini",
