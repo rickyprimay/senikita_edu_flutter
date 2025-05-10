@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:quickalert/models/quickalert_type.dart';
-import 'package:quickalert/widgets/quickalert_dialog.dart';
 import 'package:widya/models/lessons/lesson.dart';
 import 'package:widya/res/widgets/loading.dart';
-import 'package:widya/utils/utils.dart';
-import 'package:widya/view/class_detail/widget/chat_pop_up.dart';
+import 'package:widya/view/class_detail/widget/chat_pop_up_widget.dart';
+import 'package:widya/view/class_detail/widget/youtube_player_widget.dart';
+import 'package:widya/view/class_detail/widget/lesson_list_widget.dart';
+import 'package:widya/view/class_detail/widget/lesson_info_widget.dart';
+import 'package:widya/view/class_detail/widget/course_header_widget.dart';
 import 'package:widya/viewModel/lesson_view_model.dart';
-import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:widya/res/widgets/colors.dart';
-import 'package:widya/res/widgets/fonts.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class ClassDetailScreen extends StatefulWidget {
   final int courseId;
@@ -56,35 +56,35 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
     final lessons = _lessonViewModel.lessons;
     if (lessons != null && lessons.isNotEmpty) {
       lessons.sort((a, b) => (a.order ?? 0).compareTo(b.order ?? 0));
-
-      int selectedIndex = 0;
-      bool foundIncomplete = false;
-
-      for (int i = 0; i < lessons.length; i++) {
-        if (lessons[i].isCompleted == false) {
-          selectedIndex = i;
-          foundIncomplete = true;
-          break;
-        }
-      }
-
-      if (!foundIncomplete && lessons.isNotEmpty) {
-        int highestOrder = lessons.fold(0, (max, lesson) => 
-            (lesson.order ?? 0) > max ? (lesson.order ?? 0) : max);
-
-        for (int i = 0; i < lessons.length; i++) {
-          if ((lessons[i].order ?? 0) == highestOrder) {
-            selectedIndex = i;
-            break;
-          }
-        }
-      }
-
+      int selectedIndex = _findInitialLessonIndex(lessons);
       _selectedIndexNotifier.value = selectedIndex;
       _initializeYoutubeController(lessons[selectedIndex].videoUrl);
     }
 
     _isContentLoadingNotifier.value = false;
+  }
+  
+  int _findInitialLessonIndex(List<Lesson> lessons) {
+    // Find first incomplete lesson
+    for (int i = 0; i < lessons.length; i++) {
+      if (lessons[i].isCompleted == false) {
+        return i;
+      }
+    }
+    
+    // If all completed, return the latest lesson by order
+    if (lessons.isNotEmpty) {
+      int highestOrder = lessons.fold(0, (max, lesson) => 
+          (lesson.order ?? 0) > max ? (lesson.order ?? 0) : max);
+          
+      for (int i = 0; i < lessons.length; i++) {
+        if ((lessons[i].order ?? 0) == highestOrder) {
+          return i;
+        }
+      }
+    }
+    
+    return 0;
   }
   
   void _initializeYoutubeController(String? videoUrl) {
@@ -94,7 +94,11 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
     if (videoId != null && videoId.isNotEmpty) {
       _youtubeController = YoutubePlayerController(
         initialVideoId: videoId,
-        flags: const YoutubePlayerFlags(autoPlay: false, mute: false),
+        flags: const YoutubePlayerFlags(
+          autoPlay: false,
+          mute: false,
+          loop: false,
+        ),
       );
     } else {
       _youtubeController = null;
@@ -138,224 +142,6 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
       }
     });
   }
-  
-  void _markLessonAsComplete(int index) {
-    QuickAlert.show(
-      context: context,
-      type: QuickAlertType.custom,
-      widget: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              'Apakah kamu yakin ingin menyeslesaikan sesi ini?',
-              style: AppFont.crimsonTextSubtitle.copyWith(
-                fontSize: 18,
-                fontWeight: FontWeight.w700,
-                color: AppColors.primary,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Jika kamu menyelesaikan sesi ini, kamu bisa mengakses lagi namun tidak bisa membatalkan status selesainya.',
-              style: AppFont.crimsonTextSubtitle.copyWith(
-                fontSize: 14,
-                color: AppColors.secondary,
-              ),
-              textAlign: TextAlign.justify,
-            ),
-          ],
-        ),
-      ),
-      confirmBtnText: 'Yakin',
-      onConfirmBtnTap: () {
-        final currentIndices = List<int>.from(_selectedLectureIndicesNotifier.value);
-        currentIndices.add(index);
-        _selectedLectureIndicesNotifier.value = currentIndices;
-        
-        Navigator.of(context).pop();
-        _lessonViewModel.postCompleteLesson(_lessonViewModel.lessons![index].id ?? 0, context); 
-        Utils.showToastification("Berhasil", "Sesi berhasil diselesaikan", true, context);
-      },
-      confirmBtnColor: AppColors.primary,
-    );
-  }
-  
-  Widget _buildMoreInfo(Lesson selectedLesson) {
-    return SingleChildScrollView(
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 22.0, vertical: 8),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 8),
-            Text(
-              selectedLesson.title ?? '',
-              style: AppFont.crimsonTextSubtitle.copyWith(
-                fontSize: 20,
-                fontWeight: FontWeight.w500,
-                color: AppColors.primary,
-              ),
-              textAlign: TextAlign.justify,
-            ),
-            const SizedBox(height: 2),
-            Row(
-              children: [
-                const Icon(Icons.access_time, size: 14, color: AppColors.primary),
-                const SizedBox(width: 4),
-                Text(
-                  'Durasi ${selectedLesson.duration ?? '30 menit'} Menit',
-                  style: AppFont.nunitoSubtitle.copyWith(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w400,
-                    color: AppColors.secondary,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Text(
-              selectedLesson.description ?? 'Pada kesempatan kali ini kita akan belajar pergerakan tangan',
-              style: AppFont.ralewaySubtitle.copyWith(
-                fontSize: 14,
-                fontWeight: FontWeight.w400,
-                color: AppColors.secondary,
-              ),
-              textAlign: TextAlign.justify,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Isi Konten : ${selectedLesson.content}',
-              style: AppFont.ralewaySubtitle.copyWith(
-                fontSize: 12,
-                fontWeight: FontWeight.w400,
-                color: AppColors.secondary,
-              ),
-              textAlign: TextAlign.justify,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-  
-  Widget _buildLessonList(List<Lesson> lessons, int? selectedIndex, List<int> completedLectures) {
-    return ListView.builder(
-      itemCount: lessons.length,
-      itemBuilder: (context, index) {
-        final lesson = lessons[index];
-        final isSelected = selectedIndex == index;
-        final isLectureCompleted = completedLectures.contains(index) || (lesson.isCompleted ?? false);
-        
-        return AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          padding: const EdgeInsets.all(12),
-          margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
-          decoration: BoxDecoration(
-            color: isSelected ? AppColors.primary.withAlpha(20) : Colors.white,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: isSelected ? AppColors.primary.withAlpha(70) : Colors.grey.withAlpha(70),
-            ),
-          ),
-          child: InkWell(
-            borderRadius: BorderRadius.circular(12),
-            onTap: () {
-              if (selectedIndex != index) {
-                _updateSelectedContent(index);
-              }
-            },
-            splashColor: AppColors.primary.withAlpha(30),
-            highlightColor: AppColors.primary.withAlpha(15),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 6),
-                  child: isLectureCompleted
-                      ? Icon(Icons.check_circle, color: AppColors.primary)
-                      : IconButton(
-                          padding: EdgeInsets.zero,
-                          icon: Icon(
-                            isSelected ? Icons.circle_outlined : Icons.circle_outlined,
-                            color: AppColors.primary,
-                          ),
-                          onPressed: () {
-                            if (index == selectedIndex) {
-                              _markLessonAsComplete(index);
-                            } else {
-                              Utils.showToastification(
-                                "Gagal",
-                                "Selesaikan hanya bisa diakses di sesi yang sedang dipelajari",
-                                false,
-                                context,
-                              );
-                            }
-                          },
-                        ),
-                ),
-                const SizedBox(width: 12),
-
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Flexible(
-                            child: Text(
-                              lesson.title ?? '',
-                              style: AppFont.ralewaySubtitle.copyWith(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ),
-                          if (isSelected)
-                            Container(
-                              margin: const EdgeInsets.only(left: 6),
-                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                              decoration: BoxDecoration(
-                                color: Colors.brown[700],
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                              child: Text(
-                                'Saat Ini',
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ),
-                        ],
-                      ),
-                      const SizedBox(height: 4),
-                    ],
-                  ),
-                ),
-
-                Row(
-                  children: [
-                    Icon(Icons.access_time, size: 16, color: Colors.grey[700]),
-                    const SizedBox(width: 4),
-                    Text(
-                      '${lesson.duration ?? 10} menit',
-                      style: TextStyle(fontSize: 12, color: Colors.grey[800]),
-                    ),
-                    const SizedBox(width: 6),
-                    Icon(Icons.videocam, size: 16, color: Colors.grey[700]),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
 
   @override
   void dispose() {
@@ -370,6 +156,28 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
 
   @override
   Widget build(BuildContext context) {
+    final isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
+    final hasVideoPlayer = _youtubeController != null;
+    
+    // If in landscape mode and we have a video player, only show the video player
+    if (isLandscape && hasVideoPlayer) {
+      return _buildLandscapeVideoView();
+    }
+    
+    // Portrait mode or no video - show full UI
+    return _buildPortraitView();
+  }
+
+  Widget _buildLandscapeVideoView() {
+    return Scaffold(
+      body: YoutubePlayerWidget(
+        controller: _youtubeController!,
+        isFullscreen: true,
+      ),
+    );
+  }
+
+  Widget _buildPortraitView() {
     return Stack(
       children: [
         Scaffold(
@@ -392,178 +200,9 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
           ),
           backgroundColor: Colors.white,
           body: SafeArea(
-            child: Consumer<LessonViewModel>(
-              builder: (context, viewModel, _) {
-                if (viewModel.error != null) {
-                  return Center(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                      child: Text(
-                        "Error: Gagal Koneksi Ke Server",
-                        textAlign: TextAlign.center,
-                        style: AppFont.ralewaySubtitle.copyWith(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                  );
-                }
-
-                final lessons = viewModel.lessons;
-                if (lessons == null || lessons.isEmpty) {
-                  return Center(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                      child: Text(
-                        "Belum ada materi yang tersedia di kelas ini silahkan kembali lagi nanti",
-                        textAlign: TextAlign.center,
-                        style: AppFont.ralewaySubtitle.copyWith(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                  );
-                }
-
-                return ValueListenableBuilder<bool>(
-                  valueListenable: _isChatOpenNotifier,
-                  builder: (context, isChatOpen, _) {
-                    if (isChatOpen) {
-                      return const Center(
-                        child: Text(
-                          'Chat sedang aktif.\nKonten kelas dijeda sementara.',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 16, color: Colors.grey),
-                        ),
-                      );
-                    }
-                    
-                    return ValueListenableBuilder<int?>(
-                      valueListenable: _selectedIndexNotifier,
-                      builder: (context, selectedIndex, _) {
-                        final actualSelectedIndex = selectedIndex ?? 0;
-                        final selectedLesson = lessons[actualSelectedIndex];
-                        
-                        return ValueListenableBuilder<bool>(
-                          valueListenable: _isContentLoadingNotifier,
-                          builder: (context, isContentLoading, _) {
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                if (!isContentLoading && selectedLesson.type == 'lesson')
-                                  if (selectedLesson.videoUrl != null && _youtubeController != null)
-                                    YoutubePlayer(
-                                      controller: _youtubeController!,
-                                      showVideoProgressIndicator: true,
-                                      progressIndicatorColor: AppColors.primary,
-                                    )
-                                  else
-                                    Expanded(
-                                      child: SingleChildScrollView(
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(16.0),
-                                          child: Text(
-                                            selectedLesson.content ?? '',
-                                            style: AppFont.ralewaySubtitle.copyWith(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w400,
-                                              color: Colors.black,
-                                            ),
-                                            textAlign: TextAlign.justify,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                
-                                Container(
-                                  padding: const EdgeInsets.all(16),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        widget.courseName,
-                                        style: AppFont.crimsonTextHeader.copyWith(
-                                          fontSize: 22,
-                                          fontWeight: FontWeight.w700,
-                                          color: Colors.black,
-                                        )
-                                      ),
-                                      const SizedBox(height: 4),
-                                      Text(
-                                        widget.courseDescription,
-                                        style: AppFont.ralewayHeader.copyWith(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w400,
-                                          color: Colors.grey,
-                                        )
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                
-                                Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                                  child: TabBar(
-                                    controller: _tabController,
-                                    indicatorColor: AppColors.primary,
-                                    labelColor: Colors.black,
-                                    unselectedLabelColor: Colors.grey,
-                                    tabs: [
-                                      Tab(
-                                        child: Text(
-                                          'Materi',
-                                          style: AppFont.crimsonTextHeader.copyWith(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w700,
-                                          ),
-                                        ),
-                                      ),
-                                      Tab(
-                                        child: Text(
-                                          'Selengkapnya',
-                                          style: AppFont.crimsonTextHeader.copyWith(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                
-                                const Divider(color: Colors.grey, height: 1),
-                                
-                                Expanded(
-                                  child: TabBarView(
-                                    controller: _tabController,
-                                    children: [
-                                      ValueListenableBuilder<List<int>>(
-                                        valueListenable: _selectedLectureIndicesNotifier,
-                                        builder: (context, completedLectures, _) {
-                                          return _buildLessonList(
-                                            lessons, 
-                                            actualSelectedIndex,
-                                            completedLectures,
-                                          );
-                                        },
-                                      ),
-                                      _buildMoreInfo(selectedLesson),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            );
-                          },
-                        );
-                      },
-                    );
-                  },
-                );
-              },
-            ),
+            child: _buildMainContent(),
           ),
+          
           floatingActionButton: FloatingActionButton(
             onPressed: _openChat,
             backgroundColor: AppColors.primary,
@@ -579,5 +218,168 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
         ),
       ],
     );
+  }
+
+  Widget _buildMainContent() {
+    return Consumer<LessonViewModel>(
+      builder: (context, viewModel, _) {
+        if (viewModel.error != null) {
+          return _buildErrorState();
+        }
+
+        final lessons = viewModel.lessons;
+        if (lessons == null || lessons.isEmpty) {
+          return _buildEmptyState();
+        }
+
+        return ValueListenableBuilder<bool>(
+          valueListenable: _isChatOpenNotifier,
+          builder: (context, isChatOpen, _) {
+            if (isChatOpen) {
+              return const Center(
+                child: Text(
+                  'Chat sedang aktif.\nKonten kelas dijeda sementara.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 16, color: Colors.grey),
+                ),
+              );
+            }
+            
+            return _buildLessonContent(lessons);
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildErrorState() {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+        child: Text(
+          "Error: Gagal Koneksi Ke Server",
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEmptyState() {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+        child: Text(
+          "Belum ada materi yang tersedia di kelas ini silahkan kembali lagi nanti",
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLessonContent(List<Lesson> lessons) {
+    return ValueListenableBuilder<int?>(
+      valueListenable: _selectedIndexNotifier,
+      builder: (context, selectedIndex, _) {
+        final actualSelectedIndex = selectedIndex ?? 0;
+        final selectedLesson = lessons[actualSelectedIndex];
+        
+        return ValueListenableBuilder<bool>(
+          valueListenable: _isContentLoadingNotifier,
+          builder: (context, isContentLoading, _) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Video or Text content
+                if (!isContentLoading && selectedLesson.type == 'lesson')
+                  _buildLessonMedia(selectedLesson),
+                
+                // Course header
+                CourseHeaderWidget(
+                  courseName: widget.courseName,
+                  courseDescription: widget.courseDescription,
+                ),
+                
+                // Tabs
+                _buildTabBar(),
+                
+                const Divider(color: Colors.grey, height: 1),
+                
+                // Tab content
+                Expanded(
+                  child: TabBarView(
+                    controller: _tabController,
+                    children: [
+                      ValueListenableBuilder<List<int>>(
+                        valueListenable: _selectedLectureIndicesNotifier,
+                        builder: (context, completedLectures, _) {
+                          return LessonListWidget(
+                            lessons: lessons,
+                            selectedIndex: actualSelectedIndex, 
+                            completedLectures: completedLectures,
+                            onLessonSelected: _updateSelectedContent,
+                            onMarkComplete: (index) => _markLessonAsComplete(index),
+                          );
+                        },
+                      ),
+                      LessonInfoWidget(lesson: selectedLesson),
+                    ],
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildLessonMedia(Lesson lesson) {
+    if (lesson.videoUrl != null && _youtubeController != null) {
+      return YoutubePlayerWidget(
+        controller: _youtubeController!,
+        isFullscreen: false,
+      );
+    } else {
+      return Expanded(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text(
+              lesson.content ?? '',
+              style: Theme.of(context).textTheme.bodyMedium,
+              textAlign: TextAlign.justify,
+            ),
+          ),
+        ),
+      );
+    }
+  }
+
+  Widget _buildTabBar() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: TabBar(
+        controller: _tabController,
+        indicatorColor: AppColors.primary,
+        labelColor: Colors.black,
+        unselectedLabelColor: Colors.grey,
+        tabs: const [
+          Tab(text: 'Materi'),
+          Tab(text: 'Selengkapnya'),
+        ],
+      ),
+    );
+  }
+  
+  void _markLessonAsComplete(int index) {
+    // Extracted to lesson_list_widget.dart
+    // Implementation remains in this file for handling state
+    final currentIndices = List<int>.from(_selectedLectureIndicesNotifier.value);
+    currentIndices.add(index);
+    _selectedLectureIndicesNotifier.value = currentIndices;
+    
+    _lessonViewModel.postCompleteLesson(_lessonViewModel.lessons![index].id ?? 0, context);
   }
 }
