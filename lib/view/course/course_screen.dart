@@ -150,7 +150,7 @@ class _CourseScreenState extends State<CourseScreen> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
-                    color: GetLevelColor(courseDetail.level),
+                    color: getLevelColor(courseDetail.level),
                     borderRadius: BorderRadius.circular(4),
                   ),
                   child: Text(

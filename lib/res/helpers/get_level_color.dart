@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:widya/res/widgets/colors.dart';
 
-Color GetLevelColor(String level) {
+Color getLevelColor(String level) {
   final lowerLevel = level.toLowerCase();
   if (lowerLevel == 'pemula') {
     return AppColors.customGreen;
