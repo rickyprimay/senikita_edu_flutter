@@ -6,7 +6,6 @@ import 'package:widya/res/widgets/shared_preferences.dart';
 import 'package:widya/utils/routes/routes_names.dart';
 import 'package:widya/view/profile/widget/profile_info_tile_widget.dart';
 import 'package:widya/viewModel/auth_view_model.dart';
-import 'package:quickalert/quickalert.dart';
 import 'package:widya/view/profile/widget/info_card_widget.dart';
 import 'package:widya/viewModel/enrollments_view_model.dart';
 
@@ -215,15 +214,90 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       title: "Log Out",
                       trailing: const Icon(Icons.arrow_forward_ios, size: 16, color: AppColors.primary),
                       onTap: () {
-                        QuickAlert.show(
+                        showDialog(
                           context: context,
-                          type: QuickAlertType.confirm,
-                          title: 'Konfirmasi',
-                          text: 'Apakah kamu yakin ingin keluar dari akun ini?',
-                          confirmBtnText: 'Ya',
-                          confirmBtnColor: AppColors.customGreen,
-                          onConfirmBtnTap: () {
-                            authVM.logout(context);
+                          barrierDismissible: false,
+                          builder: (BuildContext dialogContext) {
+                            return SimpleDialog(
+                              contentPadding: const EdgeInsets.all(30),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                              children: [
+                                Column(
+                                  children: [
+                                    Text(
+                                      'Konfirmasi Logout', 
+                                      style: AppFont.crimsonTextSubtitle.copyWith(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w700,
+                                        color: AppColors.primary, 
+                                      ),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      'Apakah kamu yakin ingin keluar dari akun ini?',
+                                      style: AppFont.ralewaySubtitle.copyWith(
+                                        fontSize: 14,
+                                        color: AppColors.secondary,
+                                        fontWeight: FontWeight.w500
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    const SizedBox(height: 20),
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: OutlinedButton(
+                                            onPressed: () {
+                                              Navigator.pop(dialogContext);
+                                            },
+                                            style: OutlinedButton.styleFrom(
+                                              foregroundColor: AppColors.secondary,
+                                              side: BorderSide(color: AppColors.secondary),
+                                              padding: const EdgeInsets.symmetric(vertical: 12),
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(10),
+                                              ),
+                                            ),
+                                            child: Text(
+                                              'Batal',
+                                              style: AppFont.ralewaySubtitle.copyWith(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w600,
+                                                color: AppColors.secondary,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 12),
+                                        Expanded(
+                                          child: ElevatedButton(
+                                            onPressed: () {
+                                              Navigator.pop(dialogContext);
+                                              authVM.logout(context);
+                                            },
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: AppColors.customRed,
+                                              foregroundColor: Colors.white,
+                                              padding: const EdgeInsets.symmetric(vertical: 12),
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(10),
+                                              ),
+                                            ),
+                                            child: Text(
+                                              'Ya',
+                                              style: AppFont.ralewaySubtitle.copyWith(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            );
                           },
                         );
                       },
