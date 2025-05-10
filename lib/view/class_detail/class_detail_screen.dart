@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:widya/models/lessons/lesson.dart';
+import 'package:widya/res/widgets/fonts.dart';
 import 'package:widya/res/widgets/loading.dart';
 import 'package:widya/res/widgets/svg_assets.dart';
 import 'package:widya/view/class_detail/widget/chat_pop_up_widget.dart';
@@ -303,15 +304,16 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (!_state.isLoading && selectedLesson.type == 'lesson') 
+        if (!_state.isLoading) 
           _buildLessonMedia(selectedLesson),
         
-        RepaintBoundary(
-          child: CourseHeaderWidget(
-            courseName: widget.courseName,
-            courseDescription: widget.courseDescription,
+        if (selectedLesson.type?.toLowerCase() == "lesson") 
+          RepaintBoundary(
+            child: CourseHeaderWidget(
+              courseName: widget.courseName,
+              courseDescription: widget.courseDescription,
+            ),
           ),
-        ),
         
         RepaintBoundary(
           child: _buildTabBar(),
@@ -342,8 +344,8 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
     if (lesson.videoUrl != null && !_videoInitialized) {
       _initializeYoutubeController(lesson.videoUrl);
     }
-    
-    if (lesson.videoUrl != null && _youtubeController != null) {
+
+    if (lesson.type?.toLowerCase() == "lesson" && _youtubeController != null) {
       return RepaintBoundary(
         child: YoutubePlayerWidget(
           controller: _youtubeController!,
@@ -351,14 +353,189 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
         ),
       );
     } else {
-      return Expanded(
+      final isQuiz = lesson.type?.toLowerCase() == "quiz";
+
+      return Container(
+        height: MediaQuery.of(context).size.height * 0.6,
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Text(
-              lesson.content ?? '',
-              style: Theme.of(context).textTheme.bodyMedium,
-              textAlign: TextAlign.justify,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [AppColors.primary.withOpacity(0.9), AppColors.tertiary.withOpacity(0.8)],
+                    ),
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        blurRadius: 10,
+                        offset: const Offset(0, 5),
+                      ),
+                    ],
+                  ),
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    children: [
+                      Icon(
+                        Icons.quiz_rounded,
+                        size: 60,
+                        color: Colors.white.withOpacity(0.9),
+                      ),
+                      const SizedBox(height: 16),
+
+                      Text(
+                        isQuiz ? "Siap untuk Mengukur Pemahamanmu?" : "Konten untuk tipe: ${lesson.type}",
+                        style: AppFont.crimsonTextHeader.copyWith(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+
+                      const SizedBox(height: 12),
+
+                      Text(
+                        "Jawab pertanyaan berikut untuk menguji pemahaman kamu tentang materi yang telah dipelajari",
+                        style: AppFont.ralewaySubtitle.copyWith(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.white.withOpacity(0.9),
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 24),
+
+                Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        blurRadius: 10,
+                        spreadRadius: 1,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                    border: Border.all(color: AppColors.primary.withOpacity(0.2)),
+                  ),
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(Icons.assignment_outlined, color: AppColors.primary, size: 22),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              "${lesson.title}",
+                              style: AppFont.ralewaySubtitle.copyWith(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.secondary,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      const Divider(height: 24),
+
+                      Row(
+                        children: [
+                          Icon(Icons.timer_outlined, color: AppColors.primary, size: 22),
+                          const SizedBox(width: 12),
+                          Text(
+                            "Durasi: ${lesson.duration} Menit",
+                            style: AppFont.ralewaySubtitle.copyWith(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.secondary,
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 12),
+
+                      Row(
+                        children: [
+                          Icon(Icons.equalizer, color: AppColors.primary, size: 22),
+                          const SizedBox(width: 12),
+                          Text(
+                            "Tingkat Kesulitan: Dasar",
+                            style: AppFont.ralewaySubtitle.copyWith(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.secondary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+
+                if (isQuiz)
+                  Container(
+                    width: double.infinity,
+                    height: 50,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(25),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.primary.withOpacity(0.3),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: ElevatedButton(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primary,
+                        foregroundColor: Colors.white,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(25),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            "Mulai Quiz",
+                            style: AppFont.ralewaySubtitle.copyWith(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          const Icon(Icons.arrow_forward_rounded, color: Colors.white),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 20),
+              ],
             ),
           ),
         ),
