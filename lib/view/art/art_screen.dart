@@ -188,7 +188,7 @@ class _ArtScreenState extends State<ArtScreen> {
               padding: const EdgeInsets.fromLTRB(0, 40, 0, 20),
               child: Center(
                 child: Text(
-                  'Karya Seni',
+                  'Hasil Karya Seni',
                   style: AppFont.crimsonTextSubtitle.copyWith(
                     color: Colors.white,
                     fontSize: 20,
@@ -203,15 +203,6 @@ class _ArtScreenState extends State<ArtScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Column(
                 children: [
-                  Text(
-                    'Hasil Karya Seni', 
-                    style: AppFont.crimsonTextSubtitle.copyWith(
-                      color: Colors.black, 
-                      fontSize: 18,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  
                   Expanded(
                       child: MasonryGridView.count(
                         controller: _scrollController,
