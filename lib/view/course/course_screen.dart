@@ -44,6 +44,7 @@ class _CourseScreenState extends State<CourseScreen> {
       Provider.of<EnrollmentsViewModel>(context, listen: false);
       Provider.of<LessonViewModel>(context, listen: false).fetchLessonByCourseId(widget.courseId);
       viewModel.fetchCourseDetail(widget.courseId);
+      AppLogger.logInfo("isEnrolked: ${widget.isEnrolled}");
     });
   }
 
@@ -238,7 +239,7 @@ class _CourseScreenState extends State<CourseScreen> {
                 const SizedBox(height: 8),
                 Column(
                   children: [
-                    widget.isEnrolled
+                    !widget.isEnrolled
                         ? Row(
                             children: [
                               Text(
@@ -277,7 +278,7 @@ class _CourseScreenState extends State<CourseScreen> {
                             ],
                           ),
                     const SizedBox(height: 2),
-                    widget.isEnrolled
+                    !widget.isEnrolled
                         ? Text(
                             "Kelas ini gratis untuk semua pengguna, silahkan klik tombol dibawah ini untuk mendaftar.",
                             style: AppFont.ralewaySubtitle.copyWith(
@@ -288,7 +289,7 @@ class _CourseScreenState extends State<CourseScreen> {
                           )
                         : const SizedBox.shrink(),
                     const SizedBox(height: 8),
-                    widget.isEnrolled
+                    !widget.isEnrolled
                         ? Center(
                             child: SizedBox(
                               width: double.infinity,
@@ -318,9 +319,7 @@ class _CourseScreenState extends State<CourseScreen> {
                               ),
                             ),
                           )
-                        : const SizedBox.shrink(),
-                    const SizedBox(height: 8),
-                    Center(
+                        : Center(
                       child: SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(

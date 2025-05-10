@@ -47,13 +47,16 @@ class EnrollmentsViewModel extends ChangeNotifier {
           _error = null; 
         } catch (e) {
           _error = 'Failed to parse response';
+          AppLogger.logError('Failed to parse response: $e');
 
         }
       } else {
         _error = 'Data not found or empty.';
+        AppLogger.logError('Data not found or empty.');
       }
     } catch (e) {
       _error = 'Failed to load data: $e';
+      AppLogger.logError('Failed to load data: $e');
     } finally {
       _loading = false;
       notifyListeners();

@@ -48,6 +48,7 @@ class CourseViewModel with ChangeNotifier {
     } catch (e) {
       _loading = false;
       _error = e.toString();
+      AppLogger.logError("Error fetching courses: $e");
       notifyListeners();  
     }
   }
