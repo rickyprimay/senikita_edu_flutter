@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:widya/res/widgets/colors.dart';
 import 'package:widya/res/widgets/fonts.dart';
-import 'package:quickalert/quickalert.dart';
 
 class ProfileInfoTile extends StatelessWidget {
   final Widget icon; 
