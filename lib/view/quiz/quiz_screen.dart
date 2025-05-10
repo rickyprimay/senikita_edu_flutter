@@ -98,7 +98,6 @@ class _QuizScreenState extends State<QuizScreen> {
           children: [
             Column(
               children: [
-                // Title
                 Text(
                   isPassed ? "Selamat! 🎉" : "Coba Lagi 😕",
                   textAlign: TextAlign.center,
@@ -108,10 +107,9 @@ class _QuizScreenState extends State<QuizScreen> {
                     color: isPassed ? AppColors.primary : Colors.redAccent,
                   ),
                 ),
-                
+
                 const SizedBox(height: 24),
-                
-                // Score circle
+
                 Container(
                   width: 120,
                   height: 120,
@@ -134,10 +132,9 @@ class _QuizScreenState extends State<QuizScreen> {
                     ),
                   ),
                 ),
-                
+
                 const SizedBox(height: 20),
-                
-                // Stats & message
+
                 Text(
                   "Jawaban benar: $correctAnswers dari ${_questions.length} soal",
                   style: AppFont.ralewaySubtitle.copyWith(
@@ -146,9 +143,9 @@ class _QuizScreenState extends State<QuizScreen> {
                   ),
                   textAlign: TextAlign.center,
                 ),
-                
+
                 const SizedBox(height: 8),
-                
+
                 Text(
                   isPassed 
                       ? "Kamu telah menyelesaikan quiz ini dengan baik!" 
@@ -160,10 +157,9 @@ class _QuizScreenState extends State<QuizScreen> {
                   ),
                   textAlign: TextAlign.center,
                 ),
-                
+
                 const SizedBox(height: 24),
-                
-                // Buttons
+
                 Row(
                   children: [
                     Expanded(
@@ -189,7 +185,7 @@ class _QuizScreenState extends State<QuizScreen> {
                         ),
                       ),
                     ),
-                    
+
                     if (!isPassed) ...[
                       const SizedBox(width: 12),
                       Expanded(
@@ -221,7 +217,7 @@ class _QuizScreenState extends State<QuizScreen> {
                         ),
                       ),
                     ],
-                    
+
                     if (isPassed) ...[
                       const SizedBox(width: 12),
                       Expanded(
