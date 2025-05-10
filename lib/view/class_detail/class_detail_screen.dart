@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:widya/models/lessons/lesson.dart';
+import 'package:widya/res/widgets/fonts.dart';
 import 'package:widya/res/widgets/loading.dart';
 import 'package:widya/res/widgets/svg_assets.dart';
 import 'package:widya/view/class_detail/widget/chat_pop_up_widget.dart';
@@ -358,9 +359,32 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
         indicatorColor: AppColors.primary,
         labelColor: Colors.black,
         unselectedLabelColor: Colors.grey,
-        tabs: const [
-          Tab(text: 'Materi'),
-          Tab(text: 'Selengkapnya'),
+        tabs: [
+          Tab(
+            child: Text(
+              'Materi',
+              style: AppFont.crimsonSubtitle.copyWith(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          Tab(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.info_outline, size: 16),
+                SizedBox(width: 4),
+                Text(
+                  'Selengkapnya',
+                  style: AppFont.crimsonSubtitle.copyWith(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
