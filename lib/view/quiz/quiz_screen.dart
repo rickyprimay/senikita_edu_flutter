@@ -21,7 +21,7 @@ class _QuizScreenState extends State<QuizScreen> {
   int _currentIndex = 0;
   late Timer _timer;
   int _timeRemaining = 0; 
-  Map<int, int> _userAnswers = {}; // questionIndex -> selectedAnswerIndex
+  Map<int, int> _userAnswers = {}; 
   
   final List<QuizQuestion> _questions = [
     QuizQuestion(
@@ -352,7 +352,6 @@ class _QuizScreenState extends State<QuizScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Progress Bar
             Container(
               width: double.infinity,
               height: 10,
@@ -411,15 +410,16 @@ class _QuizScreenState extends State<QuizScreen> {
                 ],
               ),
             ),
-            
             const SizedBox(height: 16),
-            
-            // Question Card
             Expanded(
               child: Card(
-                elevation: 4,
+                elevation: 0,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
+                  side: BorderSide(
+                    color: Colors.grey.withOpacity(0.5),
+                    width: 1.5,
+                  ),
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(20.0),
@@ -429,9 +429,9 @@ class _QuizScreenState extends State<QuizScreen> {
                       children: [
                         Text(
                           _questions[_currentIndex].question,
-                          style: AppFont.crimsonTextHeader.copyWith(
+                          style: AppFont.ralewaySubtitle.copyWith(
                             fontSize: 20,
-                            fontWeight: FontWeight.bold,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                         const SizedBox(height: 20),
@@ -480,7 +480,7 @@ class _QuizScreenState extends State<QuizScreen> {
                                                 size: 16,
                                               )
                                             : Text(
-                                                String.fromCharCode(65 + index), // A, B, C, D, etc.
+                                                String.fromCharCode(65 + index),
                                                 style: AppFont.crimsonTextSubtitle.copyWith(
                                                   fontWeight: FontWeight.bold,
                                                   color: Colors.grey,
@@ -511,10 +511,7 @@ class _QuizScreenState extends State<QuizScreen> {
                 ),
               ),
             ),
-            
             const SizedBox(height: 16),
-            
-            // Navigation buttons
             Row(
               children: [
                 if (_currentIndex > 0)

@@ -447,7 +447,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
                               style: AppFont.ralewaySubtitle.copyWith(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
-                                color: A  ppColors.secondary,
+                                color: AppColors.secondary,
                               ),
                             ),
                           ),
