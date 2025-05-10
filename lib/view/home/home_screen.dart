@@ -67,11 +67,22 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               Container(
                 decoration: BoxDecoration(
-                  color: AppColors.primary,
+                  gradient: LinearGradient(
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                    colors: [
+                      AppColors.primary,
+                      AppColors.tertiary
+                    ],
+                  ),
                   borderRadius: const BorderRadius.vertical(bottom: Radius.circular(30)),
-                  image: const DecorationImage(
+                  image: DecorationImage(
                     image: AssetImage('assets/common/hero-texture.png'),
                     fit: BoxFit.cover,
+                    colorFilter: ColorFilter.mode(
+                      Colors.black.withOpacity(0.08),
+                      BlendMode.dstATop,
+                    ),
                   ),
                 ),
                 padding: const EdgeInsets.all(18),
