@@ -47,7 +47,6 @@ class CourseViewModel with ChangeNotifier {
         final pagination = response['meta']['pagination'];
         final int totalPages = pagination['total_pages'] ?? 1;
 
-        // Kalau cuma 1 halaman, langsung set hasMore false
         if (_currentPage >= totalPages || pagination['links']['next'] == null) {
           _hasMore = false;
         }

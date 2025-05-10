@@ -37,18 +37,34 @@ class EnrollmentsViewModel extends ChangeNotifier {
     final String? token = sp.getString("auth_token");
     
     _loading = true;
+    _error = null;
     notifyListeners();
+    
     try {
       final response = await _enrollmentsRepository.fetchEnrollments(page: page, token: token ?? "");
-
+  
       if (response != null) {
         try {
           _enrollmentsListResponse = EnrollmentsListResponse.fromJson(response);
-          _error = null; 
+          _currentPage = page ?? 1;
+          _hasMore = true;
+          
+          // Check pagination metadata
+          if (response['meta'] != null && response['meta']['pagination'] != null) {
+            final pagination = response['meta']['pagination'];
+            final int totalPages = pagination['total_pages'] ?? 1;
+  
+            if (_currentPage >= totalPages || pagination['links']['next'] == null) {
+              _hasMore = false;
+            }
+          } else {
+            _hasMore = false;
+          }
+          
+          _error = null;
         } catch (e) {
           _error = 'Failed to parse response';
           AppLogger.logError('Failed to parse response: $e');
-
         }
       } else {
         _error = 'Data not found or empty.';
@@ -91,7 +107,8 @@ class EnrollmentsViewModel extends ChangeNotifier {
   }
  
   Future<void> appendNewEnrollments() async {
-    if (_loading) return;
+    if (_loading || !_hasMore) return;
+
     final sp = await SharedPrefs.instance;
     final String? token = sp.getString("auth_token");
 
@@ -108,6 +125,16 @@ class EnrollmentsViewModel extends ChangeNotifier {
           data: [...?_enrollmentsListResponse?.data, ...enrollmentsListResponse.data],
         );
         _currentPage = nextPage;
+      }
+
+      // Check pagination metadata to determine if there are more pages
+      if (response['meta'] != null && response['meta']['pagination'] != null) {
+        final pagination = response['meta']['pagination'];
+        final int totalPages = pagination['total_pages'] ?? 1;
+
+        if (_currentPage >= totalPages || pagination['links']['next'] == null) {
+          _hasMore = false;
+        }
       } else {
         _hasMore = false;
       }
