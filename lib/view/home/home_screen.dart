@@ -287,14 +287,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     child: Center(
                                       child: courseViewModel.hasMore 
                                         ? const CircularProgressIndicator()
-                                        : Text(
-                                            "Semua data sudah dimuat",
-                                              style: AppFont.ralewaySubtitle.copyWith(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w500,
-                                              color: AppColors.primary,
-                                            )
-                                          ),
+                                        : const SizedBox.shrink(),
                                     ),
                                   );
                                 }

@@ -23,11 +23,11 @@ class _MyClassScreenState extends State<MyClassScreen> {
   void initState() {
     super.initState();
 
-    controller.addListener(() {
-      if (controller.position.maxScrollExtent == controller.offset) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.addListener(() {
         final enrollmentsViewModel = Provider.of<EnrollmentsViewModel>(context, listen: false);
         enrollmentsViewModel.appendNewEnrollments();
-      }
+      });
     });
   }
 
@@ -166,14 +166,7 @@ class _MyClassScreenState extends State<MyClassScreen> {
                                   child: Center(
                                     child: enrollmentsViewModel.hasMore
                                         ? const CircularProgressIndicator()
-                                        : Text(
-                                          "Semua data sudah dimuat",
-                                          style: AppFont.ralewaySubtitle.copyWith(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w500,
-                                            color: AppColors.primary,
-                                          )
-                                        )
+                                        : const SizedBox.shrink(),
                                   )
                                 );
                               }
