@@ -49,37 +49,61 @@ class ProfileInfoTile extends StatelessWidget {
                 if (onTap != null) {
                   onTap!();
                 } else {
-                 QuickAlert.show(
-                  context: context,
-                  type: QuickAlertType.custom, 
-                  widget: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          'Peringatan', 
-                          style: AppFont.crimsonTextSubtitle.copyWith(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.primary, 
+                  showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (BuildContext dialogContext) {
+                      return SimpleDialog(
+                        contentPadding: const EdgeInsets.all(30),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                        children: [
+                          Column(
+                            children: [
+                              Text(
+                                'Peringatan', 
+                                style: AppFont.crimsonTextSubtitle.copyWith(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w700,
+                                  color: AppColors.primary, 
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                'Alamat Email ini berdasarkan dari akun Google yang kamu gunakan untuk mendaftar. Jika ada kesalahan, maka tidak dapat diubah.',
+                                style: AppFont.ralewaySubtitle.copyWith(
+                                  fontSize: 14,
+                                  color: AppColors.secondary,
+                                  fontWeight: FontWeight.w500
+                                ),
+                                textAlign: TextAlign.justify,
+                              ),
+                              const SizedBox(height: 20),
+                              ElevatedButton(
+                                onPressed: () {
+                                  Navigator.pop(dialogContext);
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: AppColors.primary,
+                                  foregroundColor: Colors.white,
+                                  padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 12),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                                child: Text(
+                                  'Saya Mengerti',
+                                  style: AppFont.ralewaySubtitle.copyWith(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                        const SizedBox(height: 8), 
-                        Text(
-                          'Alamat Email ini berdasarkan dari akun Google yang kamu gunakan untuk mendaftar. Jika ada kesalahan, maka tidak dapat diubah.',
-                          style: AppFont.crimsonTextSubtitle.copyWith(
-                            fontSize: 14,
-                            color: AppColors.secondary,
-                          ),
-                          textAlign: TextAlign.justify,
-                        ),
-                      ],
-                    ),
-                  ),
-                  confirmBtnText: 'Baik', 
-                  confirmBtnColor: AppColors.primary, 
-                );
+                        ],
+                      );
+                    },
+                  );
                 }
               },
               child: SizedBox(
