@@ -165,29 +165,48 @@ class LessonListWidget extends StatelessWidget {
               child: Text(
                 lesson.title ?? '',
                 style: AppFont.ralewaySubtitle.copyWith(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
                   color: Colors.black,
                 ),
               ),
             ),
             if (isSelected)
-              Container(
-                margin: const EdgeInsets.only(left: 6),
-                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                decoration: BoxDecoration(
-                  color: Colors.brown[700],
-                  borderRadius: BorderRadius.circular(4),
-                ),
-                child: const Text(
-                  'Saat Ini',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 10,
-                    fontWeight: FontWeight.w600,
+            Container(
+              margin: const EdgeInsets.only(left: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+              decoration: BoxDecoration(
+                color: AppColors.primary.withOpacity(0.9),
+                borderRadius: BorderRadius.circular(6),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.primary.withOpacity(0.2),
+                    blurRadius: 3,
+                    offset: const Offset(0, 1),
                   ),
-                ),
+                ],
               ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.play_circle_filled_rounded,
+                    color: Colors.white,
+                    size: 10,
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    'Saat Ini',
+                    style: AppFont.ralewaySubtitle.copyWith(
+                      color: Colors.white,
+                      fontSize: 10,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 0.3,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
         const SizedBox(height: 4),
@@ -205,7 +224,7 @@ class LessonListWidget extends StatelessWidget {
           style: TextStyle(fontSize: 12, color: Colors.grey[800]),
         ),
         const SizedBox(width: 6),
-        Icon(lesson.type == "lesson" ? Icons.videocam : Icons.menu_book_sharp, size: 16, color: Colors.grey[700]),
+        Icon(lesson.type == "lesson" ? Icons.videocam_outlined : Icons.menu_book_sharp, size: 16, color: Colors.grey[700]),
       ],
     );
   }
