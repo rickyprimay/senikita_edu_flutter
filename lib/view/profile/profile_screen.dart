@@ -147,17 +147,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           return Row(
                             children: [
                               Expanded(
-                                child: InfoCardWidget(
-                                  title: "Kelas dimiliki",
-                                  icon: Icons.library_books,
-                                  label: isDataLoaded
-                                      ? "$notCompleted Belum"
-                                      : "Memuat...",
-                                  value: isDataLoaded
-                                      ? "$completed Selesai"
-                                      : "Memuat...",
+                                  child: InfoCardWidget(
+                                    icon: Icons.check,
+                                    title: "Kelas",
+                                    label: "Selesai",
+                                    value: isDataLoaded
+                                        ? "$completed"
+                                        : "Memuat...",
+                                    cardColor: AppColors.customGreen.withAlpha(80),
+                                    borderColor: AppColors.customGreen.withAlpha(60),
+                                  ),
                                 ),
-                              ),
+                                const SizedBox(width: 16),
+                                Expanded(
+                                  child: InfoCardWidget(
+                                    icon: Icons.close,
+                                    title: "Kelas",
+                                    label: "Belum",
+                                    value: isDataLoaded
+                                        ? "$notCompleted"
+                                        : "Memuat...",
+                                    cardColor: AppColors.customRed.withAlpha(80),
+                                    borderColor: AppColors.customRed.withAlpha(60),
+                                  ),
+                                ),
                             ],
                           );
                         },

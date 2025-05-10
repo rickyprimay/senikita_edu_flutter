@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:widya/res/widgets/colors.dart';
 import 'package:widya/res/widgets/fonts.dart';
 
 class InfoCardWidget extends StatelessWidget {
@@ -7,79 +6,83 @@ class InfoCardWidget extends StatelessWidget {
   final String title;
   final String label;
   final String value;
+  final Color cardColor;
+  final Color borderColor;
 
   const InfoCardWidget({
+    Key? key,
     required this.icon,
     required this.title,
     required this.label,
     required this.value,
-  });
+    this.cardColor = const Color(0xFFF9F9E8),
+    this.borderColor = const Color(0xFF8A8F64), 
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return ConstrainedBox(
-      constraints: const BoxConstraints(minHeight: 120),
-      child: Container(
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(24),
-          border: Border.all(
-            color: AppColors.primary.withAlpha(120),
-            width: 1,
-          ),
+    return Container(
+      height: 140,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: cardColor,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: borderColor,
+          width: 1.5,
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: AppColors.primary.withAlpha(44),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(icon, color: AppColors.primary, size: 24),
-                  ),
-                  const SizedBox(height: 8), 
-                  Text(
-                    title,
-                    style: AppFont.crimsonTextSubtitle.copyWith(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.grey[800],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      ),
+      child: Row(
+        children: [
+          // Left side content (text)
+          Expanded(
+            flex: 3,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  value,
-                  style: AppFont.crimsonTextSubtitle.copyWith(
-                    fontSize: 24,
+                  title,
+                  style: AppFont.crimsonTextHeader.copyWith(
+                    fontSize: 26,
                     fontWeight: FontWeight.w700,
-                    color: AppColors.customGreen,
+                    color: Colors.grey[600],
                   ),
                 ),
+                const SizedBox(height: 6),
                 Text(
-                  label,
-                  style: AppFont.crimsonTextSubtitle.copyWith(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.customRed,
+                  "$value $label",
+                  style: AppFont.ralewaySubtitle.copyWith(
+                    fontSize: 15,
+                    color: Colors.grey[600],
+                    fontWeight: FontWeight.w500,
                   ),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 2,
                 ),
               ],
             ),
-          ],
-        ),
+          ),
+          
+          Expanded(
+            flex: 2,
+            child: Container(
+              height: 80,
+              width: 80,
+              decoration: BoxDecoration(
+                color: borderColor.withOpacity(0.15),
+                shape: BoxShape.circle,
+              ),
+              child: Center(
+                child: Icon(
+                  icon,
+                  color: borderColor.withAlpha(200),
+                  size: 36,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
