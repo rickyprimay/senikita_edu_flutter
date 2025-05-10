@@ -40,7 +40,7 @@ class ProfileInfoTile extends StatelessWidget {
       ),
       subtitle: subtitle != null ? Text(
         subtitle!, 
-        style: AppFont.crimsonTextSubtitle.copyWith(fontSize: 14),
+        style: AppFont.ralewaySubtitle.copyWith(fontSize: 14, fontWeight: FontWeight.w500),
       ) : null,
       trailing: trailing != null
           ? GestureDetector(

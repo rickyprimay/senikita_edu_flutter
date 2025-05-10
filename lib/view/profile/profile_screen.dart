@@ -51,11 +51,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
           children: [
             Container(
               decoration: BoxDecoration(
-                color: AppColors.primary,
+                gradient: LinearGradient(
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                  colors: [
+                    AppColors.primary,
+                    AppColors.tertiary
+                  ],
+                ),
                 borderRadius: const BorderRadius.vertical(bottom: Radius.circular(30)),
-                image: const DecorationImage(
+                image: DecorationImage(
                   image: AssetImage('assets/common/hero-texture2.png'),
                   fit: BoxFit.cover,
+                  colorFilter: ColorFilter.mode(
+                    Colors.black.withAlpha(15),
+                    BlendMode.srcOver
+                  ),
                 ),
               ),
               padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
@@ -100,11 +111,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       color: Colors.white,
                     ),
                   ),
-                  Text(
-                    email ?? '',
-                    style: AppFont.ralewaySubtitle.copyWith(
-                      fontSize: 12,
-                      color: Colors.white70,
+                  Center(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center, 
+                      children: [
+                        Image(image: AssetImage("assets/logo/google_logo.png"), width: 20, height: 20),
+                        const SizedBox(width: 8), 
+                        Text(
+                          email ?? '', 
+                          style: AppFont.ralewaySubtitle.copyWith(
+                            fontSize: 12,
+                            color: Colors.white70,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
