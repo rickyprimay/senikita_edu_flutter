@@ -91,127 +91,165 @@ class _QuizScreenState extends State<QuizScreen> {
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          title: Text(
-            isPassed ? "Selamat! 🎉" : "Coba Lagi 😕",
-            textAlign: TextAlign.center,
-            style: AppFont.crimsonTextHeader.copyWith(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: isPassed ? AppColors.primary : Colors.redAccent,
-            ),
-          ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 120,
-                height: 120,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: isPassed ? Colors.green.withOpacity(0.1) : Colors.red.withOpacity(0.1),
-                  border: Border.all(
-                    color: isPassed ? Colors.green : Colors.redAccent,
-                    width: 3,
-                  ),
-                ),
-                child: Center(
-                  child: Text(
-                    "${score.toInt()}%",
-                    style: AppFont.crimsonTextHeader.copyWith(
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
-                      color: isPassed ? Colors.green : Colors.redAccent,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              Text(
-                "Jawaban benar: $correctAnswers dari ${_questions.length} soal",
-                style: AppFont.ralewaySubtitle.copyWith(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                isPassed 
-                    ? "Kamu telah menyelesaikan quiz ini dengan baik!" 
-                    : "Kamu belum mencapai nilai minimum untuk lulus.",
-                style: AppFont.ralewaySubtitle.copyWith(fontSize: 14),
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
-          actions: [
-            Row(
+      builder: (BuildContext dialogContext) {
+        return SimpleDialog(
+          contentPadding: const EdgeInsets.all(30),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          children: [
+            Column(
               children: [
-                Expanded(
-                  child: TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                      Navigator.of(context).pop();
-                    },
-                    style: TextButton.styleFrom(
-                      foregroundColor: Colors.grey,
+                // Title
+                Text(
+                  isPassed ? "Selamat! 🎉" : "Coba Lagi 😕",
+                  textAlign: TextAlign.center,
+                  style: AppFont.crimsonTextHeader.copyWith(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: isPassed ? AppColors.primary : Colors.redAccent,
+                  ),
+                ),
+                
+                const SizedBox(height: 24),
+                
+                // Score circle
+                Container(
+                  width: 120,
+                  height: 120,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: isPassed ? Colors.green.withOpacity(0.1) : Colors.red.withOpacity(0.1),
+                    border: Border.all(
+                      color: isPassed ? Colors.green : Colors.redAccent,
+                      width: 3,
                     ),
+                  ),
+                  child: Center(
                     child: Text(
-                      "Kembali ke Materi",
-                      style: AppFont.ralewaySubtitle.copyWith(fontWeight: FontWeight.w600),
+                      "${score.toInt()}%",
+                      style: AppFont.crimsonTextHeader.copyWith(
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold,
+                        color: isPassed ? Colors.green : Colors.redAccent,
+                      ),
                     ),
                   ),
                 ),
-                if (!isPassed)
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        setState(() {
-                          _currentIndex = 0;
-                          _userAnswers = {};
-                          _timeRemaining = widget.timeLimit * 60;
-                        });
-                        _startTimer();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary,
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                
+                const SizedBox(height: 20),
+                
+                // Stats & message
+                Text(
+                  "Jawaban benar: $correctAnswers dari ${_questions.length} soal",
+                  style: AppFont.ralewaySubtitle.copyWith(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                
+                const SizedBox(height: 8),
+                
+                Text(
+                  isPassed 
+                      ? "Kamu telah menyelesaikan quiz ini dengan baik!" 
+                      : "Kamu belum mencapai nilai minimum untuk lulus.",
+                  style: AppFont.ralewaySubtitle.copyWith(
+                    fontSize: 14,
+                    color: AppColors.secondary,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                
+                const SizedBox(height: 24),
+                
+                // Buttons
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: () {
+                          Navigator.of(dialogContext).pop();
+                          Navigator.of(context).pop();
+                        },
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: AppColors.secondary,
+                          side: BorderSide(color: AppColors.secondary),
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        child: Text(
+                          "Kembali ke Materi",
+                          style: AppFont.ralewaySubtitle.copyWith(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
-                      child: Text(
-                        "Coba Lagi",
-                        style: AppFont.ralewaySubtitle.copyWith(fontWeight: FontWeight.w600),
-                      ),
                     ),
-                  ),
-                if (isPassed)
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        Navigator.of(context).pop();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary,
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                    
+                    if (!isPassed) ...[
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(dialogContext).pop();
+                            setState(() {
+                              _currentIndex = 0;
+                              _userAnswers = {};
+                              _timeRemaining = widget.timeLimit * 60;
+                            });
+                            _startTimer();
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.primary,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          child: Text(
+                            "Coba Lagi",
+                            style: AppFont.ralewaySubtitle.copyWith(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
                         ),
                       ),
-                      child: Text(
-                        "Selesai",
-                        style: AppFont.ralewaySubtitle.copyWith(fontWeight: FontWeight.w600),
+                    ],
+                    
+                    if (isPassed) ...[
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(dialogContext).pop();
+                            Navigator.of(context).pop();
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.primary,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          child: Text(
+                            "Selesai",
+                            style: AppFont.ralewaySubtitle.copyWith(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
+                    ],
+                  ],
+                ),
               ],
             ),
           ],
@@ -266,47 +304,85 @@ class _QuizScreenState extends State<QuizScreen> {
           onPressed: () {
             showDialog(
               context: context,
+              barrierDismissible: false,
               builder: (BuildContext dialogContext) {
-                return AlertDialog(
-                  title: Text(
-                    "Keluar dari Quiz?",
-                    style: AppFont.crimsonTextSubtitle.copyWith(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  content: Text(
-                    "Progres quiz tidak akan tersimpan jika kamu keluar sekarang.",
-                    style: AppFont.ralewaySubtitle,
-                  ),
-                  actions: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pop(dialogContext);
-                      },
-                      child: Text(
-                        "Lanjutkan Quiz",
-                        style: AppFont.ralewaySubtitle.copyWith(
-                          color: AppColors.primary,
-                          fontWeight: FontWeight.w600,
+                return SimpleDialog(
+                  contentPadding: const EdgeInsets.all(30),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                  children: [
+                    Column(
+                      children: [
+                        Text(
+                          'Keluar dari Quiz?', 
+                          style: AppFont.crimsonTextSubtitle.copyWith(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.primary, 
+                          ),
                         ),
-                      ),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.pop(dialogContext);
-                        Navigator.pop(context);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red,
-                      ),
-                      child: Text(
-                        "Keluar",
-                        style: AppFont.ralewaySubtitle.copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
+                        const SizedBox(height: 8),
+                        Text(
+                          'Progres quiz tidak akan tersimpan jika kamu keluar sekarang.',
+                          style: AppFont.ralewaySubtitle.copyWith(
+                            fontSize: 14,
+                            color: AppColors.secondary,
+                            fontWeight: FontWeight.w500
+                          ),
+                          textAlign: TextAlign.center,
                         ),
-                      ),
+                        const SizedBox(height: 20),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: OutlinedButton(
+                                onPressed: () {
+                                  Navigator.pop(dialogContext);
+                                },
+                                style: OutlinedButton.styleFrom(
+                                  foregroundColor: AppColors.primary,
+                                  side: BorderSide(color: AppColors.primary),
+                                  padding: const EdgeInsets.symmetric(vertical: 12),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                                child: Text(
+                                  'Lanjutkan Quiz',
+                                  style: AppFont.ralewaySubtitle.copyWith(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                    color: AppColors.primary,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  Navigator.pop(dialogContext);
+                                  Navigator.pop(context);
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.redAccent,
+                                  foregroundColor: Colors.white,
+                                  padding: const EdgeInsets.symmetric(vertical: 12),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                                child: Text(
+                                  'Keluar',
+                                  style: AppFont.ralewaySubtitle.copyWith(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   ],
                 );
