@@ -3,8 +3,6 @@ import 'package:widya/models/lessons/lesson.dart';
 import 'package:widya/res/widgets/colors.dart';
 import 'package:widya/res/widgets/fonts.dart';
 import 'package:widya/utils/utils.dart';
-import 'package:quickalert/models/quickalert_type.dart';
-import 'package:quickalert/widgets/quickalert_dialog.dart';
 
 class LessonListWidget extends StatelessWidget {
   final List<Lesson> lessons;
@@ -117,41 +115,131 @@ class LessonListWidget extends StatelessWidget {
   }
   
   void _showCompletionConfirmation(BuildContext context, int index) {
-    QuickAlert.show(
+    showDialog(
       context: context,
-      type: QuickAlertType.custom,
-      widget: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
+      barrierDismissible: false,
+      builder: (BuildContext dialogContext) {
+        return SimpleDialog(
+          contentPadding: const EdgeInsets.all(30),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
           children: [
-            Text(
-              'Apakah kamu yakin ingin menyeslesaikan sesi ini?',
-              style: AppFont.crimsonTextSubtitle.copyWith(
-                fontSize: 18,
-                fontWeight: FontWeight.w700,
-                color: AppColors.primary,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Jika kamu menyelesaikan sesi ini, kamu bisa mengakses lagi namun tidak bisa membatalkan status selesainya.',
-              style: AppFont.crimsonTextSubtitle.copyWith(
-                fontSize: 14,
-                color: AppColors.secondary,
-              ),
-              textAlign: TextAlign.justify,
+            Column(
+              children: [
+                Text(
+                  'Konfirmasi Selesai',
+                  textAlign: TextAlign.center,
+                  style: AppFont.crimsonTextHeader.copyWith(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.primary,
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+
+                Container(
+                  width: 80,
+                  height: 80,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: AppColors.primary.withOpacity(0.1),
+                    border: Border.all(
+                      color: AppColors.primary,
+                      width: 2,
+                    ),
+                  ),
+                  child: Center(
+                    child: Icon(
+                      Icons.check_circle_outline_rounded,
+                      size: 40,
+                      color: AppColors.primary,
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+
+                Text(
+                  'Apakah kamu yakin ingin menyelesaikan sesi ini?',
+                  style: AppFont.ralewaySubtitle.copyWith(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+
+                const SizedBox(height: 8),
+
+                Text(
+                  'Jika kamu menyelesaikan sesi ini, kamu bisa mengakses lagi namun tidak bisa membatalkan status selesainya.',
+                  style: AppFont.ralewaySubtitle.copyWith(
+                    fontSize: 14,
+                    color: AppColors.secondary,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+
+                const SizedBox(height: 24),
+
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: () {
+                          Navigator.of(dialogContext).pop();
+                        },
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: AppColors.secondary,
+                          side: BorderSide(color: AppColors.secondary),
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        child: Text(
+                          "Batal",
+                          style: AppFont.ralewaySubtitle.copyWith(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(width: 12),
+
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(dialogContext).pop();
+                          onMarkComplete(index);
+                          Utils.showToastification("Berhasil", "Sesi berhasil diselesaikan", true, context);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primary,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        child: Text(
+                          "Yakin",
+                          style: AppFont.ralewaySubtitle.copyWith(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ],
-        ),
-      ),
-      confirmBtnText: 'Yakin',
-      onConfirmBtnTap: () {
-        Navigator.of(context).pop();
-        onMarkComplete(index);
-        Utils.showToastification("Berhasil", "Sesi berhasil diselesaikan", true, context);
+        );
       },
-      confirmBtnColor: AppColors.primary,
     );
   }
   
