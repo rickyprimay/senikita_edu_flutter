@@ -538,11 +538,14 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
         indicatorColor: AppColors.primary,
         labelColor: Colors.black,
         unselectedLabelColor: Colors.grey,
-        tabs: const [
+        tabs: [
           Tab(
             child: Text(
-              'Materi',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              'Pelajaran',
+              style: AppFont.crimsonTextSubtitle.copyWith(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
           Tab(
@@ -552,8 +555,11 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
                 Icon(Icons.info_outline, size: 16),
                 SizedBox(width: 4),
                 Text(
-                  'Selengkapnya',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                  'Materi Tambahan',
+                  style: AppFont.crimsonTextSubtitle.copyWith(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ],
             ),
