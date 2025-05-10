@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:widya/models/lessons/lesson.dart';
 import 'package:widya/res/widgets/loading.dart';
+import 'package:widya/res/widgets/svg_assets.dart';
 import 'package:widya/view/class_detail/widget/chat_pop_up_widget.dart';
 import 'package:widya/view/class_detail/widget/youtube_player_widget.dart';
 import 'package:widya/view/class_detail/widget/lesson_list_widget.dart';
@@ -65,14 +67,12 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
   }
   
   int _findInitialLessonIndex(List<Lesson> lessons) {
-    // Find first incomplete lesson
     for (int i = 0; i < lessons.length; i++) {
       if (lessons[i].isCompleted == false) {
         return i;
       }
     }
     
-    // If all completed, return the latest lesson by order
     if (lessons.isNotEmpty) {
       int highestOrder = lessons.fold(0, (max, lesson) => 
           (lesson.order ?? 0) > max ? (lesson.order ?? 0) : max);
@@ -159,12 +159,10 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
     final isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
     final hasVideoPlayer = _youtubeController != null;
     
-    // If in landscape mode and we have a video player, only show the video player
     if (isLandscape && hasVideoPlayer) {
       return _buildLandscapeVideoView();
     }
     
-    // Portrait mode or no video - show full UI
     return _buildPortraitView();
   }
 
@@ -206,7 +204,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
           floatingActionButton: FloatingActionButton(
             onPressed: _openChat,
             backgroundColor: AppColors.primary,
-            child: const Icon(Icons.chat, color: Colors.white, size: 25),
+            child: SvgIcon(SvgAssets.botMessageSquare, size: 25, color: Colors.white)
           ),
         ),
         
@@ -291,22 +289,18 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Video or Text content
                 if (!isContentLoading && selectedLesson.type == 'lesson')
                   _buildLessonMedia(selectedLesson),
                 
-                // Course header
                 CourseHeaderWidget(
                   courseName: widget.courseName,
                   courseDescription: widget.courseDescription,
                 ),
                 
-                // Tabs
                 _buildTabBar(),
                 
                 const Divider(color: Colors.grey, height: 1),
                 
-                // Tab content
                 Expanded(
                   child: TabBarView(
                     controller: _tabController,
@@ -374,8 +368,6 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
   }
   
   void _markLessonAsComplete(int index) {
-    // Extracted to lesson_list_widget.dart
-    // Implementation remains in this file for handling state
     final currentIndices = List<int>.from(_selectedLectureIndicesNotifier.value);
     currentIndices.add(index);
     _selectedLectureIndicesNotifier.value = currentIndices;

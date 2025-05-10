@@ -36,6 +36,7 @@ dependencies:
   flutter_staggered_grid_view: ^0.7.0
   flutter_lightbox: ^0.1.3
   lucide_icons: ^0.257.0
+  flutter_svg: ^2.1.0
 
 dev_dependencies:
   flutter_test:
@@ -49,6 +50,7 @@ flutter:
     - assets/common/
     - assets/logo/
     - assets/fonts/
+    - assets/icon/
     - assets/placeholder/
     - .env
 
