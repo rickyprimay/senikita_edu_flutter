@@ -77,11 +77,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   borderRadius: const BorderRadius.vertical(bottom: Radius.circular(30)),
                   image: DecorationImage(
-                    image: AssetImage('assets/common/hero-texture.png'),
+                    image: AssetImage('assets/common/hero-texture2.png'),
                     fit: BoxFit.cover,
                     colorFilter: ColorFilter.mode(
-                      Colors.black.withAlpha(25),
-                      BlendMode.dstATop,
+                      Colors.black.withAlpha(15),
+                      BlendMode.srcOver
                     ),
                   ),
                 ),
@@ -93,7 +93,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Icon(Icons.menu, color: Colors.white),
                         Text(
                           'Widya',
                           style: AppFont.crimsonTextTitle.copyWith(

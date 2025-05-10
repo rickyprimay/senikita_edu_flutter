@@ -344,7 +344,7 @@ class _CourseScreenState extends State<CourseScreen> {
                   width: double.infinity,
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: Colors.grey.shade100,
+                    color: Colors.white,
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(
                       color: Colors.grey,
