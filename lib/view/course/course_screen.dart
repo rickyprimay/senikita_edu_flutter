@@ -115,8 +115,8 @@ class _CourseScreenState extends State<CourseScreen> {
                       color: AppColors.primary,
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(
-                        color: Colors.grey,
-                        width: 2,
+                        color: Colors.grey.shade300,
+                        width: 1,
                       ),
                       image: DecorationImage(
                         image: NetworkImage(
@@ -262,31 +262,9 @@ class _CourseScreenState extends State<CourseScreen> {
                         : Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    "Rp 0",
-                                    style: AppFont.crimsonTextHeader.copyWith(
-                                      fontSize: 40,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    "Rp 1.000.000",
-                                    style: AppFont.crimsonTextHeader.copyWith(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w400,
-                                      color: AppColors.secondary,
-                                      decoration: TextDecoration.lineThrough,
-                                      decorationThickness: 1,
-                                    ),
-                                  ),
-                                ],
-                              ),
                               const SizedBox(height: 8),
                               Text(
-                                "Kelas ini gratis untuk semua pengguna, silahkan klik tombol dibawah ini untuk mendaftar. status kelas : ${widget.isEnrolled}",
+                                "Kelas ini gratis untuk semua pengguna, silahkan klik tombol dibawah ini untuk mendaftar.",
                                 style: AppFont.ralewaySubtitle.copyWith(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w600,

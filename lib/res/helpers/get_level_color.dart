@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:widya/res/widgets/colors.dart';
 
 Color GetLevelColor(String level) {
   final lowerLevel = level.toLowerCase();
   if (lowerLevel == 'pemula') {
-    return Colors.green.shade400;
+    return AppColors.customGreen;
   } else if (lowerLevel == 'menengah') {
-    return Colors.amber.shade600;
+    return AppColors.tertiary;
   } else {
-    return Colors.red.shade400;
+    return AppColors.brick;
   }
 }
