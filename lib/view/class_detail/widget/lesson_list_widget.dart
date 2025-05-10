@@ -205,7 +205,7 @@ class LessonListWidget extends StatelessWidget {
           style: TextStyle(fontSize: 12, color: Colors.grey[800]),
         ),
         const SizedBox(width: 6),
-        Icon(lesson.videoUrl != null ? Icons.videocam : Icons.menu_book_sharp, size: 16, color: Colors.grey[700]),
+        Icon(lesson.type == "lesson" ? Icons.videocam : Icons.menu_book_sharp, size: 16, color: Colors.grey[700]),
       ],
     );
   }
