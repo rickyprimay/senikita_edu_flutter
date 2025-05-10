@@ -148,13 +148,15 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: TextField(
                         controller: _searchController,
                         style: AppFont.ralewaySubtitle.copyWith(
-                          fontSize: 16,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
                           color: Colors.black,
                         ),
                         decoration: InputDecoration(
                           hintText: 'Cari Pembelajaran...',
                           hintStyle: AppFont.ralewaySubtitle.copyWith(
                             fontSize: 14,
+                            fontWeight: FontWeight.w400,
                             color: Colors.grey,
                           ),
                           border: InputBorder.none,
