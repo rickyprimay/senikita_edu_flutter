@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 import 'package:widya/res/widgets/colors.dart';
 import 'package:widya/res/widgets/fonts.dart';
+import 'package:widya/res/widgets/svg_assets.dart';
 
 class Discover extends StatelessWidget {
   final PersistentTabController controller;
@@ -16,18 +17,20 @@ class Discover extends StatelessWidget {
   List<PersistentBottomNavBarItem> _navBarsItems() {
     return [
       PersistentBottomNavBarItem(
-        icon: const Icon(Icons.home),
+        icon: SvgIcon(SvgAssets.house, size: 24, color: Colors.white),
+        inactiveIcon: SvgIcon(SvgAssets.house, size: 24, color: Colors.black),
         title: "Beranda",
         textStyle: AppFont.crimsonTextSubtitle.copyWith(
           fontSize: 12,
           fontWeight: FontWeight.w700,
         ),
         activeColorPrimary: AppColors.primary,
-        inactiveColorPrimary: Colors.grey,
+        inactiveColorPrimary: Colors.black,
         activeColorSecondary: Colors.white,
       ),
       PersistentBottomNavBarItem(
-        icon: const Icon(Icons.class_),
+        icon: SvgIcon(SvgAssets.book, size: 24, color: Colors.white),
+        inactiveIcon: SvgIcon(SvgAssets.book, size: 24, color: Colors.black),
         title: "Kelas Saya",
         textStyle: AppFont.crimsonTextSubtitle.copyWith(
           fontSize: 12,
@@ -38,7 +41,8 @@ class Discover extends StatelessWidget {
         activeColorSecondary: Colors.white
       ),
       PersistentBottomNavBarItem(
-        icon: const Icon(Icons.art_track),
+        icon: SvgIcon(SvgAssets.fileHeart, size: 24, color: Colors.white),
+        inactiveIcon: SvgIcon(SvgAssets.fileHeart, size: 24, color: Colors.black),
         title: "Karya Seni",
         textStyle: AppFont.crimsonTextSubtitle.copyWith(
           fontSize: 12,
@@ -49,7 +53,8 @@ class Discover extends StatelessWidget {
         activeColorSecondary: Colors.white
       ),
       PersistentBottomNavBarItem(
-        icon: const Icon(Icons.person),
+        icon: SvgIcon(SvgAssets.circleUser, size: 24, color: Colors.white),
+        inactiveIcon: SvgIcon(SvgAssets.circleUser, size: 24, color: Colors.black),
         title: "Profil",
         textStyle: AppFont.crimsonTextSubtitle.copyWith(
           fontSize: 12,

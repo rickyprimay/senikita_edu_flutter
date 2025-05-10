@@ -5,6 +5,10 @@ class SvgAssets {
   SvgAssets._(); 
 
   static const String botMessageSquare = 'assets/icon/bot-message-square.svg';
+  static const String house = 'assets/icon/house.svg';
+  static const String book = 'assets/icon/book-copy.svg';
+  static const String fileHeart = 'assets/icon/file-heart.svg';
+  static const String circleUser = 'assets/icon/circle-user-round.svg';
 }
 
 class SvgIcon extends StatelessWidget {
