@@ -40,7 +40,7 @@ class _MyClassScreenState extends State<MyClassScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F8FA),
+      backgroundColor: Colors.white,
       body: SafeArea(
         top: false,
         child: Column(

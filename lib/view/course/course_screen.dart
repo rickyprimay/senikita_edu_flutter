@@ -64,6 +64,7 @@ class _CourseScreenState extends State<CourseScreen> {
     return Stack(
       children: [
         Scaffold(
+          backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: AppColors.primary,
         leading: Padding(

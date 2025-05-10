@@ -26,6 +26,7 @@ class _SeniKitaScreenState extends State<SeniKitaScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: AppColors.primary,
         centerTitle: true,

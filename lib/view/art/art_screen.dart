@@ -163,7 +163,7 @@ class _ArtScreenState extends State<ArtScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.transparent,
+      backgroundColor: Colors.white,
       body: SafeArea(
         top: false,
         child: Column(
