@@ -26,7 +26,6 @@ class _SeniKitaScreenState extends State<SeniKitaScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: AppColors.primary,
         centerTitle: true,
@@ -166,7 +165,7 @@ class _SeniKitaScreenState extends State<SeniKitaScreen> {
           ),
         ],
         gradient: LinearGradient(
-          colors: [AppColors.tertiary.withAlpha(77), AppColors.greyCustom],
+          colors: [AppColors.primary, AppColors.tertiary],
           begin: Alignment.bottomLeft,
           end: Alignment.topRight,
         ),
@@ -180,14 +179,14 @@ class _SeniKitaScreenState extends State<SeniKitaScreen> {
               title,
               style: AppFont.ralewayHeaderMedium.copyWith(
                 fontWeight: FontWeight.bold,
-                color: AppColors.secondary,
+                color: AppColors.greyCustom,
               ),
             ),
             const SizedBox(height: 12),
             Text(
               description,
               style: AppFont.ralewaySubtitle.copyWith(
-                color: AppColors.secondary,
+                color: AppColors.greyCustom,
                 fontSize: 14,
                 height: 1.5,
               ),
