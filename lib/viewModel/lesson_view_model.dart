@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:widya/models/lessons/lesson.dart';
 import 'package:widya/models/lessons/lesson_list.dart';
+import 'package:widya/models/lessons/additionals_materials.dart';
 import 'package:widya/repository/lesson_repository.dart';
 import 'package:widya/res/widgets/app_urls.dart';
 import 'package:widya/res/widgets/logger.dart';
@@ -18,12 +19,17 @@ class LessonViewModel with ChangeNotifier {
   List<Lesson>? _lessons;
   List<Lesson>? get lessons => _lessons;
 
+  List<AdditionalMaterial>? _additionalMaterials;
+  List<AdditionalMaterial>? get additionalMaterials => _additionalMaterials;
+
   Future<void> fetchLessonByCourseId(int courseId) async {
     final sp = await SharedPrefs.instance;
     final String? token = sp.getString("auth_token");
+
     _loading = true;
-    _error = null; 
+    _error = null;
     notifyListeners();  
+
     final url = AppUrls.getCourseLessons(courseId);
     AppLogger.logInfo("url: $url");
 
@@ -34,12 +40,14 @@ class LessonViewModel with ChangeNotifier {
       final lessonListResponse = LessonList.fromJson(response);
 
       _lessons = lessonListResponse.data;
-      
+      _additionalMaterials = lessonListResponse.additionalMaterials;
+
       if (_lessons != null) {
         _lessons!.sort((a, b) => (a.order ?? 0).compareTo(b.order ?? 0));
       }
 
       AppLogger.logInfo("lessons: ${_lessons?.length}");
+      AppLogger.logInfo("additionalMaterials: ${_additionalMaterials?.length}");
 
       _loading = false;
       notifyListeners();
@@ -55,9 +63,11 @@ class LessonViewModel with ChangeNotifier {
   Future<void> postCompleteLesson(int lessonId, BuildContext context) async {
     final sp = await SharedPrefs.instance;
     final String? token = sp.getString("auth_token");
+
     _loading = true;
-    _error = null; 
+    _error = null;
     notifyListeners();  
+
     AppLogger.logInfo("lessonId: $lessonId");
 
     try {
@@ -74,5 +84,4 @@ class LessonViewModel with ChangeNotifier {
       notifyListeners();  
     }
   }
-
 }

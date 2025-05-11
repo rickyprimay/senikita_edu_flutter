@@ -38,6 +38,8 @@ dependencies:
   lucide_icons: ^0.257.0
   flutter_svg: ^2.1.0
   flutter_html: ^3.0.0
+  flutter_media_downloader: ^2.0.0
+  permission_handler: ^11.0.1
 
 dev_dependencies:
   flutter_test:

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:provider/provider.dart';
+import 'package:widya/models/lessons/additionals_materials.dart';
 import 'package:widya/models/lessons/lesson.dart';
 import 'package:widya/res/widgets/fonts.dart';
 import 'package:widya/res/widgets/loading.dart';
@@ -317,6 +318,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
   Widget _buildLessonContent(List<Lesson> lessons) {
     final selectedIndex = _state.selectedIndex ?? 0;
     final selectedLesson = lessons[selectedIndex];
+    final additionalMaterial = _lessonViewModel.additionalMaterials;
     
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -349,7 +351,10 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
                 onLessonSelected: _updateSelectedContent,
                 onMarkComplete: _markLessonAsComplete,
               ),
-              LessonInfoWidget(lesson: selectedLesson),
+              LessonInfoWidget(
+                lesson: selectedLesson,
+                additionalMaterial: additionalMaterial,
+              ),
             ],
           ),
         ),
@@ -372,9 +377,6 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
         );
       }
     } else if (lesson.type?.toLowerCase() == "final") {
-      final isSubmission = lesson.type?.toLowerCase() == "final";
-      final selectedIndex = _state.selectedIndex ?? 0;
-
       return SizedBox(
         height: MediaQuery.of(context).size.height * 0.5,
         child: SingleChildScrollView(

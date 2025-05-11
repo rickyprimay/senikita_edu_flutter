@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gemini/flutter_gemini.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:widya/provider/category_provider.dart';
 import 'package:widya/provider/login_provider.dart';
@@ -17,9 +18,28 @@ import 'package:toastification/toastification.dart';
 
 const geminiApiKey = "AIzaSyB1rg-gZlHOll5yFz6vJgpOz92vjMfqxqo";
 
+Future<void> _requestPermissions() async {
+  if (await Permission.storage.status.isDenied) {
+    await Permission.storage.request();
+  }
+  
+  if (await Permission.photos.status.isDenied) {
+    await Permission.photos.request(); 
+  }
+  
+  if (await Permission.videos.status.isDenied) {
+    await Permission.videos.request();
+  }
+  
+  if (await Permission.audio.status.isDenied) {
+    await Permission.audio.request();
+  }
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Gemini.init(apiKey: geminiApiKey);
+  await _requestPermissions();
   runApp(const MyApp());
 }
 
