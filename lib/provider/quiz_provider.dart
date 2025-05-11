@@ -33,7 +33,6 @@ class LocalQuizAnswer {
 class QuizProvider extends ChangeNotifier {
   final QuizViewModel quizViewModel;
   
-  // State variables
   int _currentIndex = 0;
   Timer? _timer;
   int _timeRemaining = 0;
@@ -42,7 +41,6 @@ class QuizProvider extends ChangeNotifier {
   List<LocalQuizQuestion> _questions = [];
   bool _isPaused = false;
   
-  // Getters
   int get currentIndex => _currentIndex;
   int get timeRemaining => _timeRemaining;
   Map<int, int> get userAnswers => _userAnswers;
@@ -80,7 +78,7 @@ class QuizProvider extends ChangeNotifier {
         _questions = _convertApiToLocalQuestions(quizViewModel.quizzes.first);
       }
     } catch (e) {
-      // ViewModel already handles errors
+      // TODOS
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -217,19 +215,25 @@ class QuizProvider extends ChangeNotifier {
   }
 
   Future<bool> submitUserAnswers(int lessonId, BuildContext context) async {
-    Map<int, int> formattedAnswers = {};
+    _isLoading = true;
+    notifyListeners();
 
-    for (int i = 0; i < _questions.length; i++) {
-      if (_userAnswers.containsKey(i)) {
-        int questionId = _questions[i].id;
+    try {
+      Map<int, int> formattedAnswers = {};
 
-        int answerId = _questions[i].answers[_userAnswers[i]!].id;
-
-        formattedAnswers[questionId] = answerId;
+      for (int i = 0; i < _questions.length; i++) {
+        if (_userAnswers.containsKey(i)) {
+          int questionId = _questions[i].id;
+          int answerId = _questions[i].answers[_userAnswers[i]!].id;
+          formattedAnswers[questionId] = answerId;
+        }
       }
-    }
 
-    return await quizViewModel.submitQuiz(lessonId, formattedAnswers, context);
+      return await quizViewModel.submitQuiz(lessonId, formattedAnswers, context);
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
   }
   
   @override

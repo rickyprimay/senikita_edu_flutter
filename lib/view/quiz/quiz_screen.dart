@@ -296,54 +296,60 @@ class _QuizScreenState extends State<QuizScreen> {
   Widget build(BuildContext context) {
     return Consumer<QuizProvider>(
       builder: (context, quizProvider, child) {
-        return Scaffold(
-          backgroundColor: Colors.white,
-          appBar: AppBar(
-            backgroundColor: AppColors.primary,
-            leading: IconButton(
-              icon: const Icon(Icons.close, color: Colors.white),
-              onPressed: _showExitDialog,
-            ),
-            title: Text(
-              widget.quizTitle,
-              style: AppFont.crimsonTextSubtitle.copyWith(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                color: Colors.white,
+        return 
+        Stack(
+          children: [ 
+            Scaffold(
+            backgroundColor: Colors.white,
+            appBar: AppBar(
+              backgroundColor: AppColors.primary,
+              leading: IconButton(
+                icon: const Icon(Icons.close, color: Colors.white),
+                onPressed: _showExitDialog,
               ),
-            ),
-            centerTitle: true,
-            actions: [
-              Container(
-                margin: const EdgeInsets.only(right: 16),
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(20),
+              title: Text(
+                widget.quizTitle,
+                style: AppFont.crimsonTextSubtitle.copyWith(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white,
                 ),
-                child: Row(
-                  children: [
-                    const Icon(Icons.timer, color: Colors.white, size: 16),
-                    const SizedBox(width: 4),
-                    Text(
-                      quizProvider.formatTime(quizProvider.timeRemaining),
-                      style: AppFont.ralewaySubtitle.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
+              ),
+              centerTitle: true,
+              actions: [
+                Container(
+                  margin: const EdgeInsets.only(right: 16),
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.timer, color: Colors.white, size: 16),
+                      const SizedBox(width: 4),
+                      Text(
+                        quizProvider.formatTime(quizProvider.timeRemaining),
+                        style: AppFont.ralewaySubtitle.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
+            body: quizProvider.isLoading
+                ? const SizedBox.shrink()
+                : quizProvider.error != null
+                    ? _buildErrorView(quizProvider.error!)
+                    : quizProvider.isQuizEmpty
+                        ? _buildEmptyQuizView()
+                        : _buildQuizContent(quizProvider),
           ),
-          body: quizProvider.isLoading
-              ? const Center(child: Loading(opacity: 1.0))
-              : quizProvider.error != null
-                  ? _buildErrorView(quizProvider.error!)
-                  : quizProvider.isQuizEmpty
-                      ? _buildEmptyQuizView()
-                      : _buildQuizContent(quizProvider),
+          if (quizProvider.isLoading && quizProvider.questions.isNotEmpty) const Loading(opacity: 0.7),
+          ]
         );
       },
     );
@@ -426,171 +432,176 @@ class _QuizScreenState extends State<QuizScreen> {
   Widget _buildQuizContent(QuizProvider quizProvider) {
     final currentQuestion = quizProvider.questions[quizProvider.currentIndex];
     
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Progress bar
-          Container(
-            width: double.infinity,
-            height: 10,
-            decoration: BoxDecoration(
-              color: Colors.grey.withOpacity(0.2),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: FractionallySizedBox(
-              alignment: Alignment.centerLeft,
-              widthFactor: (quizProvider.currentIndex + 1) / quizProvider.questions.length,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: AppColors.primary,
-                  borderRadius: BorderRadius.circular(10),
-                  gradient: const LinearGradient(
-                    colors: [
-                      AppColors.primary,
-                      AppColors.tertiary,
-                    ],
+    return 
+    Stack(
+      children: [
+       Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Progress bar
+            Container(
+              width: double.infinity,
+              height: 10,
+              decoration: BoxDecoration(
+                color: Colors.grey.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: FractionallySizedBox(
+                alignment: Alignment.centerLeft,
+                widthFactor: (quizProvider.currentIndex + 1) / quizProvider.questions.length,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: AppColors.primary,
+                    borderRadius: BorderRadius.circular(10),
+                    gradient: const LinearGradient(
+                      colors: [
+                        AppColors.primary,
+                        AppColors.tertiary,
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-          
-          // Question counter
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 12.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  "Soal ${quizProvider.currentIndex + 1}/${quizProvider.questions.length}",
-                  style: AppFont.ralewaySubtitle.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.secondary,
+            
+            // Question counter
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 12.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Soal ${quizProvider.currentIndex + 1}/${quizProvider.questions.length}",
+                    style: AppFont.ralewaySubtitle.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.secondary,
+                    ),
                   ),
-                ),
-                Row(
-                  children: [
-                    const Icon(
-                      Icons.check_circle_outline,
-                      size: 16,
-                      color: AppColors.primary,
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      "${quizProvider.completedQuestions}/${quizProvider.questions.length} terjawab",
-                      style: AppFont.ralewaySubtitle.copyWith(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                        color: AppColors.secondary,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          
-          Expanded(
-            child: Card(
-              color: Colors.white,
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-                side: BorderSide(
-                  color: Colors.grey.withOpacity(0.5),
-                  width: 1.5,
-                ),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  Row(
                     children: [
+                      const Icon(
+                        Icons.check_circle_outline,
+                        size: 16,
+                        color: AppColors.primary,
+                      ),
+                      const SizedBox(width: 4),
                       Text(
-                        currentQuestion.question,
+                        "${quizProvider.completedQuestions}/${quizProvider.questions.length} terjawab",
                         style: AppFont.ralewaySubtitle.copyWith(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w600,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.secondary,
                         ),
                       ),
-                      const SizedBox(height: 20),
-                      ...List.generate(currentQuestion.options.length, (index) {
-                        final isSelected = quizProvider.userAnswers[quizProvider.currentIndex] == index;
-                        return _buildOptionItem(quizProvider, index, isSelected, currentQuestion.options[index]);
-                      }),
                     ],
+                  ),
+                ],
+              ),
+            ),
+            
+            Expanded(
+              child: Card(
+                color: Colors.white,
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                  side: BorderSide(
+                    color: Colors.grey.withOpacity(0.5),
+                    width: 1.5,
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          currentQuestion.question,
+                          style: AppFont.ralewaySubtitle.copyWith(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        ...List.generate(currentQuestion.options.length, (index) {
+                          final isSelected = quizProvider.userAnswers[quizProvider.currentIndex] == index;
+                          return _buildOptionItem(quizProvider, index, isSelected, currentQuestion.options[index]);
+                        }),
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-          
-          const SizedBox(height: 16),
-          Row(
-            children: [
-              if (quizProvider.currentIndex > 0)
-                OutlinedButton.icon(
-                  onPressed: quizProvider.prevQuestion,
-                  icon: const Icon(Icons.arrow_back, size: 16),
-                  label: const Text("Sebelumnya"),
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: AppColors.primary,
-                    side: const BorderSide(color: AppColors.primary),
+            
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                if (quizProvider.currentIndex > 0)
+                  OutlinedButton.icon(
+                    onPressed: quizProvider.prevQuestion,
+                    icon: const Icon(Icons.arrow_back, size: 16),
+                    label: const Text("Sebelumnya"),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: AppColors.primary,
+                      side: const BorderSide(color: AppColors.primary),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                  ),
+                const Spacer(),
+                ElevatedButton(
+                  onPressed: quizProvider.currentIndex == quizProvider.questions.length - 1
+                  ? () async {
+                      quizProvider.finishQuiz();
+      
+                      final success = await quizProvider.submitUserAnswers(widget.lessonId, context);
+      
+                      _showResult();
+      
+                      if (!success && mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Gagal mengirim jawaban ke server, namun skor telah dihitung.'),
+                            backgroundColor: Colors.orange,
+                          ),
+                        );
+                      }
+                    }
+                  : quizProvider.nextQuestion,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                   ),
-                ),
-              const Spacer(),
-              ElevatedButton(
-                onPressed: quizProvider.currentIndex == quizProvider.questions.length - 1
-                ? () async {
-                    quizProvider.finishQuiz();
-          
-                    final success = await quizProvider.submitUserAnswers(widget.lessonId, context);
-          
-                    _showResult();
-          
-                    if (!success && mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Gagal mengirim jawaban ke server, namun skor telah dihitung.'),
-                          backgroundColor: Colors.orange,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        quizProvider.currentIndex == quizProvider.questions.length - 1 ? "Selesai" : "Selanjutnya",
+                        style: AppFont.ralewaySubtitle.copyWith(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16,
                         ),
-                      );
-                    }
-                  }
-                : quizProvider.nextQuestion,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      quizProvider.currentIndex == quizProvider.questions.length - 1 ? "Selesai" : "Selanjutnya",
-                      style: AppFont.ralewaySubtitle.copyWith(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16,
                       ),
-                    ),
-                    if (quizProvider.currentIndex < quizProvider.questions.length - 1)
-                      const Icon(Icons.arrow_forward, size: 16)
-                  ],
+                      if (quizProvider.currentIndex < quizProvider.questions.length - 1)
+                        const Icon(Icons.arrow_forward, size: 16)
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          ),
-        ],
+              ],
+            ),
+          ],
+        ),
       ),
+      ],
     );
   }
 
