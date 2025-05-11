@@ -24,10 +24,8 @@ class CategoryViewModel with ChangeNotifier {
     _error = null;
     notifyListeners();
 
-    AppLogger.logInfo("Url: ${AppUrls.getCategory}");
     try {
       final response = await _categoryRepository.fetchCategory();
-      AppLogger.logInfo('📥 Category Response: $response');
       
       if (response['data'] != null) {
         _category = List.from(response['data']);
@@ -45,7 +43,6 @@ class CategoryViewModel with ChangeNotifier {
       }
     } catch (e) {
       _error = e.toString();
-      AppLogger.logError('Error fetching categories: $e');
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -55,7 +52,6 @@ class CategoryViewModel with ChangeNotifier {
   Future<void> _cacheCategoryIdAndName(List<Map<String, dynamic>> data) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_categoryCacheKey, jsonEncode(data));
-    AppLogger.logInfo('✅ Cached category id+name: $data');
   }
 
   Future<List<Map<String, dynamic>>> getCachedCategoryIdAndName() async {

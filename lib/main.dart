@@ -10,6 +10,7 @@ import 'package:widya/viewModel/category_view_model.dart';
 import 'package:widya/viewModel/course_view_model.dart';
 import 'package:widya/viewModel/enrollments_view_model.dart';
 import 'package:widya/viewModel/lesson_view_model.dart';
+import 'package:widya/viewModel/quiz_view_model.dart';
 import 'package:widya/viewModel/user_view_model.dart';
 import 'package:toastification/toastification.dart';
 
@@ -37,6 +38,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => EnrollmentsViewModel()..fetchEnrollments()),
         ChangeNotifierProvider(create: (_) => LoginProvider()),
         ChangeNotifierProvider(create: (_) => LessonViewModel()),
+        ChangeNotifierProvider(create: (_) => QuizViewModel()),
       ],
       child: ToastificationWrapper(
         child: MaterialApp(
