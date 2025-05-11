@@ -2,8 +2,6 @@ import 'dart:convert';
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:widya/repository/category_repository.dart';
-import 'package:widya/res/widgets/app_urls.dart';
-import 'package:widya/res/widgets/logger.dart';
 
 class CategoryViewModel with ChangeNotifier {
   final CategoryRepository _categoryRepository = CategoryRepository();

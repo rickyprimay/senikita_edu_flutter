@@ -17,6 +17,10 @@ class QuizViewModel extends ChangeNotifier {
   List<Quiz> _quizzes = [];
   List<Quiz> get quizzes => _quizzes;
 
+  // Add this map to store submission result
+  Map<String, dynamic>? _submissionResult;
+  Map<String, dynamic>? get submissionResult => _submissionResult;
+
   Future<void> fetchQuiz(int lessonId) async {
     _loading = true;
     _error = null;
@@ -42,12 +46,61 @@ class QuizViewModel extends ChangeNotifier {
       AppLogger.logError("Error fetching quizzes: $e");
       _error = e.toString();
     } finally {
-      
       _loading = false;
       notifyListeners();
     }
   }
-
   
+  Future<bool> submitQuiz(int lessonId, Map<int, int> answers, BuildContext context) async {
+    _loading = true;
+    _error = null;
+    _submissionResult = null;
+    notifyListeners();
 
+    final sp = await SharedPrefs.instance;
+    final String? token = sp.getString("auth_token");
+
+    if (token == null) {
+      _error = "Token tidak ditemukan. Silakan login ulang.";
+      _loading = false;
+      notifyListeners();
+      return false;
+    }
+
+    try {
+      final List<Map<String, dynamic>> formattedAnswers = [];
+      
+      answers.forEach((questionId, answerId) {
+        formattedAnswers.add({
+          "question_id": questionId,
+          "quiz_answer_id": answerId
+        });
+      });
+
+      final Map<String, dynamic> body = {
+        "answers": formattedAnswers
+      };
+
+      AppLogger.logInfo("Submitting quiz answers: $body");
+      
+      final response = await _quizRepository.submitQuiz(
+        lessonId: lessonId, 
+        token: token,
+        body: body,
+        context: context
+      );
+      
+      AppLogger.logInfo("Quiz submission response: $response");
+      _submissionResult = response;
+      
+      return true;
+    } catch (e) {
+      AppLogger.logError("Error submitting quiz: $e");
+      _error = e.toString();
+      return false;
+    } finally {
+      _loading = false;
+      notifyListeners();
+    }
+  }
 }

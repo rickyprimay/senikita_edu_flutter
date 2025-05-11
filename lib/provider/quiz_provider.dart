@@ -4,14 +4,29 @@ import 'package:widya/models/quiz/quiz.dart';
 import 'package:widya/viewModel/quiz_view_model.dart';
 
 class LocalQuizQuestion {
+  final int id; 
   final String question;
   final List<String> options;
   final int correctAnswerIndex;
+  final List<LocalQuizAnswer> answers;  
 
   LocalQuizQuestion({
+    required this.id,
     required this.question,
     required this.options,
     required this.correctAnswerIndex,
+    required this.answers,
+  });
+}
+class LocalQuizAnswer {
+  final int id;
+  final String answer;
+  final bool isCorrect;
+
+  LocalQuizAnswer({
+    required this.id,
+    required this.answer,
+    required this.isCorrect,
   });
 }
 
@@ -171,10 +186,10 @@ class QuizProvider extends ChangeNotifier {
 
   List<LocalQuizQuestion> _convertApiToLocalQuestions(Quiz quiz) {
     if (quiz.questions == null) return [];
-    
+
     return quiz.questions!.map((question) {
       final options = question.answers?.map((a) => a.answer ?? "").toList() ?? [];
-      
+
       int correctIndex = 0;
       if (question.answers != null) {
         for (int i = 0; i < question.answers!.length; i++) {
@@ -184,13 +199,37 @@ class QuizProvider extends ChangeNotifier {
           }
         }
       }
-      
+
+      final localAnswers = question.answers?.map((a) => LocalQuizAnswer(
+        id: a.id ?? 0,
+        answer: a.answer ?? "",
+        isCorrect: a.isCorrect ?? false,
+      )).toList() ?? [];
+
       return LocalQuizQuestion(
+        id: question.id ?? 0,
         question: question.question ?? "No Question",
         options: options,
         correctAnswerIndex: correctIndex,
+        answers: localAnswers,
       );
     }).toList();
+  }
+
+  Future<bool> submitUserAnswers(int lessonId, BuildContext context) async {
+    Map<int, int> formattedAnswers = {};
+
+    for (int i = 0; i < _questions.length; i++) {
+      if (_userAnswers.containsKey(i)) {
+        int questionId = _questions[i].id;
+
+        int answerId = _questions[i].answers[_userAnswers[i]!].id;
+
+        formattedAnswers[questionId] = answerId;
+      }
+    }
+
+    return await quizViewModel.submitQuiz(lessonId, formattedAnswers, context);
   }
   
   @override

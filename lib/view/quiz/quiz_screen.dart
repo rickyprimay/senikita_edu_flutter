@@ -4,7 +4,6 @@ import 'package:widya/provider/quiz_provider.dart';
 import 'package:widya/res/widgets/colors.dart';
 import 'package:widya/res/widgets/fonts.dart';
 import 'package:widya/res/widgets/loading.dart';
-import 'package:widya/viewModel/quiz_view_model.dart';
 
 class QuizScreen extends StatefulWidget {
   final String quizTitle;
@@ -552,9 +551,21 @@ class _QuizScreenState extends State<QuizScreen> {
               const Spacer(),
               ElevatedButton(
                 onPressed: quizProvider.currentIndex == quizProvider.questions.length - 1
-                    ? () {
+                    ? () async {
                         quizProvider.finishQuiz();
+
+                        final success = await quizProvider.submitUserAnswers(widget.lessonId, context);
+
                         _showResult();
+
+                        if (!success && mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Gagal mengirim jawaban ke server, namun skor telah dihitung.'),
+                              backgroundColor: Colors.orange,
+                            ),
+                          );
+                        }
                       }
                     : quizProvider.nextQuestion,
                 style: ElevatedButton.styleFrom(
