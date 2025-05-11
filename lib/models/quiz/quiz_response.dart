@@ -1,14 +1,24 @@
 import 'package:widya/models/quiz/quiz.dart';
 
 class QuizResponse {
-  List<Quiz> data;
+  final List<Quiz> data;
 
   QuizResponse({required this.data});
 
   factory QuizResponse.fromJson(Map<String, dynamic> json) {
-    return QuizResponse(
-      data: List<Quiz>.from(json['data'].map((quiz) => quiz.fromJson(quiz))),
-    );
+    List<Quiz> quizList = [];
+    
+    if (json['data'] != null) {
+      if (json['data'] is List) {
+        quizList = (json['data'] as List)
+            .map((quizJson) => Quiz.fromJson(quizJson))
+            .toList();
+      } else if (json['data'] is Map) {
+        quizList = [Quiz.fromJson(json['data'])];
+      }
+    }
+    
+    return QuizResponse(data: quizList);
   }
 
   Map<String, dynamic> toJson() {

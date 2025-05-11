@@ -1,16 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:widya/models/quiz/quiz.dart';
+import 'package:widya/models/quiz/quiz_question.dart';
 import 'package:widya/res/widgets/colors.dart';
 import 'package:widya/res/widgets/fonts.dart';
+import 'package:widya/res/widgets/loading.dart';
+import 'package:widya/viewModel/quiz_view_model.dart';
 import 'dart:async';
 
 class QuizScreen extends StatefulWidget {
   final String quizTitle;
   final int timeLimit; 
+  final int lessonId;
 
   const QuizScreen({
     super.key, 
     required this.quizTitle,
     required this.timeLimit,
+    required this.lessonId,
   });
 
   @override
@@ -22,40 +29,93 @@ class _QuizScreenState extends State<QuizScreen> {
   late Timer _timer;
   int _timeRemaining = 0; 
   Map<int, int> _userAnswers = {}; 
-  
-  final List<QuizQuestion> _questions = [
-    QuizQuestion(
-      question: "Tari Saman berasal dari provinsi mana?",
-      options: ["Aceh", "Sumatera Utara", "Jawa Barat", "Bali"],
-      correctAnswerIndex: 0,
-    ),
-    QuizQuestion(
-      question: "Alat musik Gamelan umumnya terbuat dari apa?",
-      options: ["Kayu", "Bambu", "Logam", "Kulit Hewan"],
-      correctAnswerIndex: 2,
-    ),
-    QuizQuestion(
-      question: "Teknik batik yang menggunakan canting dan malam disebut?",
-      options: ["Batik Cap", "Batik Tulis", "Batik Print", "Batik Lukis"],
-      correctAnswerIndex: 1,
-    ),
-    QuizQuestion(
-      question: "Wayang Kulit menggunakan sumber cahaya dari?",
-      options: ["Lampu LED", "Lilin", "Lampu Minyak", "Blencong"],
-      correctAnswerIndex: 3,
-    ),
-    QuizQuestion(
-      question: "Dalam seni rupa tradisional Indonesia, warna merah sering melambangkan?",
-      options: ["Keberanian", "Kesucian", "Kedamaian", "Kesedihan"],
-      correctAnswerIndex: 0,
-    ),
-  ];
+  bool _isLoading = true;
+  List<LocalQuizQuestion> _questions = [];
 
   @override
   void initState() {
     super.initState();
-    _timeRemaining = widget.timeLimit * 60; 
-    _startTimer();
+    _timeRemaining = widget.timeLimit * 60;
+    
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _fetchQuizData();
+    });
+  }
+
+  Future<void> _fetchQuizData() async {
+    setState(() {
+      _isLoading = true;
+    });
+    
+    try {
+      // Gunakan Provider dengan listen: false untuk menghindari rebuild loop
+      final quizViewModel = Provider.of<QuizViewModel>(context, listen: false);
+      await quizViewModel.fetchQuiz(widget.lessonId);
+      
+      if (quizViewModel.error != null) {
+        if (mounted) {
+          setState(() {
+            _isLoading = false;
+          });
+        }
+        return;
+      }
+      
+      if (quizViewModel.quizzes.isEmpty) {
+        if (mounted) {
+          setState(() {
+            _isLoading = false;
+          });
+        }
+        return;
+      }
+      
+      // Convert API model to UI model
+      final questions = _convertApiToLocalQuestions(quizViewModel.quizzes.first);
+      
+      if (mounted) {
+        setState(() {
+          _questions = questions;
+          _isLoading = false;
+        });
+        
+        // Mulai timer hanya setelah data berhasil dimuat
+        _startTimer();
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+  
+  // Konversi model Quiz API ke model QuizQuestion untuk UI
+  List<LocalQuizQuestion> _convertApiToLocalQuestions(Quiz quiz) {
+    if (quiz.questions == null) return [];
+    
+    return quiz.questions!.map((question) {
+      // Ambil opsi jawaban
+      final options = question.answers?.map((a) => a.answer ?? "").toList() ?? [];
+      
+      // Cari index jawaban yang benar
+      int correctIndex = 0;
+      if (question.answers != null) {
+        for (int i = 0; i < question.answers!.length; i++) {
+          if (question.answers![i].isCorrect == true) {
+            correctIndex = i;
+            break;
+          }
+        }
+      }
+      
+      return LocalQuizQuestion(
+        question: question.question ?? "No Question",
+        options: options,
+        correctAnswerIndex: correctIndex,
+      );
+    }).toList();
   }
 
   void _startTimer() {
@@ -72,12 +132,12 @@ class _QuizScreenState extends State<QuizScreen> {
 
   void _finishQuiz() {
     _timer.cancel();
-    setState(() {
-    });
     _showResult();
   }
 
   void _showResult() {
+    if (_questions.isEmpty) return;
+    
     int correctAnswers = 0;
     _userAnswers.forEach((questionIndex, answerIndex) {
       if (answerIndex == _questions[questionIndex].correctAnswerIndex) {
@@ -86,7 +146,11 @@ class _QuizScreenState extends State<QuizScreen> {
     });
 
     final score = (correctAnswers / _questions.length) * 100;
-    final isPassed = score >= 70;
+    final quizViewModel = Provider.of<QuizViewModel>(context, listen: false);
+    final passingScore = quizViewModel.quizzes.isNotEmpty ? 
+        quizViewModel.quizzes.first.passingScore ?? 70 : 70;
+    
+    final isPassed = score >= passingScore;
 
     showDialog(
       context: context,
@@ -116,7 +180,7 @@ class _QuizScreenState extends State<QuizScreen> {
                   height: 120,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: isPassed ? AppColors.customGreen : Colors.red.withOpacity(0.1),
+                    color: isPassed ? AppColors.customGreen.withOpacity(0.1) : Colors.red.withOpacity(0.1),
                     border: Border.all(
                       color: isPassed ? AppColors.customGreen : Colors.redAccent,
                       width: 3,
@@ -287,7 +351,9 @@ class _QuizScreenState extends State<QuizScreen> {
 
   @override
   void dispose() {
-    _timer.cancel();
+    if (_timer.isActive) {
+      _timer.cancel();
+    }
     super.dispose();
   }
 
@@ -298,7 +364,7 @@ class _QuizScreenState extends State<QuizScreen> {
       appBar: AppBar(
         backgroundColor: AppColors.primary,
         leading: IconButton(
-          icon: Icon(Icons.close, color: Colors.white),
+          icon: const Icon(Icons.close, color: Colors.white),
           onPressed: () {
             showDialog(
               context: context,
@@ -408,7 +474,7 @@ class _QuizScreenState extends State<QuizScreen> {
             ),
             child: Row(
               children: [
-                Icon(Icons.timer, color: Colors.white, size: 16),
+                const Icon(Icons.timer, color: Colors.white, size: 16),
                 const SizedBox(width: 4),
                 Text(
                   _formatTime(_timeRemaining),
@@ -422,230 +488,314 @@ class _QuizScreenState extends State<QuizScreen> {
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: double.infinity,
-              height: 10,
-              decoration: BoxDecoration(
-                color: Colors.grey.withOpacity(0.2),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: FractionallySizedBox(
-                alignment: Alignment.centerLeft,
-                widthFactor: (_currentIndex + 1) / _questions.length,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: AppColors.primary,
-                    borderRadius: BorderRadius.circular(10),
-                    gradient: LinearGradient(
-                      colors: [
-                        AppColors.primary,
-                        AppColors.tertiary,
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 12.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      body: Consumer<QuizViewModel>(
+        builder: (context, quizViewModel, child) {
+          if (_isLoading) {
+            return const Center(child: Loading(opacity: 1.0));
+          }
+          
+          if (quizViewModel.error != null) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  Icon(Icons.error_outline, size: 64, color: AppColors.customRed),
+                  const SizedBox(height: 16),
                   Text(
-                    "Soal ${_currentIndex + 1}/${_questions.length}",
-                    style: AppFont.ralewaySubtitle.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.secondary,
+                    "Gagal memuat quiz",
+                    style: AppFont.crimsonTextHeader.copyWith(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.check_circle_outline,
-                        size: 16,
-                        color: AppColors.primary,
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        "${_userAnswers.length}/${_questions.length} terjawab",
-                        style: AppFont.ralewaySubtitle.copyWith(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.secondary,
-                        ),
-                      ),
-                    ],
+                  const SizedBox(height: 8),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                    child: Text(
+                      quizViewModel.error!,
+                      style: AppFont.ralewaySubtitle,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  ElevatedButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      foregroundColor: Colors.white,
+                    ),
+                    child: const Text("Kembali"),
                   ),
                 ],
               ),
-            ),
-            const SizedBox(height: 16),
-            Expanded(
-              child: Card(
-                color: AppColors.greyCustom,
-                elevation: 0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                  side: BorderSide(
-                    color: Colors.grey.withOpacity(0.5),
-                    width: 1.5,
-                  ),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          _questions[_currentIndex].question,
-                          style: AppFont.ralewaySubtitle.copyWith(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-                        ...List.generate(_questions[_currentIndex].options.length, (index) {
-                          final isSelected = _userAnswers[_currentIndex] == index;
-                          return Padding(
-                            padding: const EdgeInsets.only(bottom: 12.0),
-                            child: InkWell(
-                              onTap: () => _selectAnswer(index),
-                              borderRadius: BorderRadius.circular(12),
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                    color: isSelected 
-                                        ? AppColors.primary
-                                        : Colors.grey.withOpacity(0.3),
-                                    width: isSelected ? 2 : 1,
-                                  ),
-                                  borderRadius: BorderRadius.circular(12),
-                                  color: isSelected 
-                                      ? AppColors.primary.withOpacity(0.1)
-                                      : Colors.transparent,
-                                ),
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      width: 28,
-                                      height: 28,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: isSelected
-                                            ? AppColors.primary
-                                            : Colors.grey.withOpacity(0.2),
-                                        border: Border.all(
-                                          color: isSelected
-                                              ? AppColors.primary
-                                              : Colors.grey.withOpacity(0.5),
-                                        ),
-                                      ),
-                                      child: Center(
-                                        child: isSelected
-                                            ? Icon(
-                                                Icons.check,
-                                                color: Colors.white,
-                                                size: 16,
-                                              )
-                                            : Text(
-                                                String.fromCharCode(65 + index),
-                                                style: AppFont.crimsonTextSubtitle.copyWith(
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.grey,
-                                                ),
-                                              ),
-                                      ),
-                                    ),
-                                    const SizedBox(width: 16),
-                                    Expanded(
-                                      child: Text(
-                                        _questions[_currentIndex].options[index],
-                                        style: AppFont.ralewaySubtitle.copyWith(
-                                          fontSize: 16,
-                                          fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-                                          color: isSelected ? AppColors.primary : Colors.black87,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          );
-                        }),
-                      ],
+            );
+          }
+          
+          if (_questions.isEmpty) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.quiz_outlined, size: 64, color: Colors.grey),
+                  const SizedBox(height: 16),
+                  Text(
+                    "Quiz tidak tersedia",
+                    style: AppFont.crimsonTextHeader.copyWith(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                ),
+                  const SizedBox(height: 8),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                    child: Text(
+                      "Tidak ada pertanyaan yang tersedia untuk quiz ini",
+                      style: AppFont.ralewaySubtitle,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  ElevatedButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      foregroundColor: Colors.white,
+                    ),
+                    child: const Text("Kembali"),
+                  ),
+                ],
               ),
-            ),
-            const SizedBox(height: 16),
-            Row(
+            );
+          }
+          
+          // UI Quiz dengan data dari API
+          return Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (_currentIndex > 0)
-                  OutlinedButton.icon(
-                    onPressed: _prevQuestion,
-                    icon: Icon(Icons.arrow_back, size: 16),
-                    label: Text("Sebelumnya"),
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: AppColors.primary,
-                      side: BorderSide(color: AppColors.primary),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+                Container(
+                  width: double.infinity,
+                  height: 10,
+                  decoration: BoxDecoration(
+                    color: Colors.grey.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: FractionallySizedBox(
+                    alignment: Alignment.centerLeft,
+                    widthFactor: (_currentIndex + 1) / _questions.length,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: AppColors.primary,
+                        borderRadius: BorderRadius.circular(10),
+                        gradient: const LinearGradient(
+                          colors: [
+                            AppColors.primary,
+                            AppColors.tertiary,
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                Spacer(),
-                ElevatedButton(
-                  onPressed: _currentIndex == _questions.length - 1
-                      ? () => _finishQuiz()
-                      : _nextQuestion,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                  ),
+                ),
+                
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 12.0),
                   child: Row(
-                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        _currentIndex == _questions.length - 1 ? "Selesai" : "Selanjutnya",
+                        "Soal ${_currentIndex + 1}/${_questions.length}",
                         style: AppFont.ralewaySubtitle.copyWith(
                           fontWeight: FontWeight.w600,
-                          fontSize: 16,
+                          color: AppColors.secondary,
                         ),
                       ),
-                      if (_currentIndex < _questions.length - 1)
-                        Icon(Icons.arrow_forward, size: 16)
+                      Row(
+                        children: [
+                          const Icon(
+                            Icons.check_circle_outline,
+                            size: 16,
+                            color: AppColors.primary,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            "${_userAnswers.length}/${_questions.length} terjawab",
+                            style: AppFont.ralewaySubtitle.copyWith(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.secondary,
+                            ),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 ),
+                const SizedBox(height: 16),
+                Expanded(
+                  child: Card(
+                    color: Colors.white,
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                      side: BorderSide(
+                        color: Colors.grey.withOpacity(0.5),
+                        width: 1.5,
+                      ),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              _questions[_currentIndex].question,
+                              style: AppFont.ralewaySubtitle.copyWith(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            ...List.generate(_questions[_currentIndex].options.length, (index) {
+                              final isSelected = _userAnswers[_currentIndex] == index;
+                              return Padding(
+                                padding: const EdgeInsets.only(bottom: 12.0),
+                                child: InkWell(
+                                  onTap: () => _selectAnswer(index),
+                                  borderRadius: BorderRadius.circular(12),
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        color: isSelected 
+                                            ? AppColors.primary
+                                            : Colors.grey.withOpacity(0.3),
+                                        width: isSelected ? 2 : 1,
+                                      ),
+                                      borderRadius: BorderRadius.circular(12),
+                                      color: isSelected 
+                                          ? AppColors.primary.withOpacity(0.1)
+                                          : Colors.transparent,
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Container(
+                                          width: 28,
+                                          height: 28,
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: isSelected
+                                                ? AppColors.primary
+                                                : Colors.grey.withOpacity(0.2),
+                                            border: Border.all(
+                                              color: isSelected
+                                                  ? AppColors.primary
+                                                  : Colors.grey.withOpacity(0.5),
+                                            ),
+                                          ),
+                                          child: Center(
+                                            child: isSelected
+                                                ? const Icon(
+                                                    Icons.check,
+                                                    color: Colors.white,
+                                                    size: 16,
+                                                  )
+                                                : Text(
+                                                    String.fromCharCode(65 + index),
+                                                    style: AppFont.crimsonTextSubtitle.copyWith(
+                                                      fontWeight: FontWeight.bold,
+                                                      color: Colors.grey,
+                                                    ),
+                                                  ),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 16),
+                                        Expanded(
+                                          child: Text(
+                                            _questions[_currentIndex].options[index],
+                                            style: AppFont.ralewaySubtitle.copyWith(
+                                              fontSize: 16,
+                                              fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                                              color: isSelected ? AppColors.primary : Colors.black87,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    if (_currentIndex > 0)
+                      OutlinedButton.icon(
+                        onPressed: _prevQuestion,
+                        icon: const Icon(Icons.arrow_back, size: 16),
+                        label: const Text("Sebelumnya"),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: AppColors.primary,
+                          side: const BorderSide(color: AppColors.primary),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                      ),
+                    const Spacer(),
+                    ElevatedButton(
+                      onPressed: _currentIndex == _questions.length - 1
+                          ? () => _finishQuiz()
+                          : _nextQuestion,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primary,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            _currentIndex == _questions.length - 1 ? "Selesai" : "Selanjutnya",
+                            style: AppFont.ralewaySubtitle.copyWith(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16,
+                            ),
+                          ),
+                          if (_currentIndex < _questions.length - 1)
+                            const Icon(Icons.arrow_forward, size: 16)
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
 }
 
-class QuizQuestion {
+// Model untuk pertanyaan quiz di UI
+class LocalQuizQuestion {
   final String question;
   final List<String> options;
   final int correctAnswerIndex;
 
-  QuizQuestion({
+  LocalQuizQuestion({
     required this.question,
     required this.options,
     required this.correctAnswerIndex,

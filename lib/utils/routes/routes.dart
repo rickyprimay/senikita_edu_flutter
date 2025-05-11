@@ -47,11 +47,13 @@ class Routes {
         final args = settings.arguments as Map<String, dynamic>;
         final quizTitle = args['quizTitle'] as String;
         final timeLimit = args['timeLimit'] as int;
+        final lessonId = args['lessonId'] as int;
 
         return MaterialPageRoute(
           builder: (BuildContext context) => QuizScreen(
             quizTitle: quizTitle,
             timeLimit: timeLimit,
+            lessonId: lessonId,
         ));
       case (RouteNames.course):
         final args = settings.arguments as Map<String, dynamic>;
