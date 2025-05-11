@@ -37,6 +37,7 @@ dependencies:
   flutter_lightbox: ^0.1.3
   lucide_icons: ^0.257.0
   flutter_svg: ^2.1.0
+  flutter_html: ^3.0.0
 
 dev_dependencies:
   flutter_test:

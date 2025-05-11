@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:widya/models/lessons/lesson.dart';
 import 'package:widya/res/widgets/colors.dart';
 import 'package:widya/res/widgets/fonts.dart';
@@ -55,15 +56,32 @@ class LessonInfoWidget extends StatelessWidget {
               textAlign: TextAlign.justify,
             ),
             const SizedBox(height: 8),
-            Text(
-              'Isi Konten : ${lesson.content}',
-              style: AppFont.ralewaySubtitle.copyWith(
-                fontSize: 12,
-                fontWeight: FontWeight.w400,
-                color: AppColors.secondary,
-              ),
-              textAlign: TextAlign.justify,
-            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Isi Konten :',
+                  style: AppFont.ralewaySubtitle.copyWith(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w400,
+                    color: AppColors.secondary,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Html(
+                  data: lesson.content,
+                  style: {
+                    "body": Style(
+                      fontSize: FontSize(12),
+                      fontWeight: FontWeight.w400,
+                      color: AppColors.secondary,
+                      textAlign: TextAlign.justify,
+                      fontFamily: AppFont.ralewaySubtitle.fontFamily,
+                    ),
+                  },
+                ),
+              ],
+            )
           ],
         ),
       ),
