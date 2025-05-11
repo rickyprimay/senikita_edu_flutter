@@ -8,6 +8,20 @@ import 'package:widya/res/widgets/logger.dart';
 class SubmissionRepository {
   final NetworkApiServices _network = NetworkApiServices();
 
+  Future<dynamic> fetchSubmission({required int lessonId, required String token}) async {
+    try {
+      final headers = {
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      };
+      final response = await _network.getGetApiResponseWithHeader(AppUrls.getSubmissionHistory(lessonId), headers);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<dynamic> submitSubmission({
     required String token, 
     required int lessonId,
