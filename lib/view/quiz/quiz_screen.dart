@@ -341,7 +341,7 @@ class _QuizScreenState extends State<QuizScreen> {
               ],
             ),
             body: quizProvider.isLoading
-                ? const SizedBox.shrink()
+                ? const Center(child: Loading(opacity: 1.0))
                 : quizProvider.error != null
                     ? _buildErrorView(quizProvider.error!)
                     : quizProvider.isQuizEmpty

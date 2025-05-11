@@ -1,29 +1,39 @@
-import 'package:widya/models/quiz/quiz.dart';
+import 'package:widya/models/quiz/quiz_data_wrapper.dart';
 
 class QuizResponse {
-  final List<Quiz> data;
+  final bool success;
+  final String message;
+  final QuizDataWrapper? data;
 
-  QuizResponse({required this.data});
+  QuizResponse({
+    required this.success,
+    required this.message,
+    this.data,
+  });
 
   factory QuizResponse.fromJson(Map<String, dynamic> json) {
-    List<Quiz> quizList = [];
-    
+    QuizDataWrapper? dataWrapper;
     if (json['data'] != null) {
-      if (json['data'] is List) {
-        quizList = (json['data'] as List)
-            .map((quizJson) => Quiz.fromJson(quizJson))
-            .toList();
-      } else if (json['data'] is Map) {
-        quizList = [Quiz.fromJson(json['data'])];
-      }
+      dataWrapper = QuizDataWrapper.fromJson(json['data']);
     }
     
-    return QuizResponse(data: quizList);
+    return QuizResponse(
+      success: json['success'] ?? false,
+      message: json['message'] ?? '',
+      data: dataWrapper,
+    );
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'data': data.map((quiz) => quiz.toJson()).toList(),
+    final Map<String, dynamic> result = {
+      'success': success,
+      'message': message,
     };
+    
+    if (data != null) {
+      result['data'] = data!.toJson();
+    }
+    
+    return result;
   }
 }

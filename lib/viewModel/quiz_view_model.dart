@@ -17,7 +17,6 @@ class QuizViewModel extends ChangeNotifier {
   List<Quiz> _quizzes = [];
   List<Quiz> get quizzes => _quizzes;
 
-  // Add this map to store submission result
   Map<String, dynamic>? _submissionResult;
   Map<String, dynamic>? get submissionResult => _submissionResult;
 
@@ -38,19 +37,25 @@ class QuizViewModel extends ChangeNotifier {
 
     try {
       final response = await _quizRepository.fetchQUiz(lessonId: lessonId, token: token);
-      AppLogger.logInfo("response: $response");
+      
       final quizResponse = QuizResponse.fromJson(response);
-      _quizzes = quizResponse.data;
-      AppLogger.logInfo("quizzes: $_quizzes");
+      
+      if (quizResponse.success && quizResponse.data?.quiz != null) {
+        _quizzes = [quizResponse.data!.quiz!]; 
+      } else {
+        _quizzes = [];
+        _error = quizResponse.message;
+      }
     } catch (e) {
       AppLogger.logError("Error fetching quizzes: $e");
       _error = e.toString();
+      _quizzes = []; 
     } finally {
       _loading = false;
       notifyListeners();
     }
   }
-  
+
   Future<bool> submitQuiz(int lessonId, Map<int, int> answers, BuildContext context) async {
     _loading = true;
     _error = null;
@@ -81,7 +86,6 @@ class QuizViewModel extends ChangeNotifier {
         "answers": formattedAnswers
       };
 
-      AppLogger.logInfo("Submitting quiz answers: $body");
       
       final response = await _quizRepository.submitQuiz(
         lessonId: lessonId, 
@@ -90,12 +94,10 @@ class QuizViewModel extends ChangeNotifier {
         context: context
       );
       
-      AppLogger.logInfo("Quiz submission response: $response");
       _submissionResult = response;
       
       return true;
     } catch (e) {
-      AppLogger.logError("Error submitting quiz: $e");
       _error = e.toString();
       return false;
     } finally {
