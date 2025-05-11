@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:widya/models/quiz/quiz.dart';
 import 'package:widya/models/quiz/quiz_response.dart';
 import 'package:widya/repository/quiz_repository.dart';
 import 'package:widya/res/widgets/logger.dart';
@@ -14,9 +13,18 @@ class QuizViewModel extends ChangeNotifier {
   String? _error;
   String? get error => _error;
 
-  List<Quiz> _quizzes = [];
-  List<Quiz> get quizzes => _quizzes;
-
+  // Updated properties to match new model
+  Quiz? _quiz;
+  Quiz? get quiz => _quiz;
+  
+  // For backward compatibility, provide a quizzes getter
+  List<QuizClass> get quizzes => _quiz?.data.quiz != null ? [_quiz!.data.quiz] : [];
+  
+  // Expose the new data structure components
+  QuizClass? get currentQuiz => _quiz?.data.quiz;
+  List<History>? get quizHistory => _quiz?.data.history;
+  Attempt? get latestAttempt => _quiz?.data.latestAttempt;
+  
   Map<String, dynamic>? _submissionResult;
   Map<String, dynamic>? get submissionResult => _submissionResult;
 
@@ -38,18 +46,49 @@ class QuizViewModel extends ChangeNotifier {
     try {
       final response = await _quizRepository.fetchQUiz(lessonId: lessonId, token: token);
       
-      final quizResponse = QuizResponse.fromJson(response);
+      // Parse response into the new Quiz model
+      _quiz = Quiz.fromJson(response);
       
-      if (quizResponse.success && quizResponse.data?.quiz != null) {
-        _quizzes = [quizResponse.data!.quiz!]; 
-      } else {
-        _quizzes = [];
-        _error = quizResponse.message;
+      if (!(_quiz?.success ?? false) || _quiz?.data.quiz == null) {
+        _error = _quiz?.message ?? "Failed to load quiz";
       }
     } catch (e) {
       AppLogger.logError("Error fetching quizzes: $e");
       _error = e.toString();
-      _quizzes = []; 
+      _quiz = null;
+    } finally {
+      _loading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> fetchQuizHistory(int lessonId) async {
+    _loading = true;
+    _error = null;
+    notifyListeners();
+
+    final sp = await SharedPrefs.instance;
+    final String? token = sp.getString("auth_token");
+
+    if (token == null) {
+      _error = "Token tidak ditemukan. Silakan login ulang.";
+      _loading = false;
+      notifyListeners();
+      return;
+    }
+
+    try {
+      final response = await _quizRepository.fetchQUiz(lessonId: lessonId, token: token);
+      
+      _quiz = Quiz.fromJson(response);
+      
+      if (!(_quiz?.success ?? false) || _quiz?.data.quiz == null) {
+        _error = _quiz?.message ?? "Failed to load quiz history";
+      }
+    } catch (e) {
+      AppLogger.logError("Error fetching quiz history: $e");
+      _error = e.toString();
+      _quiz = null;
     } finally {
       _loading = false;
       notifyListeners();
@@ -86,7 +125,6 @@ class QuizViewModel extends ChangeNotifier {
         "answers": formattedAnswers
       };
 
-      
       final response = await _quizRepository.submitQuiz(
         lessonId: lessonId, 
         token: token,

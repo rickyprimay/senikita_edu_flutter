@@ -6,6 +6,7 @@ import 'package:widya/view/art/art_screen.dart';
 import 'package:widya/view/class_detail/class_detail_screen.dart';
 import 'package:widya/view/course/course_screen.dart';
 import 'package:widya/view/discover/discover_screen.dart';
+import 'package:widya/view/history_quiz/history_quiz_screen.dart';
 import 'package:widya/view/home/home_screen.dart';
 import 'package:widya/view/login/login_screen.dart';
 import 'package:widya/view/my_class/my_class_screen.dart';
@@ -43,6 +44,8 @@ class Routes {
         return MaterialPageRoute(builder: (BuildContext context) => const SeniKitaEduScreen());
       case (RouteNames.art):
         return MaterialPageRoute(builder: (BuildContext context) => const ArtScreen());
+      case (RouteNames.quizHistory):
+        return MaterialPageRoute(builder: (BuildContext context) => const HistoryQuizScreen());
       case (RouteNames.quiz):
         final args = settings.arguments as Map<String, dynamic>;
         final quizTitle = args['quizTitle'] as String;

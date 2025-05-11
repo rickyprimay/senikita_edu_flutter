@@ -648,20 +648,35 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
 
                       const SizedBox(height: 12),
 
-                      Row(
-                        children: [
-                          Icon(Icons.equalizer, color: AppColors.primary, size: 22),
-                          const SizedBox(width: 12),
-                          Text(
-                            "Tingkat Kesulitan: Dasar",
-                            style: AppFont.ralewaySubtitle.copyWith(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: AppColors.secondary,
+                      InkWell(
+                      onTap: () {
+                        Navigator.of(context, rootNavigator: true).pushNamed(RouteNames.quizHistory);
+                      },
+                      borderRadius: BorderRadius.circular(8),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
+                        child: Row(
+                          children: [
+                            Icon(Icons.history_edu, color: AppColors.primary, size: 22),
+                            const SizedBox(width: 12),
+                            Text(
+                              "Cek Riwayat Quiz",
+                              style: AppFont.ralewaySubtitle.copyWith(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                color: AppColors.secondary,
+                              ),
                             ),
-                          ),
-                        ],
+                            const SizedBox(width: 4),
+                            Icon(
+                              Icons.arrow_forward_ios_rounded, 
+                              color: AppColors.secondary,
+                              size: 14,
+                            ),
+                          ],
+                        ),
                       ),
+                    )
                     ],
                   ),
                 ),

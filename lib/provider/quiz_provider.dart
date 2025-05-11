@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:widya/models/quiz/quiz.dart';
+import 'package:widya/models/quiz/quiz_response.dart'; // Updated import to match new model
 import 'package:widya/viewModel/quiz_view_model.dart';
 
 class LocalQuizQuestion {
@@ -18,6 +18,7 @@ class LocalQuizQuestion {
     required this.answers,
   });
 }
+
 class LocalQuizAnswer {
   final int id;
   final String answer;
@@ -74,11 +75,11 @@ class QuizProvider extends ChangeNotifier {
     try {
       await quizViewModel.fetchQuiz(lessonId);
       
-      if (quizViewModel.quizzes.isNotEmpty) {
-        _questions = _convertApiToLocalQuestions(quizViewModel.quizzes.first);
+      if (quizViewModel.currentQuiz != null) {
+        _questions = _convertApiToLocalQuestions(quizViewModel.currentQuiz!);
       }
     } catch (e) {
-      // TODOS
+      // Handle error
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -147,8 +148,7 @@ class QuizProvider extends ChangeNotifier {
   }
   
   int getPassingScore() {
-    return quizViewModel.quizzes.isNotEmpty ? 
-        quizViewModel.quizzes.first.passingScore ?? 70 : 70;
+    return quizViewModel.currentQuiz?.passingScore ?? 70;
   }
   
   int getCorrectAnswersCount() {
@@ -182,16 +182,17 @@ class QuizProvider extends ChangeNotifier {
     return '${minutes.toString().padLeft(2, '0')}:${remainingSeconds.toString().padLeft(2, '0')}';
   }
 
-  List<LocalQuizQuestion> _convertApiToLocalQuestions(Quiz quiz) {
-    if (quiz.questions == null) return [];
+  List<LocalQuizQuestion> _convertApiToLocalQuestions(QuizClass quizClass) {
+    final questions = quizClass.questions;
+    if (questions.isEmpty) return [];
 
-    return quiz.questions!.map((question) {
-      final options = question.answers?.map((a) => a.answer ?? "").toList() ?? [];
+    return questions.map((question) {
+      final options = question.answers?.map((a) => a.answer).toList() ?? [];
 
       int correctIndex = 0;
       if (question.answers != null) {
         for (int i = 0; i < question.answers!.length; i++) {
-          if (question.answers![i].isCorrect == true) {
+          if (question.answers![i].isCorrect) {
             correctIndex = i;
             break;
           }
@@ -199,14 +200,14 @@ class QuizProvider extends ChangeNotifier {
       }
 
       final localAnswers = question.answers?.map((a) => LocalQuizAnswer(
-        id: a.id ?? 0,
-        answer: a.answer ?? "",
-        isCorrect: a.isCorrect ?? false,
+        id: a.id,
+        answer: a.answer,
+        isCorrect: a.isCorrect,
       )).toList() ?? [];
 
       return LocalQuizQuestion(
-        id: question.id ?? 0,
-        question: question.question ?? "No Question",
+        id: question.id,
+        question: question.question,
         options: options,
         correctAnswerIndex: correctIndex,
         answers: localAnswers,
