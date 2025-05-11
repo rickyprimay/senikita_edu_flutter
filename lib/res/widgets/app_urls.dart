@@ -75,4 +75,6 @@ class AppUrls {
     return "$baseUrl/lessons/$lessonId/complete";
   }
 
+  static const String submitSubmission = "$baseUrl/final-submissions";
+
 }

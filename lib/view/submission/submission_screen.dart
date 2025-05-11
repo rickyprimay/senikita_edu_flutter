@@ -6,12 +6,12 @@ import 'package:widya/res/widgets/fonts.dart';
 import 'package:widya/res/widgets/loading.dart';
 
 class SubmissionScreen extends StatefulWidget {
-  final int? lessonId;
+  final int lessonId;
   final String? lessonTitle;
 
   const SubmissionScreen({
     super.key, 
-    this.lessonId,
+    required this.lessonId,
     this.lessonTitle,
   });
 

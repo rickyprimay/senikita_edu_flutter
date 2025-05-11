@@ -48,7 +48,14 @@ class Routes {
       case (RouteNames.quizHistory):
         return MaterialPageRoute(builder: (BuildContext context) => const HistoryQuizScreen());
       case (RouteNames.submission):
-        return MaterialPageRoute(builder: (BuildContext context) => const SubmissionScreen());
+        final args = settings.arguments as Map<String, dynamic>;
+        final lessonId = args['lessonId'] as int;
+
+        return MaterialPageRoute(
+          builder: (BuildContext context) => SubmissionScreen(
+            lessonId: lessonId,
+          ),
+        );
       case (RouteNames.quiz):
         final args = settings.arguments as Map<String, dynamic>;
         final quizTitle = args['quizTitle'] as String;

@@ -558,7 +558,12 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
                         Expanded(
                           child: ElevatedButton.icon(
                             onPressed: () {
-                              Navigator.of(context, rootNavigator: true).pushNamed(RouteNames.submission);
+                              Navigator.of(context, rootNavigator: true).pushNamed(
+                                RouteNames.submission,
+                                arguments: {
+                                  "lessonId": lesson.id,
+                                },
+                              );
                             },
                             icon: const Icon(Icons.upload_file_outlined, size: 18),
                             label: Text(
