@@ -3,6 +3,7 @@ import 'package:flutter_gemini/flutter_gemini.dart';
 import 'package:provider/provider.dart';
 import 'package:widya/provider/category_provider.dart';
 import 'package:widya/provider/login_provider.dart';
+import 'package:widya/provider/quiz_provider.dart';
 import 'package:widya/utils/routes/routes.dart';
 import 'package:widya/utils/routes/routes_names.dart';
 import 'package:widya/viewModel/auth_view_model.dart';
@@ -39,6 +40,11 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => LoginProvider()),
         ChangeNotifierProvider(create: (_) => LessonViewModel()),
         ChangeNotifierProvider(create: (_) => QuizViewModel()),
+        ChangeNotifierProxyProvider<QuizViewModel, QuizProvider>(
+          create: (context) => QuizProvider(quizViewModel: context.read<QuizViewModel>()),
+          update: (context, quizViewModel, previous) => 
+              previous ?? QuizProvider(quizViewModel: quizViewModel),
+        ),
       ],
       child: ToastificationWrapper(
         child: MaterialApp(

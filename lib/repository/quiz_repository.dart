@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:widya/data/network/network_api_services.dart';
 import 'package:widya/res/widgets/app_urls.dart';
 
@@ -18,14 +19,14 @@ class QuizRepository {
     }
   }
 
-  Future<dynamic> submitQuiz({required int lessonId, required String token, required Map<String, dynamic> body}) async {
+  Future<dynamic> submitQuiz({required int lessonId, required String token, required Map<String, dynamic> body, required BuildContext context}) async {
     try {
       final headers = {
         'Authorization': 'Bearer $token',
         'Accept': 'application/json',
         'Content-Type': 'application/json'
-      }
-      final response = await _network.getPostApiResponseWithHeader(AppUrls.submitQuiz(lessonId), headers, body);
+      };
+      final response = await _network.getPostApiResponseWithHeader(AppUrls.submitQuiz(lessonId), headers, body, context);
       return response;
     } catch (e) {
       rethrow;

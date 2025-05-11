@@ -67,8 +67,8 @@ class AppUrls {
     return "$baseUrl/quizzes/lesson/$lessonId";
   }
 
-  static String postQuiz(int lessonId) {
-    return "$baseUrl/quizzes/lesson/$lessonid"
+  static String submitQuiz(int lessonId) {
+    return "$baseUrl/quizzes/lesson/$lessonId";
   }
 
   static String postCompleteLesson(int lessonId) {
