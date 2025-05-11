@@ -689,9 +689,11 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
                     width: double.infinity,
                     height: 50,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(25),
+                      borderRadius: BorderRadius.circular(15),
                     ),  
-                    child: ElevatedButton(
+                    child: 
+                    lesson.isCompleted != true
+                    ? ElevatedButton(
                       onPressed: () async {
                         final result = await Navigator.of(context, rootNavigator: true).pushNamed(
                           RouteNames.quiz,
@@ -717,7 +719,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
                         foregroundColor: Colors.white,
                         elevation: 0,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(25),
+                          borderRadius: BorderRadius.circular(15),
                         ),
                       ),
                       child: Row(
@@ -735,9 +737,26 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
                           const Icon(Icons.arrow_forward_rounded, color: Colors.white),
                         ],
                       ),
+                    )
+                    : Container(
+                      width: double.infinity,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        color: AppColors.primary,
+                      ),
+                      child: Center(
+                        child: Text(
+                          "Kamu telah menyelesaikan quiz ini",
+                          style: AppFont.ralewaySubtitle.copyWith(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
-
                   const SizedBox(height: 20),
               ],
             ),
