@@ -16,6 +16,7 @@ import 'package:widya/view/senikita/senikita_screen.dart';
 import 'package:widya/view/senikita_edu/senikita_edu.dart';
 import 'package:widya/view/splash/splash_screen.dart';
 import 'package:widya/view/submission/submission_screen.dart';
+import 'package:widya/view/submission_history/submission_history_screen.dart';
 
 class Routes {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -47,6 +48,16 @@ class Routes {
         return MaterialPageRoute(builder: (BuildContext context) => const ArtScreen());
       case (RouteNames.quizHistory):
         return MaterialPageRoute(builder: (BuildContext context) => const HistoryQuizScreen());
+      case (RouteNames.submissionHistory):
+        final args = settings.arguments as Map<String, dynamic>;
+        final lessonId = args['lessonId'] as int;
+
+        return MaterialPageRoute(
+          builder: (BuildContext context) =>
+            SubmissionHistoryScreen(
+              lessonId: lessonId,
+            )
+        );
       case (RouteNames.submission):
         final args = settings.arguments as Map<String, dynamic>;
         final lessonId = args['lessonId'] as int;
