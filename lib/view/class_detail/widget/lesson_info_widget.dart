@@ -28,7 +28,7 @@ class LessonInfoWidget extends StatelessWidget {
                 fontWeight: FontWeight.w500,
                 color: AppColors.primary,
               ),
-              textAlign: TextAlign.justify,
+              textAlign: TextAlign.start,
             ),
             const SizedBox(height: 2),
             Row(

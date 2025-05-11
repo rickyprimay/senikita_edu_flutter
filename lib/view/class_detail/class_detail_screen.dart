@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:provider/provider.dart';
 import 'package:widya/models/lessons/lesson.dart';
 import 'package:widya/res/widgets/fonts.dart';
@@ -370,11 +371,72 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
           ),
         );
       }
+    } else if (lesson.type?.toLowerCase() == "final") {
+      final isSubmission = lesson.type?.toLowerCase() == "final";
+      final selectedIndex = _state.selectedIndex ?? 0;
+
+      return SizedBox(
+        height: MediaQuery.of(context).size.height * 0.5,
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column (
+              children: [
+                Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [AppColors.primary.withOpacity(0.9), AppColors.tertiary.withOpacity(0.8)],
+                    ),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    children: [
+                      Icon(
+                        Icons.quiz_rounded,
+                        size: 60,
+                        color: Colors.white.withOpacity(0.9),
+                      ),
+                      const SizedBox(height: 16),
+
+                      Text(
+                        "Siap untuk melakukan Submission?",
+                        style: AppFont.crimsonTextHeader.copyWith(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 24),
+                Html(
+                  data: lesson.content ?? '',
+                  style: {
+                    "body": Style(
+                      fontSize: FontSize(14),
+                      fontWeight: FontWeight.w400,
+                      color: Colors.black,
+                      textAlign: TextAlign.start,
+                      fontFamily: AppFont.ralewaySubtitle.fontFamily,
+                    ),
+                  },
+                ),
+              ],
+            )
+          ),
+        )
+      );
     } else {
       final isQuiz = lesson.type?.toLowerCase() == "quiz";
       final selectedIndex = _state.selectedIndex ?? 0;
 
-      return Container(
+      return SizedBox(
         height: MediaQuery.of(context).size.height * 0.6,
         child: SingleChildScrollView(
           child: Padding(
