@@ -48,7 +48,6 @@ class _QuizScreenState extends State<QuizScreen> {
     });
     
     try {
-      // Gunakan Provider dengan listen: false untuk menghindari rebuild loop
       final quizViewModel = Provider.of<QuizViewModel>(context, listen: false);
       await quizViewModel.fetchQuiz(widget.lessonId);
       
@@ -70,7 +69,6 @@ class _QuizScreenState extends State<QuizScreen> {
         return;
       }
       
-      // Convert API model to UI model
       final questions = _convertApiToLocalQuestions(quizViewModel.quizzes.first);
       
       if (mounted) {
@@ -79,7 +77,6 @@ class _QuizScreenState extends State<QuizScreen> {
           _isLoading = false;
         });
         
-        // Mulai timer hanya setelah data berhasil dimuat
         _startTimer();
       }
     } catch (e) {
@@ -91,15 +88,12 @@ class _QuizScreenState extends State<QuizScreen> {
     }
   }
   
-  // Konversi model Quiz API ke model QuizQuestion untuk UI
   List<LocalQuizQuestion> _convertApiToLocalQuestions(Quiz quiz) {
     if (quiz.questions == null) return [];
     
     return quiz.questions!.map((question) {
-      // Ambil opsi jawaban
       final options = question.answers?.map((a) => a.answer ?? "").toList() ?? [];
       
-      // Cari index jawaban yang benar
       int correctIndex = 0;
       if (question.answers != null) {
         for (int i = 0; i < question.answers!.length; i++) {
@@ -568,7 +562,6 @@ class _QuizScreenState extends State<QuizScreen> {
             );
           }
           
-          // UI Quiz dengan data dari API
           return Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
@@ -789,7 +782,7 @@ class _QuizScreenState extends State<QuizScreen> {
   }
 }
 
-// Model untuk pertanyaan quiz di UI
+
 class LocalQuizQuestion {
   final String question;
   final List<String> options;
