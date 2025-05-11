@@ -310,17 +310,20 @@ class LessonListWidget extends StatelessWidget {
   }
   
   Widget _buildLessonMetadata(Lesson lesson) {
-    return Row(
-      children: [
-        Icon(Icons.access_time, size: 16, color: Colors.grey[700]),
-        const SizedBox(width: 4),
-        Text(
-          '${lesson.duration ?? 10} menit',
-          style: TextStyle(fontSize: 12, color: Colors.grey[800]),
-        ),
-        const SizedBox(width: 6),
-        Icon(lesson.type == "lesson" ? Icons.videocam_outlined : Icons.menu_book_sharp, size: 16, color: Colors.grey[700]),
-      ],
-    );
+    return
+    (lesson.type == "lesson" || lesson.type == "quiz")
+    ? Row(
+        children: [
+          Icon(Icons.access_time, size: 16, color: Colors.grey[700]),
+          const SizedBox(width: 4),
+          Text(
+            '${lesson.duration ?? 10} menit',
+            style: TextStyle(fontSize: 12, color: Colors.grey[800]),
+          ),
+          const SizedBox(width: 6),
+          Icon(lesson.type == "lesson" ? Icons.videocam_outlined : Icons.menu_book_sharp, size: 16, color: Colors.grey[700]),
+        ],
+      )
+    : SizedBox(); 
   }
 }
