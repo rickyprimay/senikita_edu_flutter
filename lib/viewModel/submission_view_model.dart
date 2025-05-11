@@ -37,11 +37,20 @@ class SubmissionViewModel with ChangeNotifier {
         lessonId: lessonId, 
         token: token
       );
+
+      AppLogger.logInfo("Submission response: $response");
       
-      if (response != null && response["status"] == true) {
+      // Fix: Check for "success" instead of "status"
+      if (response != null && response["success"] == true) {
         try {
-          _submission = Submission.fromJson(response);
+          // Create a properly structured object for the Submission model
+          final Map<String, dynamic> submissionData = {
+            'data': response['data']
+          };
+          
+          _submission = Submission.fromJson(submissionData);
           _error = null;
+          AppLogger.logInfo("Submission data parsed successfully");
         } catch (e) {
           _error = "Gagal memproses data submission: ${e.toString()}";
           AppLogger.logError("Submission parsing error: $e");
@@ -91,7 +100,9 @@ class SubmissionViewModel with ChangeNotifier {
         context: context,
       );
       
-      if (response != null && response["status"] == true) {
+      // Fix: Check for "success" instead of "status"
+      if (response != null && response["success"] == true) {
+        // Success case
       } else {
         _error = response?["message"] ?? "Unknown error";
       }

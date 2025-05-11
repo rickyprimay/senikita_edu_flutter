@@ -533,7 +533,14 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
                       children: [
                         Expanded(
                           child: OutlinedButton.icon(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.of(context, rootNavigator: true).pushNamed(
+                                RouteNames.submissionHistory,
+                                arguments: {
+                                  "lessonId": lesson.id,
+                                },
+                              );
+                            },
                             icon: const Icon(Icons.comment_outlined, size: 18),
                             label: Text(
                               "Cek Hasil Submit",

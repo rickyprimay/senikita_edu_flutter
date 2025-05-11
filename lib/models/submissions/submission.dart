@@ -18,29 +18,29 @@ class Submission {
 
 class Datum {
     int id;
-    int userId;
-    String submission;
-    String filePath;
-    String status;
-    dynamic feedback;
-    dynamic score;
-    DateTime createdAt;
-    DateTime updatedAt;
-    int lessonId;
-    int isPublished;
+    int? userId;
+    String? submission;
+    String? filePath;
+    String? status;
+    String? feedback;
+    int? score;
+    DateTime? createdAt;
+    DateTime? updatedAt;
+    int? lessonId;
+    int? isPublished;
 
     Datum({
         required this.id,
-        required this.userId,
-        required this.submission,
-        required this.filePath,
-        required this.status,
-        required this.feedback,
-        required this.score,
-        required this.createdAt,
-        required this.updatedAt,
-        required this.lessonId,
-        required this.isPublished,
+        this.userId,
+        this.submission,
+        this.filePath,
+        this.status,
+        this.feedback,
+        this.score,
+        this.createdAt,
+        this.updatedAt,
+        this.lessonId,
+        this.isPublished,
     });
 
     factory Datum.fromJson(Map<String, dynamic> json) {
@@ -67,8 +67,8 @@ class Datum {
         'status': status,
         'feedback': feedback,
         'score': score,
-        'created_at': createdAt.toIso8601String(),
-        'updated_at': updatedAt.toIso8601String(),
+        'created_at': createdAt!.toIso8601String(),
+        'updated_at': updatedAt!.toIso8601String(),
         'lesson_id': lessonId,
         'is_published': isPublished,
     };

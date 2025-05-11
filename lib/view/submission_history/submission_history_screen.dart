@@ -22,14 +22,12 @@ class _SubmissionHistoryScreenState extends State<SubmissionHistoryScreen> {
   @override
   void initState() {
     super.initState();
+    
+    // Call fetchSubmission automatically when screen is opened
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _fetchSubmissions();
+      Provider.of<SubmissionViewModel>(context, listen: false)
+          .fetchSubmission(lessonId: widget.lessonId);
     });
-  }
-
-  Future<void> _fetchSubmissions() async {
-    final viewModel = Provider.of<SubmissionViewModel>(context, listen: false);
-    await viewModel.fetchSubmission(lessonId: widget.lessonId);
   }
 
   String _formatDate(DateTime date) {
@@ -93,7 +91,11 @@ class _SubmissionHistoryScreenState extends State<SubmissionHistoryScreen> {
             context, 
             '/submission',
             arguments: {'lessonId': widget.lessonId}
-          ).then((_) => _fetchSubmissions());
+          ).then((_) {
+            // Refresh the list when returning from submission screen
+            Provider.of<SubmissionViewModel>(context, listen: false)
+                .fetchSubmission(lessonId: widget.lessonId);
+          });
         },
         child: const Icon(Icons.add, color: Colors.white),
       ),
@@ -128,7 +130,10 @@ class _SubmissionHistoryScreenState extends State<SubmissionHistoryScreen> {
             ),
             const SizedBox(height: 24),
             ElevatedButton.icon(
-              onPressed: _fetchSubmissions,
+              onPressed: () {
+                Provider.of<SubmissionViewModel>(context, listen: false)
+                    .fetchSubmission(lessonId: widget.lessonId);
+              },
               icon: const Icon(Icons.refresh),
               label: const Text('Coba Lagi'),
               style: ElevatedButton.styleFrom(
@@ -176,7 +181,10 @@ class _SubmissionHistoryScreenState extends State<SubmissionHistoryScreen> {
                 context, 
                 '/submission',
                 arguments: {'lessonId': widget.lessonId}
-              ).then((_) => _fetchSubmissions());
+              ).then((_) {
+                Provider.of<SubmissionViewModel>(context, listen: false)
+                    .fetchSubmission(lessonId: widget.lessonId);
+              });
             },
             icon: const Icon(Icons.add),
             label: const Text('Kirim Karya'),
@@ -194,7 +202,10 @@ class _SubmissionHistoryScreenState extends State<SubmissionHistoryScreen> {
 
   Widget _buildSubmissionList(Submission submission) {
     return RefreshIndicator(
-      onRefresh: _fetchSubmissions,
+      onRefresh: () async {
+        await Provider.of<SubmissionViewModel>(context, listen: false)
+            .fetchSubmission(lessonId: widget.lessonId);
+      },
       color: AppColors.primary,
       child: ListView.builder(
         padding: const EdgeInsets.all(16),
@@ -219,6 +230,7 @@ class _SubmissionHistoryScreenState extends State<SubmissionHistoryScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Image preview with status badge overlay
           Stack(
             children: [
               ClipRRect(
@@ -226,7 +238,7 @@ class _SubmissionHistoryScreenState extends State<SubmissionHistoryScreen> {
                 child: AspectRatio(
                   aspectRatio: 16/9,
                   child: Image.network(
-                    submission.filePath,
+                    submission.filePath ?? "",
                     fit: BoxFit.cover,
                     width: double.infinity,
                     errorBuilder: (context, error, stackTrace) {
@@ -255,11 +267,11 @@ class _SubmissionHistoryScreenState extends State<SubmissionHistoryScreen> {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
-                    color: _getStatusColor(submission.status).withOpacity(0.9),
+                    color: _getStatusColor(submission.status ?? "").withOpacity(0.9),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
-                    submission.status,
+                    submission.status ?? "Status Tidak Diketahui",
                     style: AppFont.ralewaySubtitle.copyWith(
                       color: Colors.white,
                       fontSize: 12,
@@ -305,7 +317,7 @@ class _SubmissionHistoryScreenState extends State<SubmissionHistoryScreen> {
               children: [
                 // Title
                 Text(
-                  submission.submission,
+                  submission.submission ?? "Karya Tanpa Judul",
                   style: AppFont.crimsonTextSubtitle.copyWith(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -321,7 +333,7 @@ class _SubmissionHistoryScreenState extends State<SubmissionHistoryScreen> {
                     const Icon(Icons.calendar_today, size: 14, color: Colors.grey),
                     const SizedBox(width: 6),
                     Text(
-                      _formatDate(submission.createdAt),
+                      _formatDate(submission.createdAt ?? DateTime.now()),
                       style: AppFont.ralewaySubtitle.copyWith(
                         fontSize: 12,
                         color: Colors.grey[700],
@@ -412,7 +424,7 @@ class _SubmissionHistoryScreenState extends State<SubmissionHistoryScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => _FullImagePreview(imageUrl: submission.filePath),
+                          builder: (context) => _FullImagePreview(imageUrl: submission.filePath ?? ""),
                         ),
                       );
                     },
