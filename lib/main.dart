@@ -40,7 +40,7 @@ class MyApp extends StatelessWidget {
       ],
       child: ToastificationWrapper(
         child: MaterialApp(
-          title: 'SeniKitaEdu',
+          title: 'Widya',
           theme: ThemeData(
             primarySwatch: Colors.blue,
           ),
