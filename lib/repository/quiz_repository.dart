@@ -30,5 +30,5 @@ class QuizRepository {
     } catch (e) {
       rethrow;
     }
-
+  }
 }
