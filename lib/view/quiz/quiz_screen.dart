@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:widya/models/quiz/quiz.dart';
 import 'package:widya/res/widgets/colors.dart';
 import 'package:widya/res/widgets/fonts.dart';
 import 'dart:async';
@@ -650,4 +651,6 @@ class QuizQuestion {
     required this.options,
     required this.correctAnswerIndex,
   });
+
+  static Quiz fromJson(questionJson) {}
 }
