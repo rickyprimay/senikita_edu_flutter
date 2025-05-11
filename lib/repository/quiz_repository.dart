@@ -17,4 +17,18 @@ class QuizRepository {
       rethrow;
     }
   }
+
+  Future<dynamic> submitQuiz({required int lessonId, required String token, required Map<String, dynamic> body}) async {
+    try {
+      final headers = {
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+      final response = await _network.getPostApiResponseWithHeader(AppUrls.submitQuiz(lessonId), headers, body);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+
 }
