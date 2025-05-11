@@ -60,28 +60,35 @@ class LessonViewModel with ChangeNotifier {
     }
   }
 
-  Future<void> postCompleteLesson(int lessonId, BuildContext context) async {
+  Future<bool> postCompleteLesson(int lessonId, BuildContext context) async {
     final sp = await SharedPrefs.instance;
     final String? token = sp.getString("auth_token");
-
-    _loading = true;
+  
     _error = null;
-    notifyListeners();  
-
     AppLogger.logInfo("lessonId: $lessonId");
-
+  
     try {
       final response = await _lessonRepository.postCompleteLesson(lessonId, token ?? "", context);
       AppLogger.logInfo("response: $response");
-
-      _loading = false;
+      
+      // Update the lesson object in the list
+      if (_lessons != null) {
+        for (int i = 0; i < _lessons!.length; i++) {
+          if (_lessons![i].id == lessonId) {
+            _lessons![i].isCompleted = true;
+            break;
+          }
+        }
+      }
+      
       notifyListeners();
-
+      return true;  // Return success
+      
     } catch (e) {
-      _loading = false;
       AppLogger.logError("Error completing lesson: $e");
       _error = e.toString();
-      notifyListeners();  
+      notifyListeners();
+      return false;  // Return failure 
     }
   }
 }

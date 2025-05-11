@@ -3,7 +3,7 @@ class Lesson {
   final int? courseId;
   final int? order;
   final String? title;
-  final bool isCompleted;
+  bool isCompleted;
   final String? slug;
   final String? type;
   final String? description;

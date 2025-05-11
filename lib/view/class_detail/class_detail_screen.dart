@@ -787,10 +787,18 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
     );
   }
   
-  void _markLessonAsComplete(int index) {
+  Future<void> _markLessonAsComplete(int index) async {
     _state.markLessonComplete(index);
-    setState(() {}); 
-    
-    _lessonViewModel.postCompleteLesson(_lessonViewModel.lessons![index].id ?? 0, context);
+
+    if (_lessonViewModel.lessons != null && _lessonViewModel.lessons!.length > index) {
+      final lessonId = _lessonViewModel.lessons![index].id ?? 0;
+      await _lessonViewModel.postCompleteLesson(lessonId, context);
+
+      await _lessonViewModel.fetchLessonByCourseId(widget.courseId);
+    }
+
+    if (mounted) {
+      setState(() {});
+    }
   }
 }
