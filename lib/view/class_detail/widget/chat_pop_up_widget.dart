@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:widya/res/widgets/colors.dart';
 import 'package:widya/res/widgets/fonts.dart';
-import 'package:widya/viewModel/in_class_view_model.dart';
 import 'package:widya/res/widgets/logger.dart';
 import 'package:flutter_gemini/flutter_gemini.dart';
 
@@ -24,7 +23,6 @@ Widget showChatPopUp(
   String lessonDescription,
   String lessonContent,
 ) {
-  final inClassViewModel = InClassViewModel();
 
   showModalBottomSheet(
     context: context,
@@ -40,7 +38,6 @@ Widget showChatPopUp(
         maxChildSize: 0.9,
         builder: (context, scrollController) {
           return _ChatBody(
-            viewModel: inClassViewModel,
             courseName: courseName,
             courseDescription: courseDescription,
             lessonName: lessonName,
@@ -56,14 +53,12 @@ Widget showChatPopUp(
 }
 
 class _ChatBody extends StatefulWidget {
-  final InClassViewModel viewModel;
   final String courseName;
   final String courseDescription;
   final String lessonName;
   final String lessonDescription;
   final String lessonContent;
   const _ChatBody({
-    required this.viewModel,
     required this.courseName,
     required this.courseDescription,
     required this.lessonName,
