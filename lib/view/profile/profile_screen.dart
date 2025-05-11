@@ -232,6 +232,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           barrierDismissible: false,
                           builder: (BuildContext dialogContext) {
                             return SimpleDialog(
+                              backgroundColor: Colors.white,
                               contentPadding: const EdgeInsets.all(30),
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
                               children: [

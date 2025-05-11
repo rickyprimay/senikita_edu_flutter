@@ -93,6 +93,7 @@ class _QuizScreenState extends State<QuizScreen> {
       barrierDismissible: false,
       builder: (BuildContext dialogContext) {
         return SimpleDialog(
+          backgroundColor: Colors.white,
           contentPadding: const EdgeInsets.all(30),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
           children: [
@@ -293,6 +294,7 @@ class _QuizScreenState extends State<QuizScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: AppColors.primary,
         leading: IconButton(
@@ -303,6 +305,7 @@ class _QuizScreenState extends State<QuizScreen> {
               barrierDismissible: false,
               builder: (BuildContext dialogContext) {
                 return SimpleDialog(
+                  backgroundColor: Colors.white,
                   contentPadding: const EdgeInsets.all(30),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
                   children: [
@@ -485,6 +488,7 @@ class _QuizScreenState extends State<QuizScreen> {
             const SizedBox(height: 16),
             Expanded(
               child: Card(
+                color: AppColors.greyCustom,
                 elevation: 0,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
