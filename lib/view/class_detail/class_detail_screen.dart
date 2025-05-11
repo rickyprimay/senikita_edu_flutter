@@ -49,6 +49,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
   
   late LessonViewModel _lessonViewModel;
   final _state = ClassDetailState();
+  String? _currentVideoUrl;
   
   @override
   void initState() {
@@ -111,9 +112,45 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
   }
   
   void _initializeYoutubeController(String? videoUrl) {
-    final videoId = YoutubePlayer.convertUrlToId(videoUrl ?? '');
+    if (_currentVideoUrl != videoUrl) { 
+      _currentVideoUrl = videoUrl;
+      final videoId = YoutubePlayer.convertUrlToId(videoUrl ?? '');
+      if (videoId != null && videoId.isNotEmpty) {
+        _youtubeController?.dispose();
+        _youtubeController = YoutubePlayerController(
+          initialVideoId: videoId,
+          flags: const YoutubePlayerFlags(
+            autoPlay: false,
+            mute: false,
+            loop: false,
+            enableCaption: false,
+            forceHD: false,
+          ),
+        );
+      }
+    }
+  }
+  
+  void _updateSelectedContent(int index) {
+  if (_state.selectedIndex == index) return;
+
+  final lesson = _lessonViewModel.lessons?[index];
+  if (lesson == null) return;
+
+  setState(() {
+    _state.selectedIndex = index;
+    _state.isLoading = true;
+  });
+
+  // Hapus controller lama
+  _youtubeController?.dispose();
+  _youtubeController = null;
+  _currentVideoUrl = null; // Reset URL juga
+
+  // Inisialisasi controller baru di sini, tunggu sampai selesai
+  if (lesson.videoUrl != null) {
+    final videoId = YoutubePlayer.convertUrlToId(lesson.videoUrl ?? '');
     if (videoId != null && videoId.isNotEmpty) {
-      _youtubeController?.dispose();
       _youtubeController = YoutubePlayerController(
         initialVideoId: videoId,
         flags: const YoutubePlayerFlags(
@@ -124,32 +161,17 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
           forceHD: false,
         ),
       );
+      _currentVideoUrl = lesson.videoUrl;
     }
   }
-  
-  void _updateSelectedContent(int index) {
-    if (_state.selectedIndex == index) return;
 
-    final lesson = _lessonViewModel.lessons?[index];
-    if (lesson == null) return;
-
+  // Set loading = false setelah controller diinisialisasi
+  if (mounted) {
     setState(() {
-      _state.selectedIndex = index;
-      _state.isLoading = true;
-    });
-
-    _youtubeController?.dispose();
-    _youtubeController = null;
-    _initializeYoutubeController(lesson.videoUrl); 
-
-    Future.microtask(() {
-      if (mounted) {
-        setState(() {
-          _state.isLoading = false;
-        });
-      }
+      _state.isLoading = false;
     });
   }
+}
   
   void _openChat() {
     setState(() {
@@ -337,17 +359,19 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
   }
 
   Widget _buildLessonMedia(Lesson lesson) {
-    if (lesson.videoUrl != null) {
-      _initializeYoutubeController(lesson.videoUrl);
-    }
-
-    if (lesson.type?.toLowerCase() == "lesson" && _youtubeController != null) {
-      return RepaintBoundary(
-        child: YoutubePlayerWidget(
-          controller: _youtubeController!,
-          isFullscreen: false,
-        ),
-      );
+    if (lesson.type?.toLowerCase() == "lesson" && lesson.videoUrl != null) {
+      if (_currentVideoUrl != lesson.videoUrl) {
+        _initializeYoutubeController(lesson.videoUrl);
+      }
+      if (_youtubeController != null) {
+        return RepaintBoundary(
+          key: ValueKey(_currentVideoUrl),
+          child: YoutubePlayerWidget(
+            controller: _youtubeController!,
+            isFullscreen: false,
+          ),
+        );
+      }
     } else {
       final isQuiz = lesson.type?.toLowerCase() == "quiz";
 
@@ -523,6 +547,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
         ),
       );
     }
+    return const SizedBox.shrink();
   }
 
   Widget _buildTabBar() {
