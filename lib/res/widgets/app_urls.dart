@@ -77,4 +77,8 @@ class AppUrls {
 
   static const String submitSubmission = "$baseUrl/final-submissions";
 
+  static String getSubmissionHistory(int lessonId) {
+    return "$baseUrl/final-submissions/$lessonId";
+  }
+
 }
