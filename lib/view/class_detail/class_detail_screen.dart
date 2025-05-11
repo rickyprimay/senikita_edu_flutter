@@ -506,7 +506,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
                   child: Column(
                     children: [
                       Icon(
-                        Icons.quiz_rounded,
+                        Icons.assignment_outlined,
                         size: 60,
                         color: Colors.white.withOpacity(0.9),
                       ),
@@ -536,7 +536,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
                             onPressed: () {},
                             icon: const Icon(Icons.comment_outlined, size: 18),
                             label: Text(
-                              "Cek Feedback",
+                              "Cek Hasil Submit",
                               style: AppFont.ralewaySubtitle.copyWith(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600,
@@ -557,7 +557,9 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
 
                         Expanded(
                           child: ElevatedButton.icon(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.of(context, rootNavigator: true).pushNamed(RouteNames.submission);
+                            },
                             icon: const Icon(Icons.upload_file_outlined, size: 18),
                             label: Text(
                               "Submit",
