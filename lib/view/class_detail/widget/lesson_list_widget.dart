@@ -27,7 +27,7 @@ class LessonListWidget extends StatelessWidget {
       itemBuilder: (context, index) {
         final lesson = lessons[index];
         final isSelected = selectedIndex == index;
-        final isLectureCompleted = completedLectures.contains(index) || (lesson.isCompleted ?? false);
+        final isLectureCompleted = completedLectures.contains(index) || (lesson.isCompleted);
         
         return _buildLessonItem(
           context, 
@@ -70,7 +70,7 @@ class LessonListWidget extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            _buildCompletionIndicator(context, index, isSelected, isLectureCompleted),
+            _buildCompletionIndicator(context, index, isSelected, isLectureCompleted, lesson.type ?? ''),
             const SizedBox(width: 12),
             Expanded(
               child: _buildLessonContent(lesson, isSelected),
@@ -86,38 +86,68 @@ class LessonListWidget extends StatelessWidget {
     BuildContext context, 
     int index, 
     bool isSelected, 
-    bool isCompleted
+    bool isCompleted,
+    String lessonType
   ) {
-    return Container(
-    width: 24,
-    height: 24,
-    alignment: Alignment.center,
-    child: isCompleted
-      ? const Icon(
+    if (isCompleted) {
+      return Container(
+        width: 24,
+        height: 24,
+        alignment: Alignment.center,
+        child: const Icon(
           Icons.check_circle, 
           color: AppColors.primary,
           size: 24, 
-        )
-      : GestureDetector(
-          onTap: () {
-            if (index == selectedIndex) {
-              _showCompletionConfirmation(context, index);
-            } else {
-              Utils.showToastification(
-                "Gagal",
-                "Selesaikan hanya bisa diakses di sesi yang sedang dipelajari",
-                false,
-                context,
-              );
-            }
-          },
-          child: const Icon(
-            Icons.circle_outlined,
-            color: AppColors.primary,
-            size: 24, // Tetapkan ukuran yang konsisten
-          ),
         ),
-  );
+      );
+    }
+
+    if (lessonType != "lesson") {
+      IconData iconData;
+      if (lessonType == "quiz") {
+        iconData = Icons.quiz_outlined;
+      } else if (lessonType == "final") {
+        iconData = Icons.assignment_outlined;
+      } else {
+        iconData = Icons.article_outlined;
+      }
+
+      return Container(
+        width: 24,
+        height: 24,
+        alignment: Alignment.center,
+        child: Icon(
+          iconData,
+          color: AppColors.primary,
+          size: 22,
+        ),
+      );
+    }
+
+    return Container(
+      width: 24,
+      height: 24,
+      alignment: Alignment.center,
+      child: GestureDetector(
+        onTap: () {
+          if (index == selectedIndex) {
+            _showCompletionConfirmation(context, index);
+          } else {
+            Utils.showToastification(
+              "Gagal",
+              "Selesaikan hanya bisa diakses di sesi yang sedang dipelajari",
+              false,
+              context,
+            );
+          }
+        },
+        child: const Icon(
+          Icons.circle_outlined,
+          color: AppColors.primary,
+          size: 24,
+        ),
+      ),
+    );
   }
   
   void _showCompletionConfirmation(BuildContext context, int index) {

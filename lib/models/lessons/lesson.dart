@@ -3,7 +3,7 @@ class Lesson {
   final int? courseId;
   final int? order;
   final String? title;
-  final bool? isCompleted;
+  final bool isCompleted;
   final String? slug;
   final String? type;
   final String? description;
@@ -19,7 +19,7 @@ class Lesson {
     this.courseId,
     this.order,
     this.title,
-    this.isCompleted,
+    required this.isCompleted,
     this.slug,
     this.type,
     this.description,
