@@ -68,7 +68,7 @@ class LessonListWidget extends StatelessWidget {
         splashColor: AppColors.primary.withAlpha(30),
         highlightColor: AppColors.primary.withAlpha(15),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             _buildCompletionIndicator(context, index, isSelected, isLectureCompleted),
             const SizedBox(width: 12),
@@ -88,30 +88,36 @@ class LessonListWidget extends StatelessWidget {
     bool isSelected, 
     bool isCompleted
   ) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 6),
-      child: isCompleted
-        ? const Icon(Icons.check_circle, color: AppColors.primary)
-        : IconButton(
-            padding: EdgeInsets.zero,
-            icon: Icon(
-              Icons.circle_outlined,
-              color: AppColors.primary,
-            ),
-            onPressed: () {
-              if (index == selectedIndex) {
-                _showCompletionConfirmation(context, index);
-              } else {
-                Utils.showToastification(
-                  "Gagal",
-                  "Selesaikan hanya bisa diakses di sesi yang sedang dipelajari",
-                  false,
-                  context,
-                );
-              }
-            },
+    return Container(
+    width: 24,
+    height: 24,
+    alignment: Alignment.center,
+    child: isCompleted
+      ? const Icon(
+          Icons.check_circle, 
+          color: AppColors.primary,
+          size: 24, 
+        )
+      : GestureDetector(
+          onTap: () {
+            if (index == selectedIndex) {
+              _showCompletionConfirmation(context, index);
+            } else {
+              Utils.showToastification(
+                "Gagal",
+                "Selesaikan hanya bisa diakses di sesi yang sedang dipelajari",
+                false,
+                context,
+              );
+            }
+          },
+          child: const Icon(
+            Icons.circle_outlined,
+            color: AppColors.primary,
+            size: 24, // Tetapkan ukuran yang konsisten
           ),
-    );
+        ),
+  );
   }
   
   void _showCompletionConfirmation(BuildContext context, int index) {
@@ -261,7 +267,7 @@ class LessonListWidget extends StatelessWidget {
             ),
             if (isSelected)
             Container(
-              margin: const EdgeInsets.only(left: 8),
+              margin: const EdgeInsets.only(left: 8, right: 6),
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
               decoration: BoxDecoration(
                 color: AppColors.primary.withOpacity(0.9),
