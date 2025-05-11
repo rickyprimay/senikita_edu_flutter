@@ -127,12 +127,12 @@ class _QuizScreenState extends State<QuizScreen> {
   }
 
   void _showResult() {
-    final quizProvider = Provider.of<QuizProvider>(context, listen: false);
-    final score = quizProvider.calculateScore();
-    final correctAnswers = quizProvider.getCorrectAnswersCount();
-    final isPassed = quizProvider.isPassed();
-    
-    showDialog(
+  final quizProvider = Provider.of<QuizProvider>(context, listen: false);
+  final score = quizProvider.calculateScore();
+  final correctAnswers = quizProvider.getCorrectAnswersCount();
+  final isPassed = quizProvider.isPassed();
+  
+  showDialog(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext dialogContext) {
@@ -154,7 +154,7 @@ class _QuizScreenState extends State<QuizScreen> {
                 ),
 
                 const SizedBox(height: 24),
-                
+
                 Container(
                   width: 120,
                   height: 120,
@@ -207,31 +207,30 @@ class _QuizScreenState extends State<QuizScreen> {
 
                 Row(
                   children: [
-                    Expanded(
-                      child: OutlinedButton(
-                        onPressed: () {
-                          Navigator.of(dialogContext).pop();
-                          Navigator.of(context).pop();
-                        },
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: AppColors.secondary,
-                          side: BorderSide(color: AppColors.secondary),
-                          padding: const EdgeInsets.symmetric(vertical: 12),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
+                    if (!isPassed) ...[
+                      Expanded(
+                        child: OutlinedButton(
+                          onPressed: () {
+                            Navigator.of(dialogContext).pop();
+                            Navigator.of(context).pop();
+                          },
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: AppColors.secondary,
+                            side: BorderSide(color: AppColors.secondary),
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
                           ),
-                        ),
-                        child: Text(
-                          "Kembali ke Materi",
-                          style: AppFont.ralewaySubtitle.copyWith(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
+                          child: Text(
+                            "Kembali ke Materi",
+                            style: AppFont.ralewaySubtitle.copyWith(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-
-                    if (!isPassed) ...[
                       const SizedBox(width: 12),
                       Expanded(
                         child: ElevatedButton(
@@ -259,12 +258,11 @@ class _QuizScreenState extends State<QuizScreen> {
                     ],
 
                     if (isPassed) ...[
-                      const SizedBox(width: 12),
                       Expanded(
                         child: ElevatedButton(
                           onPressed: () {
                             Navigator.of(dialogContext).pop();
-                            Navigator.of(context).pop();
+                            Navigator.of(context).pop({'isPassed': true});
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.primary,
@@ -275,7 +273,7 @@ class _QuizScreenState extends State<QuizScreen> {
                             ),
                           ),
                           child: Text(
-                            "Selesai",
+                            "Kembali ke Kelas",
                             style: AppFont.ralewaySubtitle.copyWith(
                               fontSize: 14,
                               fontWeight: FontWeight.w600,
@@ -494,7 +492,6 @@ class _QuizScreenState extends State<QuizScreen> {
             ),
           ),
           
-          // Question card
           Expanded(
             child: Card(
               color: Colors.white,
@@ -531,7 +528,6 @@ class _QuizScreenState extends State<QuizScreen> {
             ),
           ),
           
-          // Navigation buttons
           const SizedBox(height: 16),
           Row(
             children: [
@@ -551,23 +547,23 @@ class _QuizScreenState extends State<QuizScreen> {
               const Spacer(),
               ElevatedButton(
                 onPressed: quizProvider.currentIndex == quizProvider.questions.length - 1
-                    ? () async {
-                        quizProvider.finishQuiz();
-
-                        final success = await quizProvider.submitUserAnswers(widget.lessonId, context);
-
-                        _showResult();
-
-                        if (!success && mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('Gagal mengirim jawaban ke server, namun skor telah dihitung.'),
-                              backgroundColor: Colors.orange,
-                            ),
-                          );
-                        }
-                      }
-                    : quizProvider.nextQuestion,
+                ? () async {
+                    quizProvider.finishQuiz();
+          
+                    final success = await quizProvider.submitUserAnswers(widget.lessonId, context);
+          
+                    _showResult();
+          
+                    if (!success && mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Gagal mengirim jawaban ke server, namun skor telah dihitung.'),
+                          backgroundColor: Colors.orange,
+                        ),
+                      );
+                    }
+                  }
+                : quizProvider.nextQuestion,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary,
                   foregroundColor: Colors.white,

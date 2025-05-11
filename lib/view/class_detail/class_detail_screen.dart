@@ -142,12 +142,10 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
     _state.isLoading = true;
   });
 
-  // Hapus controller lama
   _youtubeController?.dispose();
   _youtubeController = null;
-  _currentVideoUrl = null; // Reset URL juga
+  _currentVideoUrl = null; 
 
-  // Inisialisasi controller baru di sini, tunggu sampai selesai
   if (lesson.videoUrl != null) {
     final videoId = YoutubePlayer.convertUrlToId(lesson.videoUrl ?? '');
     if (videoId != null && videoId.isNotEmpty) {
@@ -374,6 +372,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
       }
     } else {
       final isQuiz = lesson.type?.toLowerCase() == "quiz";
+      final selectedIndex = _state.selectedIndex ?? 0;
 
       return Container(
         height: MediaQuery.of(context).size.height * 0.6,
@@ -505,8 +504,8 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
                       borderRadius: BorderRadius.circular(25),
                     ),  
                     child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context, rootNavigator: true).pushNamed(
+                      onPressed: () async {
+                        final result = await Navigator.of(context, rootNavigator: true).pushNamed(
                           RouteNames.quiz,
                           arguments: {
                             "quizTitle": lesson.title,
@@ -514,6 +513,15 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
                             "lessonId": lesson.id,
                           },
                         );
+
+                        if (result is Map && result['isPassed'] == true) {
+                          _markLessonAsComplete(selectedIndex);
+
+                          final lessons = _lessonViewModel.lessons;
+                          if (lessons != null && selectedIndex < lessons.length - 1) {
+                            _updateSelectedContent(selectedIndex + 1);
+                          }
+                        }
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.primary,
