@@ -5,9 +5,9 @@ import 'package:widya/models/lessons/lesson.dart';
 import 'package:widya/res/widgets/fonts.dart';
 import 'package:widya/res/widgets/loading.dart';
 import 'package:widya/res/widgets/svg_assets.dart';
+import 'package:widya/res/widgets/video_player_screen.dart';
 import 'package:widya/utils/routes/routes_names.dart';
 import 'package:widya/view/class_detail/widget/chat_pop_up_widget.dart';
-import 'package:widya/view/class_detail/widget/youtube_player_widget.dart';
 import 'package:widya/view/class_detail/widget/lesson_list_widget.dart';
 import 'package:widya/view/class_detail/widget/lesson_info_widget.dart';
 import 'package:widya/view/class_detail/widget/course_header_widget.dart';
@@ -46,7 +46,6 @@ class ClassDetailScreen extends StatefulWidget {
 
 class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProviderStateMixin {
   late TabController _tabController;
-  YoutubePlayerController? _youtubeController;
   
   late LessonViewModel _lessonViewModel;
   final _state = ClassDetailState();
@@ -112,23 +111,23 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
     return 0;
   }
   
-  void _initializeYoutubeController(String? videoUrl) {
-    if (_currentVideoUrl != videoUrl) { 
-      _currentVideoUrl = videoUrl;
-      final videoId = YoutubePlayer.convertUrlToId(videoUrl ?? '');
-      if (videoId != null && videoId.isNotEmpty) {
-        _youtubeController?.dispose();
-        _youtubeController = YoutubePlayerController(
-          initialVideoId: videoId,
-          flags: const YoutubePlayerFlags(
-            autoPlay: false,
-            mute: false,
-            loop: false,
-            enableCaption: false,
-            forceHD: false,
+  String? _getYoutubeVideoId(String? videoUrl) {
+    if (videoUrl == null || videoUrl.isEmpty) return null;
+    return YoutubePlayer.convertUrlToId(videoUrl);
+  }
+  
+  void _openVideoPlayer(String videoUrl, String title) {
+    final videoId = _getYoutubeVideoId(videoUrl);
+    if (videoId != null) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => VideoPlayerScreen(
+            videoId: videoId,
+            videoTitle: title,
           ),
-        );
-      }
+        ),
+      );
     }
   }
   
@@ -250,35 +249,9 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
 
     setState(() {
       _state.selectedIndex = index;
-      _state.isLoading = true;
+      _state.isLoading = false;
+      _currentVideoUrl = targetLesson.videoUrl;
     });
-
-    _youtubeController?.dispose();
-    _youtubeController = null;
-    _currentVideoUrl = null; 
-
-    if (targetLesson.videoUrl != null) {
-      final videoId = YoutubePlayer.convertUrlToId(targetLesson.videoUrl ?? '');
-      if (videoId != null && videoId.isNotEmpty) {
-        _youtubeController = YoutubePlayerController(
-          initialVideoId: videoId,
-          flags: const YoutubePlayerFlags(
-            autoPlay: false,
-            mute: false,
-            loop: false,
-            enableCaption: false,
-            forceHD: false,
-          ),
-        );
-        _currentVideoUrl = targetLesson.videoUrl;
-      }
-    }
-
-    if (mounted) {
-      setState(() {
-        _state.isLoading = false;
-      });
-    }
   }
   
   void _openChat() {
@@ -305,79 +278,51 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
 
   @override
   void dispose() {
-    _youtubeController?.dispose();
     _tabController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
-    final hasVideoPlayer = _youtubeController != null;
-    
-    if (isLandscape && hasVideoPlayer) {
-      return _buildLandscapeVideoView();
-    }
-    
-    return _buildPortraitView();
-  }
-
-  Widget _buildLandscapeVideoView() {
     return Scaffold(
-      body: YoutubePlayerWidget(
-        controller: _youtubeController!,
-        isFullscreen: true,
-      ),
-    );
-  }
-
-  Widget _buildPortraitView() {
-    return Stack(
-      children: [
-        Scaffold(
-          appBar: AppBar(
-            flexibleSpace: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    AppColors.primary,
-                    AppColors.tertiary,
-                  ],
-                ),
-              ),
+      appBar: AppBar(
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                AppColors.primary,
+                AppColors.tertiary,
+              ],
             ),
-            leading: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: GestureDetector(
-                onTap: () => Navigator.pop(context),
-                child: Container(
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: AppColors.tertiary.withAlpha(120),
-                  ),
-                  padding: const EdgeInsets.all(8),
-                  child: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 18),
-                ),
-              ),
-            ),
-          ),
-          backgroundColor: Colors.white,
-          body: SafeArea(
-            child: _buildMainContent(),
-          ),
-          
-          floatingActionButton: FloatingActionButton(
-            onPressed: _openChat,
-            backgroundColor: AppColors.primary,
-            child: SvgIcon(SvgAssets.botMessageSquare, size: 25, color: Colors.white)
           ),
         ),
-        
-        if (_state.isLoading)
-          const Loading(opacity: 1),
-      ],
+        leading: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: GestureDetector(
+            onTap: () => Navigator.pop(context),
+            child: Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppColors.tertiary.withAlpha(120),
+              ),
+              padding: const EdgeInsets.all(8),
+              child: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 18),
+            ),
+          ),
+        ),
+      ),
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: _buildMainContent(),
+      ),
+      
+      floatingActionButton: FloatingActionButton(
+        onPressed: _openChat,
+        backgroundColor: AppColors.primary,
+        child: SvgIcon(SvgAssets.botMessageSquare, size: 25, color: Colors.white)
+      ),
     );
   }
 
@@ -391,6 +336,10 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
         final lessons = viewModel.lessons;
         if (lessons == null || lessons.isEmpty) {
           return _buildEmptyState();
+        }
+
+        if (_state.isLoading) {
+          return const Center(child: Loading(opacity: 1));
         }
 
         if (_state.isChatOpen) {
@@ -442,8 +391,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (!_state.isLoading) 
-          _buildLessonMedia(selectedLesson),
+        _buildLessonMedia(selectedLesson),
         
         if (selectedLesson.type?.toLowerCase() == "lesson") 
           RepaintBoundary(
@@ -483,16 +431,101 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
 
   Widget _buildLessonMedia(Lesson lesson) {
     if (lesson.type?.toLowerCase() == "lesson" && lesson.videoUrl != null) {
-      if (_currentVideoUrl != lesson.videoUrl) {
-        _initializeYoutubeController(lesson.videoUrl);
-      }
-      if (_youtubeController != null) {
-        return RepaintBoundary(
-          key: ValueKey(_currentVideoUrl),
-          child: YoutubePlayerWidget(
-            controller: _youtubeController!,
-            isFullscreen: false,
-          ),
+      // Get YouTube video ID
+      final videoId = _getYoutubeVideoId(lesson.videoUrl);
+      
+      if (videoId != null) {
+        // Get thumbnail URL for the video
+        final thumbnailUrl = 'https://img.youtube.com/vi/$videoId/0.jpg';
+        
+        return Stack(
+          children: [
+            // YouTube thumbnail
+            ClipRRect(
+              borderRadius: BorderRadius.circular(0),
+              child: AspectRatio(
+                aspectRatio: 16/9,
+                child: Image.network(
+                  thumbnailUrl,
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Container(
+                      color: Colors.black.withOpacity(0.1),
+                      child: const Center(
+                        child: Icon(Icons.video_library, size: 40, color: Colors.grey),
+                      ),
+                    );
+                  },
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return Container(
+                      color: Colors.black.withOpacity(0.1),
+                      child: const Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+            
+            // Play button overlay
+            Positioned.fill(
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () {
+                    _openVideoPlayer(lesson.videoUrl!, lesson.title ?? "");
+                  },
+                  child: Center(
+                    child: Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: AppColors.primary.withOpacity(0.8),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.play_arrow,
+                        color: Colors.white,
+                        size: 32,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            
+            // Video title overlay
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.bottomCenter,
+                    end: Alignment.topCenter,
+                    colors: [
+                      Colors.black.withOpacity(0.7),
+                      Colors.transparent,
+                    ],
+                  ),
+                ),
+                child: Text(
+                  lesson.title ?? "Video Pembelajaran",
+                  style: AppFont.ralewaySubtitle.copyWith(
+                    color: Colors.white,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ),
+          ],
         );
       }
     } else if (lesson.type?.toLowerCase() == "final") {
