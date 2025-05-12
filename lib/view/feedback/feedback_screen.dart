@@ -280,7 +280,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                                 const SizedBox(height: 4),
                                 Text(
                                   '85/100',
-                                  style: AppFont.crimsonTextHeader.copyWith(
+                                  style: AppFont.nunitoTitleMedium.copyWith(
                                     fontSize: 24,
                                     fontWeight: FontWeight.bold,
                                     color: AppColors.tertiary,
@@ -296,7 +296,6 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                   
                   const SizedBox(height: 16),
                   
-                  // Detailed feedback
                   _buildFeedbackCard(
                     'Komposisi',
                     'Komposisi karya sangat baik dengan keseimbangan yang tepat antara objek utama dan latar belakang. Penempatan objek di tengah frame memberikan fokus yang jelas.',
@@ -324,7 +323,6 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                   
                   const SizedBox(height: 24),
                   
-                  // Overall feedback
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(16),
@@ -349,6 +347,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                           style: AppFont.ralewaySubtitle.copyWith(
                             fontSize: 14,
                             height: 1.5,
+                            fontWeight: FontWeight.w400
                           ),
                         ),
                       ],
@@ -438,7 +437,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                 ),
                 child: Text(
                   '$score/100',
-                  style: AppFont.crimsonTextSubtitle.copyWith(
+                  style: AppFont.nunitoSubtitle.copyWith(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
                     color: AppColors.tertiary,
@@ -453,6 +452,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
             style: AppFont.ralewaySubtitle.copyWith(
               fontSize: 14,
               height: 1.5,
+              fontWeight: FontWeight.w400,
               color: Colors.grey[800],
             ),
           ),
