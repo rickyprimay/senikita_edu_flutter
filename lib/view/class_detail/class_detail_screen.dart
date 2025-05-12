@@ -517,14 +517,14 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
                   child: Column(
                     children: [
                       Icon(
-                        Icons.assignment_outlined,
+                        lesson.isCompleted != true ? Icons.assignment_outlined : Icons.check_circle_outline_rounded,
                         size: 60,
                         color: Colors.white.withOpacity(0.9),
                       ),
                       const SizedBox(height: 16),
 
                       Text(
-                        "Siap untuk melakukan Submission?",
+                        lesson.isCompleted != true ? "Siap untuk melakukan Submission?" : "Anda sudah menyelesaikan Kelas ini",
                         style: AppFont.crimsonTextHeader.copyWith(
                           fontSize: 24,
                           fontWeight: FontWeight.w700,
@@ -577,6 +577,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
                     
                             const SizedBox(width: 16),
                     
+                            if (lesson.isCompleted != true)
                             Expanded(
                               child: ElevatedButton.icon(
                                 onPressed: () {
@@ -609,7 +610,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
                           ],
                         ),
                         const SizedBox(height: 16),
-                        if (lesson.submissionType == "file")
+                        if (lesson.submissionType == "file" && lesson.isCompleted != true)
                           ElevatedButton.icon(
                             onPressed: () {
                               Navigator.of(context, rootNavigator: true).pushNamed(
@@ -687,14 +688,14 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
                   child: Column(
                     children: [
                       Icon(
-                        Icons.quiz_rounded,
+                        lesson.isCompleted != true ? Icons.quiz_rounded : Icons.check_circle_outline_rounded,
                         size: 60,
                         color: Colors.white.withOpacity(0.9),
                       ),
                       const SizedBox(height: 16),
 
                       Text(
-                        isQuiz ? "Siap untuk Mengukur Pemahamanmu?" : "Konten untuk tipe: ${lesson.type}",
+                        isQuiz && lesson.isCompleted != true ? "Siap untuk Mengukur Pemahamanmu?" : "Anda sudah menyelesaikan Quiz ini",
                         style: AppFont.crimsonTextHeader.copyWith(
                           fontSize: 24,
                           fontWeight: FontWeight.w700,
@@ -706,7 +707,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
                       const SizedBox(height: 12),
 
                       Text(
-                        "Jawab pertanyaan berikut untuk menguji pemahaman kamu tentang materi yang telah dipelajari",
+                        lesson.isCompleted != true ? "Jawab pertanyaan berikut untuk menguji pemahaman kamu tentang materi yang telah dipelajari" : "Selamat! Kamu telah menyelesaikan quiz ini",
                         style: AppFont.ralewaySubtitle.copyWith(
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
