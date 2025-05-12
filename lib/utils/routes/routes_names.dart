@@ -16,5 +16,6 @@ class RouteNames {
   static const String submissionHistory = "submission_history_screen";
   static const String feedback = "feedback_screen";
   static const String certificate = "certificate_screen";
+  static const String temuBatik = "temu_batik_screen";
 
 }
