@@ -10,23 +10,22 @@ class HelpAndSupportScreen extends StatefulWidget {
 }
 
 class _HelpAndSupportScreenState extends State<HelpAndSupportScreen> {
-  // List of FAQs with questions and answers
   final List<Map<String, String>> faqs = [
     {
       'question': 'Bagaimana cara memulai pembelajaran?',
-      'answer': 'Silakan pilih kursus yang Anda minati di halaman beranda, lalu klik "Mulai Belajar" untuk memulai pembelajaran.'
+      'answer': 'Silakan pilih kursus yang Anda minati di halaman beranda, lalu klik "Daftar Kelas" untuk memulai pembelajaran.'
     },
     {
-      'question': 'Bagaimana sistem pengumpulan tugas?',
-      'answer': 'Tugas dapat dikumpulkan melalui halaman detail kursus pada bagian tugas. Upload file tugas Anda dan tunggu penilaian dari mentor.'
+      'question': 'Bagaimana sistem pengumpulan submission?',
+      'answer': 'Submission dapat dikumpulkan melalui halaman kelas pembelajaran pada bagian tugas. Upload file tugas Anda atau link video youtube dan tunggu penilaian dari mentor.'
     },
     {
       'question': 'Apakah saya bisa mengunduh materi pembelajaran?',
-      'answer': 'Ya, sebagian besar materi pembelajaran dapat diunduh untuk dipelajari secara offline.'
+      'answer': 'Tidak, sebagian besar materi pembelajaran di Widya hanya bisa di akses melalui platform Mobile atau Web kami saja.'
     },
     {
       'question': 'Bagaimana cara mendapatkan sertifikat?',
-      'answer': 'Sertifikat akan otomatis diberikan setelah Anda menyelesaikan semua modul dan tugas dengan nilai minimum yang ditentukan.'
+      'answer': 'Sertifikat akan otomatis diberikan melalui email atau anda download dari aplikasi setelah Anda menyelesaikan semua modul dan tugas dengan nilai minimum yang ditentukan.'
     },
   ];
 
@@ -43,7 +42,7 @@ class _HelpAndSupportScreenState extends State<HelpAndSupportScreen> {
               end: Alignment.bottomRight,
               colors: [
                 AppColors.primary,
-                AppColors.secondary,
+                AppColors.tertiary,
               ],
             ),
           ),
@@ -71,9 +70,9 @@ class _HelpAndSupportScreenState extends State<HelpAndSupportScreen> {
         ),
         title: Text(
           'Bantuan & Dukungan',
-          style: AppFont.ralewaySubtitle.copyWith(
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
+          style: AppFont.crimsonTextSubtitle.copyWith(
+            fontSize: 20,
+            fontWeight: FontWeight.w700,
             color: Colors.white,
           ),
         ),
@@ -82,14 +81,17 @@ class _HelpAndSupportScreenState extends State<HelpAndSupportScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header section
             Container(
               width: double.infinity,
               height: 140,
               decoration: BoxDecoration(
                 color: AppColors.primary,
                 borderRadius:
-                    const BorderRadius.vertical(bottom: Radius.circular(24)),
+                    const BorderRadius.vertical(bottom: Radius.circular(30)),
+                image: const DecorationImage(
+                  image: AssetImage('assets/common/hero-texture2.png'),
+                  fit: BoxFit.cover,
+                ),
               ),
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
@@ -104,7 +106,7 @@ class _HelpAndSupportScreenState extends State<HelpAndSupportScreen> {
                     const SizedBox(height: 8),
                     Text(
                       'Ada yang bisa kami bantu?',
-                      style: AppFont.ralewaySubtitle.copyWith(
+                      style: AppFont.crimsonTextSubtitle.copyWith(
                         color: Colors.white,
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -125,24 +127,8 @@ class _HelpAndSupportScreenState extends State<HelpAndSupportScreen> {
               ),
             ),
             
-            // Search bar
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: TextField(
-                decoration: InputDecoration(
-                  hintText: 'Cari bantuan...',
-                  prefixIcon: const Icon(Icons.search),
-                  filled: true,
-                  fillColor: Colors.grey[100],
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide.none,
-                  ),
-                ),
-              ),
-            ),
-            
-            // FAQ section
+            const SizedBox(height: 16),
+
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Text(
@@ -154,7 +140,6 @@ class _HelpAndSupportScreenState extends State<HelpAndSupportScreen> {
               ),
             ),
             
-            // FAQ expansion panels
             Padding(
               padding: const EdgeInsets.all(16),
               child: ListView.builder(
@@ -162,64 +147,64 @@ class _HelpAndSupportScreenState extends State<HelpAndSupportScreen> {
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: faqs.length,
                 itemBuilder: (context, index) {
-                  return Card(
-                    elevation: 2,
-                    margin: const EdgeInsets.only(bottom: 12),
-                    shape: RoundedRectangleBorder(
+                  return Container(
+                    margin: const EdgeInsets.only(bottom: 14),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
                       borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: ExpansionTile(
-                      childrenPadding: const EdgeInsets.all(16),
-                      title: Text(
-                        faqs[index]['question']!,
-                        style: AppFont.ralewaySubtitle.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
+                      border: Border.all(
+                        color: Colors.grey.shade300,
+                        width: 1,
                       ),
-                      children: [
-                        Text(
-                          faqs[index]['answer']!,
-                          style: AppFont.ralewaySubtitle.copyWith(
-                            height: 1.5,
-                          ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.05),
+                          blurRadius: 8,
+                          offset: const Offset(0, 4),
                         ),
                       ],
+                    ),
+                    child: Theme(
+                      data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+                      child: ExpansionTile(
+                        tilePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                        childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                        title: Text(
+                          faqs[index]['question']!,
+                          style: AppFont.ralewaySubtitle.copyWith(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 14,
+                            color: AppColors.secondary,
+                          ),
+                        ),
+                        trailing: Icon(
+                          Icons.keyboard_arrow_down_rounded,
+                          color: AppColors.secondary,
+                          size: 24,
+                        ),
+                        children: [
+                          Text(
+                            faqs[index]['answer']!,
+                            style: AppFont.ralewaySubtitle.copyWith(
+                              height: 1.6,
+                              fontWeight: FontWeight.w400,
+                              fontSize: 12,
+                              color: Colors.grey.shade800,
+                            ),
+                            textAlign: TextAlign.justify,
+                          ),
+                        ],
+                      ),
                     ),
                   );
                 },
               ),
-            ),
-            
-            // Contact us section
+            ),            
             Padding(
               padding: const EdgeInsets.all(16),
               child: _buildContactCard(),
             ),
             
-            // Support options
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: Text(
-                'Pilihan Dukungan',
-                style: AppFont.ralewaySubtitle.copyWith(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                ),
-              ),
-            ),
-            
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Row(
-                children: [
-                  Expanded(child: _buildSupportOption(Icons.email, 'Email', 'Kirim email ke tim dukungan kami')),
-                  const SizedBox(width: 16),
-                  Expanded(child: _buildSupportOption(Icons.chat, 'Live Chat', 'Diskusikan masalah Anda secara langsung')),
-                ],
-              ),
-            ),
-            
-            const SizedBox(height: 30),
           ],
         ),
       ),
@@ -231,31 +216,47 @@ class _HelpAndSupportScreenState extends State<HelpAndSupportScreen> {
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.primary,
+        gradient: LinearGradient(
+          colors: [
+            AppColors.primary,
+            AppColors.tertiary,
+          ],
+          begin: Alignment.bottomLeft,
+          end: Alignment.topRight,
+        ),
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withAlpha(20),
-            blurRadius: 8,
-            offset: const Offset(0, 3),
-          ),
-        ],
+        image: DecorationImage(
+          image: AssetImage('assets/common/hero-texture2.png'),
+          fit: BoxFit.cover,
+        )
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             'Hubungi Kami',
-            style: AppFont.ralewaySubtitle.copyWith(
+            style: AppFont.crimsonTextTitle.copyWith(
               fontWeight: FontWeight.bold,
               color: Colors.white,
-              fontSize: 18,
+              fontSize: 22,
             ),
           ),
           const SizedBox(height: 12),
-          _buildContactItem(Icons.email, 'support@senikitaedu.id'),
+          _buildContactItem(Icons.email, 'officialsenikita@gmail.com'),
           const SizedBox(height: 8),
-          _buildContactItem(Icons.phone, '+62 812-3456-7890'),
+          Row(
+            children: [
+              Icon(Icons.call_rounded, color: Colors.white, size: 18),
+              const SizedBox(width: 10),
+              Text(
+                '+62 895-3631-85264',
+                style: AppFont.nunitoSubtitle.copyWith(
+                  color: Colors.white,
+                  fontSize: 14,
+                ),
+              ),
+            ],
+          ),
           const SizedBox(height: 8),
           _buildContactItem(Icons.access_time, 'Senin - Jumat: 08.00 - 17.00 WIB'),
         ],
@@ -279,47 +280,4 @@ class _HelpAndSupportScreenState extends State<HelpAndSupportScreen> {
     );
   }
 
-  Widget _buildSupportOption(IconData icon, String title, String description) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withAlpha(15),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
-        border: Border.all(color: Colors.grey[200]!),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            icon,
-            color: AppColors.primary,
-            size: 32,
-          ),
-          const SizedBox(height: 12),
-          Text(
-            title,
-            style: AppFont.ralewaySubtitle.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            description,
-            style: AppFont.ralewaySubtitle.copyWith(
-              color: Colors.grey[600],
-              fontSize: 12,
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
-    );
-  }
 }
