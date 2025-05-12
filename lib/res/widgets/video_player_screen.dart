@@ -151,7 +151,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                   
                   if (!_isFullScreen) ...[
                     Padding(
-                      padding: const EdgeInsets.only(top: 12),
+                      padding: const EdgeInsets.all(16),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
