@@ -150,36 +150,139 @@ class _CourseScreenState extends State<CourseScreen> {
                   ),
                   textAlign: TextAlign.start,
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: 8),
+                Padding(
+                  padding: const EdgeInsets.only(right: 25.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.brown.shade300),
+                            borderRadius: BorderRadius.circular(50),
+                            color: Colors.brown.shade50,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.access_time, color: Colors.brown, size: 12),
+                              const SizedBox(width: 4),
+                              Flexible(
+                                child: Text(
+                                  courseDetail.duration,
+                                  style: AppFont.ralewaySubtitle.copyWith(
+                                    fontSize: 9,
+                                    color: Colors.brown,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.brown.shade300),
+                            borderRadius: BorderRadius.circular(50),
+                            color: Colors.brown.shade50,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.signal_cellular_alt, color: Colors.brown, size: 12),
+                              const SizedBox(width: 4),
+                              Flexible(
+                                child: Text(
+                                  "${courseDetail.level[0].toUpperCase()}${courseDetail.level.substring(1)}",
+                                  style: AppFont.ralewaySubtitle.copyWith(
+                                    fontSize: 9,
+                                    color: Colors.brown,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.brown.shade300),
+                            borderRadius: BorderRadius.circular(50),
+                            color: Colors.brown.shade50,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.people, color: Colors.brown, size: 12),
+                              const SizedBox(width: 4),
+                              Flexible(
+                                child: Text(
+                                  "${courseDetail.enrolledCount} Peserta",
+                                  style: AppFont.ralewaySubtitle.copyWith(
+                                    fontSize: 9,
+                                    color: Colors.brown,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.brown.shade300),
+                            borderRadius: BorderRadius.circular(50),
+                            color: Colors.brown.shade50,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.workspace_premium, color: Colors.brown, size: 12),
+                              const SizedBox(width: 4),
+                              Flexible(
+                                child: Text(
+                                  "Sertifikat",
+                                  style: AppFont.ralewaySubtitle.copyWith(
+                                    fontSize: 9,
+                                    color: Colors.brown,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 8),
                 Text(
                   courseDetail.description,
                   style: AppFont.ralewayFootnoteLarge,
                   textAlign: TextAlign.justify,
-                ),
-                const SizedBox(height: 8),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: getLevelColor(courseDetail.level),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text(
-                    "${courseDetail.level[0].toUpperCase()}${courseDetail.level.substring(1)}",
-                    style: AppFont.ralewaySubtitle.copyWith(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  "Telah di ikuti oleh ${courseDetail.enrolledCount} peserta",
-                  style: AppFont.ralewaySubtitle.copyWith(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.secondary,
-                  ),
                 ),
                 const SizedBox(height: 12),
                 Row(
@@ -601,7 +704,7 @@ class _CourseScreenState extends State<CourseScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Requirements:",
+                      "Persyaratan:",
                       style: AppFont.ralewaySubtitle.copyWith(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
