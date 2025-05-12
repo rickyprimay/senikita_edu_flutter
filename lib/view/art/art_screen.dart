@@ -148,7 +148,7 @@ class _ArtScreenState extends State<ArtScreen> {
                   opacity: 0.5,
                 ),
               ),
-              padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
+              padding: const EdgeInsets.fromLTRB(0, 40, 0, 20),
               child: Center(
                 child: Text(
                   'Hasil Karya Seni',
