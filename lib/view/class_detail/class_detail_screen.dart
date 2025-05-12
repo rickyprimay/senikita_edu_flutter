@@ -552,6 +552,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
                                     RouteNames.submissionHistory,
                                     arguments: {
                                       "lessonId": lesson.id,
+                                      "lessonName": lesson.title,
                                     },
                                   );
                                 },

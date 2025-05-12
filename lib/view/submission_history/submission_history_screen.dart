@@ -10,8 +10,11 @@ import 'package:widya/viewModel/submission_view_model.dart';
 
 class SubmissionHistoryScreen extends StatefulWidget {
   final int lessonId;
+  final String lessonName;
+  
   const SubmissionHistoryScreen({
     required this.lessonId,
+    required this.lessonName,
     super.key
   });
 
@@ -323,18 +326,16 @@ class _SubmissionHistoryScreenState extends State<SubmissionHistoryScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                submission.submission != null
-                 ? Text(
-                    submission.submission ?? "",
-                    style: AppFont.crimsonTextSubtitle.copyWith(
-                      fontSize: 18,
-                      color: AppColors.primary,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  )
-                  : const SizedBox.shrink(),
+                Text(
+                  widget.lessonName,
+                  style: AppFont.crimsonTextSubtitle.copyWith(
+                    fontSize: 18,
+                    color: AppColors.primary,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
                 const SizedBox(height: 8),
                 
                 // Date
