@@ -25,7 +25,7 @@ class CertificateViewModel with ChangeNotifier {
     try {
       final response = await _certificateRepository.fetchCertificate(token: token ?? "");
       if (response != null) {
-        _certificate = response;
+        _certificate = Certificate.fromJson(response);
         _error = null;
       } else {
         _error = "Gagal memuat data sertifikat";
