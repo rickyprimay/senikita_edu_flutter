@@ -3,9 +3,10 @@ import 'package:provider/provider.dart';
 import 'package:widya/models/certificate/certificate.dart';
 import 'package:widya/res/widgets/colors.dart';
 import 'package:widya/res/widgets/fonts.dart';
+import 'package:widya/res/widgets/loading.dart';
 import 'package:widya/viewModel/certificate_view_model.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_media_downloader/flutter_media_downloader.dart';
 
 class CertificateScreen extends StatefulWidget {
   const CertificateScreen({super.key});
@@ -15,6 +16,8 @@ class CertificateScreen extends StatefulWidget {
 }
 
 class _CertificateScreenState extends State<CertificateScreen> {
+  final _flutterMediaDownloaderPlugin = MediaDownload();
+
   @override
   void initState() {
     super.initState();
@@ -26,6 +29,7 @@ class _CertificateScreenState extends State<CertificateScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(
           'Sertifikat Saya',
@@ -40,7 +44,7 @@ class _CertificateScreenState extends State<CertificateScreen> {
       body: Consumer<CertificateViewModel>(
         builder: (context, certificateViewModel, _) {
           if (certificateViewModel.loading) {
-            return _buildLoading();
+            return Loading(opacity: 0.8);
           }
           
           if (certificateViewModel.error != null) {
@@ -54,25 +58,6 @@ class _CertificateScreenState extends State<CertificateScreen> {
           
           return _buildCertificateList(certificateViewModel.certificate!);
         },
-      ),
-    );
-  }
-
-  Widget _buildLoading() {
-    return const Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          CircularProgressIndicator(color: AppColors.primary),
-          SizedBox(height: 16),
-          Text(
-            'Memuat sertifikat...',
-            style: TextStyle(
-              color: Colors.grey,
-              fontSize: 14,
-            ),
-          ),
-        ],
       ),
     );
   }
@@ -105,7 +90,13 @@ class _CertificateScreenState extends State<CertificateScreen> {
                 borderRadius: BorderRadius.circular(8),
               ),
             ),
-            child: const Text('Coba Lagi'),
+            child: Text(
+              'Coba Lagi',
+              style: AppFont.ralewaySubtitle.copyWith(
+                fontWeight: FontWeight.w600,
+                fontSize: 14,
+              ),
+            ),
           ),
         ],
       ),
@@ -117,14 +108,6 @@ class _CertificateScreenState extends State<CertificateScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // Image.asset(
-          //   'assets/images/empty_certificate.png', 
-          //   width: 150,
-          //   height: 150,
-          //   fit: BoxFit.contain,
-          //   errorBuilder: (context, error, stackTrace) => 
-          //     const Icon(Icons.card_membership, size: 150, color: Colors.grey),
-          // ),
           const SizedBox(height: 24),
           Text(
             'Belum ada sertifikat',
@@ -187,17 +170,18 @@ class _CertificateScreenState extends State<CertificateScreen> {
     final completedDate = _formatDate(certificate.enrollment.completedAt);
     
     return Card(
-      elevation: 2,
+      elevation: 0,
       margin: const EdgeInsets.only(bottom: 16),
+      color: Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
+        side: const BorderSide(color: Colors.grey, width: 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Certificate preview image
           Container(
-            height: 160,
+            height: 250,
             width: double.infinity,
             decoration: BoxDecoration(
               borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
@@ -205,13 +189,14 @@ class _CertificateScreenState extends State<CertificateScreen> {
             ),
             child: ClipRRect(
               borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-              child: CachedNetworkImage(
-                imageUrl: "https://eduapi.senikita.my.id/storage/${certificate.certificateImage}",
+              child: Image.network(
+                certificate.certificateImage,
                 fit: BoxFit.cover,
-                placeholder: (context, url) => const Center(
-                  child: CircularProgressIndicator(color: AppColors.primary),
-                ),
-                errorWidget: (context, url, error) => Center(
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return const Loading(opacity: 0.8);
+                },
+                errorBuilder: (context, error, stackTrace) => Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -228,7 +213,6 @@ class _CertificateScreenState extends State<CertificateScreen> {
             ),
           ),
           
-          // Certificate details
           Padding(
             padding: const EdgeInsets.all(16),
             child: Column(
@@ -247,19 +231,31 @@ class _CertificateScreenState extends State<CertificateScreen> {
                 
                 const SizedBox(height: 8),
                 
-                // Certificate number
                 Row(
                   children: [
                     const Icon(Icons.numbers, size: 14, color: Colors.grey),
                     const SizedBox(width: 6),
                     Expanded(
-                      child: Text(
-                        'No. Sertifikat: $certNumber',
-                        style: AppFont.nunitoSubtitle.copyWith(
-                          color: Colors.grey[700],
-                          fontSize: 12,
-                        ),
-                      ),
+                      child: Row(
+                        children: [
+                          Text(
+                            'No. Sertifikat: ',
+                            style: AppFont.ralewaySubtitle.copyWith(
+                              color: Colors.grey[700],
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          Text(
+                            certNumber,
+                            style: AppFont.nunitoSubtitle.copyWith(
+                              color: Colors.grey[700],
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      )
                     ),
                   ],
                 ),
@@ -273,9 +269,10 @@ class _CertificateScreenState extends State<CertificateScreen> {
                     const SizedBox(width: 6),
                     Text(
                       'Selesai pada $completedDate',
-                      style: AppFont.nunitoSubtitle.copyWith(
+                      style: AppFont.ralewaySubtitle.copyWith(
                         color: Colors.grey[700],
                         fontSize: 12,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
                   ],
@@ -295,8 +292,15 @@ class _CertificateScreenState extends State<CertificateScreen> {
                             borderRadius: BorderRadius.circular(8),
                           ),
                         ),
-                        icon: const Icon(Icons.visibility, size: 16),
-                        label: const Text('Lihat'),
+                        icon: const Icon(Icons.visibility, size: 16, color: AppColors.secondary),
+                        label: Text(
+                          'Lihat',
+                          style: AppFont.ralewaySubtitle.copyWith(
+                            color: AppColors.secondary,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
                       ),
                     ),
                     const SizedBox(width: 8),
@@ -310,8 +314,15 @@ class _CertificateScreenState extends State<CertificateScreen> {
                             borderRadius: BorderRadius.circular(8),
                           ),
                         ),
-                        icon: const Icon(Icons.download, size: 16),
-                        label: const Text('Unduh'),
+                        icon: const Icon(Icons.download, size: 16, color: Colors.white),
+                        label: Text(
+                          'Unduh',
+                          style: AppFont.ralewaySubtitle.copyWith(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
                       ),
                     ),
                   ],
@@ -325,7 +336,7 @@ class _CertificateScreenState extends State<CertificateScreen> {
   }
 
   void _openCertificatePreview(CertificateList certificate) async {
-    final url = "https://eduapi.senikita.my.id/storage/${certificate.certificateImage}";
+    final url = certificate.certificateImage;
     if (await canLaunch(url)) {
       await launch(url);
     } else {
@@ -336,15 +347,141 @@ class _CertificateScreenState extends State<CertificateScreen> {
   }
 
   void _downloadCertificate(CertificateList certificate) async {
-    final url = "https://eduapi.senikita.my.id/storage/${certificate.certificatePdf}";
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Tidak dapat mengunduh sertifikat')),
+  final url = certificate.certificatePdf;
+  
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext dialogContext) {
+      return SimpleDialog(
+        backgroundColor: Colors.white,
+        contentPadding: const EdgeInsets.all(30),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        children: [
+          Column(
+            children: [
+              Text(
+                'Unduh Sertifikat',
+                textAlign: TextAlign.center,
+                style: AppFont.crimsonTextHeader.copyWith(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.primary,
+                ),
+              ),
+
+              const SizedBox(height: 20),
+
+              Container(
+                width: 80,
+                height: 80,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: AppColors.primary.withOpacity(0.1),
+                  border: Border.all(
+                    color: AppColors.primary,
+                    width: 2,
+                  ),
+                ),
+                child: const Center(
+                  child: Icon(
+                    Icons.download_rounded,
+                    size: 40,
+                    color: AppColors.primary,
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 20),
+
+              Text(
+                'Unduh Sertifikat',
+                style: AppFont.ralewaySubtitle.copyWith(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+                textAlign: TextAlign.center,
+              ),
+
+              const SizedBox(height: 8),
+
+              Text(
+                'Apakah Anda yakin ingin mengunduh sertifikat ini ke perangkat Anda?',
+                style: AppFont.ralewaySubtitle.copyWith(
+                  fontSize: 14,
+                  color: AppColors.secondary,
+                  fontWeight: FontWeight.w500,
+                ),
+                textAlign: TextAlign.center,
+              ),
+
+              const SizedBox(height: 24),
+
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () {
+                        Navigator.of(dialogContext).pop();
+                      },
+                      style: OutlinedButton.styleFrom(
+                        side: BorderSide(color: AppColors.primary),
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      child: Text(
+                        "Tidak",
+                        style: AppFont.ralewaySubtitle.copyWith(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        Navigator.of(dialogContext).pop();
+                        
+                        try {
+                          await _flutterMediaDownloaderPlugin.downloadMedia(
+                            context,
+                            url,
+                          );
+                        } catch (e) {
+                          // TODOS
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primary,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      child: Text(
+                        "Ya, Unduh",
+                        style: AppFont.ralewaySubtitle.copyWith(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
       );
-    }
-  }
+    },
+  );
+}
 
   String _formatDate(DateTime date) {
     final months = [
