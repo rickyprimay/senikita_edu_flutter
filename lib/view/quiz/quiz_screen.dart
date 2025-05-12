@@ -302,7 +302,18 @@ class _QuizScreenState extends State<QuizScreen> {
             Scaffold(
             backgroundColor: Colors.white,
             appBar: AppBar(
-              backgroundColor: AppColors.primary,
+              flexibleSpace: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      AppColors.primary,
+                      AppColors.tertiary,
+                    ],
+                  ),
+                ),
+              ),
               leading: IconButton(
                 icon: const Icon(Icons.close, color: Colors.white),
                 onPressed: _showExitDialog,

@@ -336,7 +336,18 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
       children: [
         Scaffold(
           appBar: AppBar(
-            backgroundColor: AppColors.primary,
+            flexibleSpace: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    AppColors.primary,
+                    AppColors.tertiary,
+                  ],
+                ),
+              ),
+            ),
             leading: Padding(
               padding: const EdgeInsets.all(8.0),
               child: GestureDetector(

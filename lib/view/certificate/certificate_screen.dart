@@ -31,15 +31,32 @@ class _CertificateScreenState extends State<CertificateScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text(
-          'Sertifikat Saya',
-          style: AppFont.crimsonTextHeader.copyWith(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: AppColors.primary,
+        leading: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: GestureDetector(
+            onTap: () => Navigator.pop(context),
+            child: Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppColors.tertiary.withAlpha(120),
+              ),
+              padding: const EdgeInsets.all(8),
+              child: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 18),
+            ),
           ),
         ),
-        backgroundColor: AppColors.primary,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                AppColors.primary,
+                AppColors.tertiary,
+              ],
+            ),
+          ),
+        ),
       ),
       body: Consumer<CertificateViewModel>(
         builder: (context, certificateViewModel, _) {

@@ -53,7 +53,18 @@ class _SubmissionHistoryScreenState extends State<SubmissionHistoryScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: AppColors.primary,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                AppColors.primary,
+                AppColors.tertiary,
+              ],
+            ),
+          ),
+        ),
         title: Text(
           'Riwayat Submission',
           style: AppFont.crimsonTextSubtitle.copyWith(

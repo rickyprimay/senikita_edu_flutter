@@ -27,7 +27,18 @@ class _SeniKitaScreenState extends State<SeniKitaScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: AppColors.primary,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                AppColors.primary,
+                AppColors.tertiary,
+              ],
+            ),
+          ),
+        ),
         centerTitle: true,
         leading: Padding(
           padding: const EdgeInsets.all(8.0),

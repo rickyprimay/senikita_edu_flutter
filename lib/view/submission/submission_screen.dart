@@ -338,7 +338,18 @@ class _SubmissionScreenState extends State<SubmissionScreen> {
             Scaffold(
               backgroundColor: Colors.white,
               appBar: AppBar(
-                backgroundColor: AppColors.primary,
+                flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                AppColors.primary,
+                AppColors.tertiary,
+              ],
+            ),
+          ),
+        ),
                 title: Text(
                   'Submit Karya',
                   style: AppFont.crimsonTextSubtitle.copyWith(
