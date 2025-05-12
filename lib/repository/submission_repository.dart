@@ -81,4 +81,48 @@ class SubmissionRepository {
       };
     }
   }
+  Future<dynamic> submitLinkSubmission({
+    required String token, 
+    required int lessonId,
+    required String submissionText,
+    required int isPublished,
+    required BuildContext context
+  }) async {
+    try {
+      var request = http.MultipartRequest(
+        'POST', 
+        Uri.parse(AppUrls.submitSubmission)
+      );
+
+      request.headers.addAll({
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+      });
+
+      request.fields['lesson_id'] = lessonId.toString();
+      request.fields['submission'] = submissionText;
+      request.fields['is_published'] = isPublished.toString();
+
+      AppLogger.logInfo("Sending link submission request to ${AppUrls.submitSubmission}");
+      var streamedResponse = await request.send();
+      var response = await http.Response.fromStream(streamedResponse);
+
+      AppLogger.logInfo("Response: ${response.body}");
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return json.decode(response.body);
+      } else {
+        return {
+          'success': false,
+          'message': 'HTTP Error: ${response.statusCode} - ${response.reasonPhrase}'
+        };
+      }
+    } catch (e) {
+      AppLogger.logError("Error in repository: $e");
+      return {
+        'success': false,
+        'message': e.toString()
+      };
+    }
+  }
 }

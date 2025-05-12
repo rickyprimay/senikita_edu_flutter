@@ -41,7 +41,7 @@ class _SubmissionScreenState extends State<SubmissionScreen> {
 
   Future<void> _pickFile() async {
     setState(() {
-      _fileError = null; // Clear previous errors
+      _fileError = null; 
     });
     
     try {
@@ -281,7 +281,7 @@ class _SubmissionScreenState extends State<SubmissionScreen> {
   }
 
   Future<void> _submitForm() async {
-    if (_selectedFile == null) {
+    if (widget.submissionType == "file" && _selectedFile == null) {
       setState(() {
         _fileError = 'Silahkan pilih gambar terlebih dahulu';
       });
@@ -293,16 +293,25 @@ class _SubmissionScreenState extends State<SubmissionScreen> {
     }
 
     final viewModel = Provider.of<SubmissionViewModel>(context, listen: false);
-    
+
     try {
-      await viewModel.submitSubmission(
-        lessonId: widget.lessonId,
-        submissionText: _titleController.text,
-        filePath: _selectedFile!.path,
-        isPublished: _isPublic ? 1 : 0,
-        context: context,
-      );
-      
+      if (widget.submissionType == "file") {
+        await viewModel.submitSubmission(
+          lessonId: widget.lessonId,
+          submissionText: _titleController.text,
+          filePath: _selectedFile!.path,
+          isPublished: _isPublic ? 1 : 0,
+          context: context,
+        );
+      } else {
+        await viewModel.submitLinkSubmission(
+          lessonId: widget.lessonId,
+          submissionText: _titleController.text,
+          isPublished: _isPublic ? 1 : 0,
+          context: context,
+        );
+      }
+
       if (viewModel.error != null) {
         AppLogger.logError("Submission error: ${viewModel.error}");
         if (mounted) {
