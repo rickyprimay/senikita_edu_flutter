@@ -5,6 +5,7 @@ import 'package:widya/models/submissions/submission.dart';
 import 'package:widya/res/widgets/colors.dart';
 import 'package:widya/res/widgets/fonts.dart';
 import 'package:widya/res/widgets/loading.dart';
+import 'package:widya/view/submission_history/widget/full_image_preview_widget.dart';
 import 'package:widya/viewModel/submission_view_model.dart';
 
 class SubmissionHistoryScreen extends StatefulWidget {
@@ -37,7 +38,7 @@ class _SubmissionHistoryScreenState extends State<SubmissionHistoryScreen> {
   Color _getStatusColor(String status) {
     switch (status.toLowerCase()) {
       case 'pending':
-        return Colors.orange;
+        return AppColors.lightBrick;
       case 'approved':
         return AppColors.customGreen;
       case 'rejected':
@@ -93,21 +94,6 @@ class _SubmissionHistoryScreenState extends State<SubmissionHistoryScreen> {
           
           return _buildSubmissionList(viewModel.submission!);
         },
-      ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: AppColors.primary,
-        onPressed: () {
-          Navigator.pushNamed(
-            context, 
-            '/submission',
-            arguments: {'lessonId': widget.lessonId}
-          ).then((_) {
-            // Refresh the list when returning from submission screen
-            Provider.of<SubmissionViewModel>(context, listen: false)
-                .fetchSubmission(lessonId: widget.lessonId);
-          });
-        },
-        child: const Icon(Icons.add, color: Colors.white),
       ),
     );
   }
@@ -240,7 +226,6 @@ class _SubmissionHistoryScreenState extends State<SubmissionHistoryScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Image preview with status badge overlay
           Stack(
             children: [
               ClipRRect(
@@ -248,7 +233,7 @@ class _SubmissionHistoryScreenState extends State<SubmissionHistoryScreen> {
                 child: AspectRatio(
                   aspectRatio: 16/9,
                   child: Image.network(
-                    submission.filePath ?? "",
+                    "https://eduapi.senikita.my.id/storage/${submission.filePath}",
                     fit: BoxFit.cover,
                     width: double.infinity,
                     errorBuilder: (context, error, stackTrace) {
@@ -277,11 +262,13 @@ class _SubmissionHistoryScreenState extends State<SubmissionHistoryScreen> {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
-                    color: _getStatusColor(submission.status ?? "").withOpacity(0.9),
+                    color: _getStatusColor(submission.status ?? "").withOpacity(0.8),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
-                    submission.status ?? "Status Tidak Diketahui",
+                    (submission.status ?? "").isNotEmpty
+                    ? "${(submission.status ?? "").substring(0, 1).toUpperCase()}${(submission.status ?? "").substring(1)}"
+                    : "",
                     style: AppFont.ralewaySubtitle.copyWith(
                       color: Colors.white,
                       fontSize: 12,
@@ -343,8 +330,10 @@ class _SubmissionHistoryScreenState extends State<SubmissionHistoryScreen> {
                     const Icon(Icons.calendar_today, size: 14, color: Colors.grey),
                     const SizedBox(width: 6),
                     Text(
-                      _formatDate(submission.createdAt ?? DateTime.now()),
-                      style: AppFont.ralewaySubtitle.copyWith(
+                      _formatDate(
+                        (submission.createdAt ?? DateTime.now()).add(Duration(hours: 7)),
+                      ),
+                      style: AppFont.nunitoSubtitle.copyWith(
                         fontSize: 12,
                         color: Colors.grey[700],
                       ),
@@ -353,7 +342,6 @@ class _SubmissionHistoryScreenState extends State<SubmissionHistoryScreen> {
                 ),
                 const SizedBox(height: 16),
                 
-                // Feedback section if available
                 if (submission.feedback != null && submission.feedback.toString().isNotEmpty)
                   Container(
                     width: double.infinity,
@@ -385,7 +373,6 @@ class _SubmissionHistoryScreenState extends State<SubmissionHistoryScreen> {
                     ),
                   ),
                   
-                // Score if available
                 if (submission.score != null)
                   Padding(
                     padding: const EdgeInsets.only(top: 12),
@@ -422,7 +409,6 @@ class _SubmissionHistoryScreenState extends State<SubmissionHistoryScreen> {
             ),
           ),
           
-          // Actions section
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
             child: Row(
@@ -430,16 +416,21 @@ class _SubmissionHistoryScreenState extends State<SubmissionHistoryScreen> {
                 Expanded(
                   child: OutlinedButton.icon(
                     onPressed: () {
-                      // Open full image preview
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => _FullImagePreview(imageUrl: submission.filePath ?? ""),
+                          builder: (context) => FullImagePreview(imageUrl: "https://eduapi.senikita.my.id/storage/${submission.filePath}"),
                         ),
                       );
                     },
                     icon: const Icon(Icons.visibility, size: 16),
-                    label: const Text('Lihat Gambar'),
+                    label: Text(
+                      'Lihat Gambar',
+                      style: AppFont.ralewaySubtitle.copyWith(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: AppColors.primary,
                       padding: const EdgeInsets.symmetric(vertical: 10),
@@ -453,53 +444,6 @@ class _SubmissionHistoryScreenState extends State<SubmissionHistoryScreen> {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-// Helper widget for image preview
-class _FullImagePreview extends StatelessWidget {
-  final String imageUrl;
-
-  const _FullImagePreview({required this.imageUrl});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      appBar: AppBar(
-        backgroundColor: Colors.black,
-        iconTheme: const IconThemeData(color: Colors.white),
-        title: Text(
-          'Preview Karya',
-          style: AppFont.crimsonTextSubtitle.copyWith(
-            color: Colors.white,
-          ),
-        ),
-      ),
-      body: Center(
-        child: InteractiveViewer(
-          minScale: 0.5,
-          maxScale: 4.0,
-          child: Image.network(
-            imageUrl,
-            fit: BoxFit.contain,
-            errorBuilder: (context, error, stackTrace) {
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.broken_image, size: 64, color: Colors.white54),
-                  const SizedBox(height: 16),
-                  Text(
-                    'Gagal memuat gambar',
-                    style: AppFont.ralewaySubtitle.copyWith(color: Colors.white),
-                  ),
-                ],
-              );
-            },
-          ),
-        ),
       ),
     );
   }
