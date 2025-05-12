@@ -85,4 +85,6 @@ class AppUrls {
 
   static const getCertificate = "$baseUrl/certificates";
 
+  static const getPublishedGallery = "$baseUrl/published";
+
 }
