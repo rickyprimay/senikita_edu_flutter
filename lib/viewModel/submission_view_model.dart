@@ -40,10 +40,8 @@ class SubmissionViewModel with ChangeNotifier {
 
       AppLogger.logInfo("Submission response: $response");
       
-      // Fix: Check for "success" instead of "status"
       if (response != null && response["success"] == true) {
         try {
-          // Create a properly structured object for the Submission model
           final Map<String, dynamic> submissionData = {
             'data': response['data']
           };
@@ -67,57 +65,64 @@ class SubmissionViewModel with ChangeNotifier {
     }
   }
 
-  Future<void> submitSubmission({
-    required int lessonId,
-    required String submissionText,
-    required String filePath,
-    required int isPublished,
-    required BuildContext context,
-  }) async {
-    _loading = true;
-    _error = null;
-    notifyListeners();
-  
-    try {
-      final sp = await SharedPrefs.instance;
-      final String? token = sp.getString("auth_token");
-  
-      final File imageFile = File(filePath);
-      
-      if (!await imageFile.exists()) {
-        _error = "File tidak ditemukan: $filePath";
-        _loading = false;
-        notifyListeners();
-        return;
-      }
-  
-      final response = await _submissionRepository.submitSubmission(
-        token: token ?? "",
-        lessonId: lessonId,
-        submissionText: submissionText,
-        imageFile: imageFile,
-        isPublished: isPublished,
-        context: context,
-      );
-      
-      // Fix: Check for "success" instead of "status"
-      if (response != null && response["success"] == true) {
-        // Success case
-      } else {
-        _error = response?["message"] ?? "Unknown error";
-      }
-    } catch (e) {
-      _error = e.toString();
-    } finally {
+    Future<void> submitSubmission({
+  required int lessonId,
+  required String submissionText,
+  required String filePath,
+  required int isPublished,
+  required BuildContext context,
+}) async {
+  _loading = true;
+  _error = null;
+  notifyListeners();
+
+  try {
+    final sp = await SharedPrefs.instance;
+    final String? token = sp.getString("auth_token");
+
+    final File imageFile = File(filePath);
+    
+    if (!await imageFile.exists()) {
+      _error = "File tidak ditemukan: $filePath";
       _loading = false;
       notifyListeners();
+      return;
     }
-  }
 
-  void resetState() {
+    final response = await _submissionRepository.submitSubmission(
+      token: token ?? "",
+      lessonId: lessonId,
+      submissionText: submissionText,
+      imageFile: imageFile,
+      isPublished: isPublished,
+      context: context,
+    );
+    
+    // Add null check here to prevent the error
+    if (response != null && response["success"] == true) {
+      _error = null;
+      
+      if (response.containsKey("data")) {
+        try {
+          final Map<String, dynamic> submissionData = {
+            'data': [response['data']]  
+          };
+          
+          _submission = Submission.fromJson(submissionData);
+        } catch (e) {
+          AppLogger.logInfo("Note: Couldn't parse submission data: $e");
+        }
+      }
+    } else {
+      _error = response != null ? (response["message"] ?? "Unknown error") : "No response from server";
+      AppLogger.logError("Submission error: $_error");
+    }
+  } catch (e) {
+    _error = e.toString();
+    AppLogger.logError("Submission exception: $e");
+  } finally {
     _loading = false;
-    _error = null;
-    _submission = null;
     notifyListeners();
   }
+}
 }

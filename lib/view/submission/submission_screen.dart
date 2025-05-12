@@ -318,7 +318,6 @@ class _SubmissionScreenState extends State<SubmissionScreen> {
           _showErrorDialog(viewModel.error!);
         }
       } else {
-        // Success case
         if (mounted) {
           _showSuccessDialog();
         }
@@ -493,59 +492,54 @@ class _SubmissionScreenState extends State<SubmissionScreen> {
                                   borderRadius: BorderRadius.circular(12),
                                   border: Border.all(
                                     color: _selectedFile != null
-                                        ? AppColors.primary
+                                        ? AppColors.tertiary
                                         : Colors.grey.withOpacity(0.5),
                                     width: _selectedFile != null ? 2 : 1,
                                   ),
                                 ),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(
-                                      _selectedFile != null
-                                          ? Icons.check_circle_outline
-                                          : Icons.upload_file,
-                                      size: 48,
-                                      color: _selectedFile != null
-                                          ? AppColors.primary
-                                          : Colors.grey,
-                                    ),
-                                    const SizedBox(height: 12),
-                                    Text(
-                                      _selectedFile != null
-                                          ? _selectedFile!.path.split('/').last
-                                          : 'Klik untuk memilih gambar',
-                                      style: AppFont.ralewaySubtitle.copyWith(
-                                        fontWeight: _selectedFile != null
-                                            ? FontWeight.w600
-                                            : FontWeight.normal,
-                                        color: _selectedFile != null
-                                            ? AppColors.primary
-                                            : Colors.grey,
-                                      ),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                    if (_selectedFile != null) ...[
-                                      const SizedBox(height: 4),
-                                      Text(
-                                        _getFileSize(),
-                                        style: AppFont.ralewaySubtitle.copyWith(
-                                          fontSize: 12,
-                                          color: Colors.grey,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 12),
-                                      TextButton.icon(
-                                        onPressed: _pickFile,
-                                        icon: const Icon(Icons.refresh, size: 16),
-                                        label: const Text('Ganti Gambar'),
-                                        style: TextButton.styleFrom(
-                                          foregroundColor: AppColors.primary,
-                                        ),
+                                child: _selectedFile != null
+                                    ? Column(
+                                        children: [
+                                          ClipRRect(
+                                            borderRadius: BorderRadius.circular(8),
+                                            child: Image.file(
+                                              _selectedFile!,
+                                              height: 200,
+                                              width: double.infinity,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 12),
+                                          TextButton.icon(
+                                            onPressed: _pickFile,
+                                            icon: const Icon(Icons.refresh, size: 16),
+                                            label: const Text('Ganti Gambar'),
+                                            style: TextButton.styleFrom(
+                                              foregroundColor: AppColors.tertiary,
+                                            ),
+                                          ),
+                                        ],
                                       )
-                                    ],
-                                  ],
-                                ),
+                                    : Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          const Icon(
+                                            Icons.upload_file,
+                                            size: 48,
+                                            color: Colors.grey,
+                                          ),
+                                          const SizedBox(height: 12),
+                                          Text(
+                                            'Klik untuk memilih gambar',
+                                            style: AppFont.ralewaySubtitle.copyWith(
+                                              color: Colors.grey,
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ],
+                                      ),
                               ),
                             ),
                         
@@ -597,6 +591,7 @@ class _SubmissionScreenState extends State<SubmissionScreen> {
                                       'Izinkan karya kamu dilihat oleh pengguna lain',
                                       style: AppFont.ralewaySubtitle.copyWith(
                                         fontSize: 12,
+                                        fontWeight: FontWeight.w500,
                                         color: Colors.grey,
                                       ),
                                     ),
