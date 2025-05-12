@@ -9,6 +9,7 @@ import 'package:widya/utils/routes/routes.dart';
 import 'package:widya/utils/routes/routes_names.dart';
 import 'package:widya/viewModel/auth_view_model.dart';
 import 'package:widya/viewModel/category_view_model.dart';
+import 'package:widya/viewModel/certificate_view_model.dart';
 import 'package:widya/viewModel/course_view_model.dart';
 import 'package:widya/viewModel/enrollments_view_model.dart';
 import 'package:widya/viewModel/lesson_view_model.dart';
@@ -61,6 +62,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => LoginProvider()),
         ChangeNotifierProvider(create: (_) => LessonViewModel()),
         ChangeNotifierProvider(create: (_) => SubmissionViewModel()),
+        ChangeNotifierProvider(create: (_) => CertificateViewModel()),
         ChangeNotifierProvider(create: (_) => QuizViewModel()),
         ChangeNotifierProxyProvider<QuizViewModel, QuizProvider>(
           create: (context) => QuizProvider(quizViewModel: context.read<QuizViewModel>()),
