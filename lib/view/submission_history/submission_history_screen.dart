@@ -7,6 +7,7 @@ import 'package:widya/res/widgets/colors.dart';
 import 'package:widya/res/widgets/fonts.dart';
 import 'package:widya/res/widgets/loading.dart';
 import 'package:widya/view/submission_history/widget/full_image_preview_widget.dart';
+import 'package:widya/view/submission_history/widget/video_player_screen.dart';
 import 'package:widya/viewModel/submission_view_model.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
@@ -27,20 +28,9 @@ class SubmissionHistoryScreen extends StatefulWidget {
 }
 
 class _SubmissionHistoryScreenState extends State<SubmissionHistoryScreen> {
-  Map<int, YoutubePlayerController> _youtubeControllers = {};
-  YoutubePlayerController? _activeController; // Track the currently active controller
-  
-  @override
-  void dispose() {
-    _youtubeControllers.forEach((_, controller) => controller.dispose());
-    super.dispose();
-  }
-
   @override
   void initState() {
     super.initState();
-    
-    // Call fetchSubmission automatically when screen is opened
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<SubmissionViewModel>(context, listen: false)
           .fetchSubmission(lessonId: widget.lessonId);
@@ -64,103 +54,12 @@ class _SubmissionHistoryScreenState extends State<SubmissionHistoryScreen> {
     }
   }
 
-  // Method to create or get a YouTube controller for a submission
-  YoutubePlayerController _getYoutubeController(String videoUrl) {
-    final videoId = YoutubePlayer.convertUrlToId(videoUrl);
-    if (videoId == null) {
-      throw Exception('Invalid YouTube URL');
-    }
-    
-    final submissionHash = videoUrl.hashCode;
-    if (!_youtubeControllers.containsKey(submissionHash)) {
-      _youtubeControllers[submissionHash] = YoutubePlayerController(
-        initialVideoId: videoId,
-        flags: const YoutubePlayerFlags(
-          autoPlay: false,
-          mute: false,
-          disableDragSeek: false,
-          loop: false,
-          isLive: false,
-          forceHD: false,
-          enableCaption: true,
-        ),
-      );
-    }
-    
-    // Set as active controller when accessed
-    _activeController = _youtubeControllers[submissionHash];
-    return _youtubeControllers[submissionHash]!;
+  String? _getYoutubeVideoId(String videoUrl) {
+    return YoutubePlayer.convertUrlToId(videoUrl);
   }
 
   @override
   Widget build(BuildContext context) {
-    final isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
-    final hasVideoPlayer = _activeController != null;
-    
-    if (isLandscape && hasVideoPlayer) {
-      return _buildLandscapeVideoView();
-    }
-    
-    return _buildPortraitView();
-  }
-
-  Widget _buildLandscapeVideoView() {
-    return Scaffold(
-      body: SafeArea(
-        child: Stack(
-          children: [
-            // Fill screen with YouTube player
-            Center(
-              child: AspectRatio(
-                aspectRatio: 16 / 9,
-                child: YoutubePlayer(
-                  controller: _activeController!,
-                  showVideoProgressIndicator: true,
-                  progressIndicatorColor: AppColors.primary,
-                  progressColors: const ProgressBarColors(
-                    playedColor: AppColors.primary,
-                    handleColor: AppColors.tertiary,
-                  ),
-                ),
-              ),
-            ),
-            
-            // Back button overlay
-            Positioned(
-              top: 16,
-              left: 16,
-              child: GestureDetector(
-                onTap: () {
-                  // Force back to portrait mode
-                  SystemChrome.setPreferredOrientations([
-                    DeviceOrientation.portraitUp,
-                  ]).then((_) {
-                    // Allow all orientations again after delay
-                    Future.delayed(const Duration(milliseconds: 500), () {
-                      SystemChrome.setPreferredOrientations(DeviceOrientation.values);
-                    });
-                  });
-                },
-                child: Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.5),
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(
-                    Icons.arrow_back,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildPortraitView() {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -370,19 +269,7 @@ class _SubmissionHistoryScreenState extends State<SubmissionHistoryScreen> {
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
-                
-                if (submission.submission != null && submission.submission!.isNotEmpty)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8.0),
-                    child: Text(
-                      submission.submission!,
-                      style: AppFont.ralewaySubtitle.copyWith(
-                        fontSize: 14,
-                        color: Colors.black87,
-                      ),
-                    ),
-                  ),
-                
+
                 const SizedBox(height: 8),
                 
                 Row(
@@ -468,9 +355,8 @@ class _SubmissionHistoryScreenState extends State<SubmissionHistoryScreen> {
             ),
           ),
           
-          // Add action buttons if needed based on submission type
-          if (widget.submissionType == "file")
-            _buildActionSection(submission),
+          // Add action buttons based on submission type
+          _buildActionSection(submission),
         ],
       ),
     );
@@ -479,42 +365,72 @@ class _SubmissionHistoryScreenState extends State<SubmissionHistoryScreen> {
   Widget _buildMediaSection(Datum submission) {
     // Check submission type and render appropriate media
     if (widget.submissionType != "file" && submission.submission != null) {
-      // Try to extract YouTube video URL from submission
+      // For YouTube links, show thumbnail instead of player
       try {
-        final controller = _getYoutubeController(submission.submission!);
+        final videoId = _getYoutubeVideoId(submission.submission!);
+        if (videoId == null) {
+          return _buildErrorMediaDisplay('Invalid YouTube URL');
+        }
+        
+        // Use YouTube thumbnail
+        final thumbnailUrl = 'https://img.youtube.com/vi/$videoId/0.jpg';
         
         return Stack(
           children: [
-            // YouTube player
+            // YouTube thumbnail
             ClipRRect(
               borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-              child: YoutubePlayer(
-                controller: controller,
-                showVideoProgressIndicator: true,
-                progressIndicatorColor: AppColors.primary,
-                progressColors: const ProgressBarColors(
-                  playedColor: AppColors.primary,
-                  handleColor: AppColors.tertiary,
+              child: AspectRatio(
+                aspectRatio: 16/9,
+                child: Image.network(
+                  thumbnailUrl,
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Container(
+                      color: Colors.black.withOpacity(0.1),
+                      child: const Center(
+                        child: Icon(Icons.video_library, size: 40, color: Colors.grey),
+                      ),
+                    );
+                  },
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return Container(
+                      color: Colors.black.withOpacity(0.1),
+                      child: const Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    );
+                  },
                 ),
-                onReady: () {
-                  // Player is ready to use
-                },
-                actionsPadding: const EdgeInsets.all(8),
-                bottomActions: [
-                  CurrentPosition(),
-                  ProgressBar(
-                    isExpanded: true,
-                    colors: const ProgressBarColors(
-                      playedColor: AppColors.primary,
-                      handleColor: AppColors.tertiary,
-                      backgroundColor: Colors.grey,
-                      bufferedColor: Colors.white70,
+              ),
+            ),
+            
+            // Play button overlay
+            Positioned.fill(
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () {
+                    _openVideoPlayer(submission.submission!);
+                  },
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+                  child: Center(
+                    child: Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: AppColors.primary.withOpacity(0.8),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.play_arrow,
+                        color: Colors.white,
+                        size: 32,
+                      ),
                     ),
                   ),
-                  RemainingDuration(),
-                  const PlaybackSpeedButton(),
-                  FullScreenButton(),
-                ],
+                ),
               ),
             ),
             
@@ -572,7 +488,6 @@ class _SubmissionHistoryScreenState extends State<SubmissionHistoryScreen> {
           ],
         );
       } catch (e) {
-        // If YouTube video can't be loaded, show error
         return _buildErrorMediaDisplay('Invalid YouTube URL');
       }
     } else {
@@ -664,6 +579,21 @@ class _SubmissionHistoryScreenState extends State<SubmissionHistoryScreen> {
     }
   }
 
+  void _openVideoPlayer(String videoUrl) {
+    final videoId = _getYoutubeVideoId(videoUrl);
+    if (videoId != null) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => VideoPlayerScreen(
+            videoId: videoId,
+            videoTitle: widget.lessonName,
+          ),
+        ),
+      );
+    }
+  }
+
   Widget _buildErrorMediaDisplay(String message) {
     return Container(
       height: 200,
@@ -687,36 +617,41 @@ class _SubmissionHistoryScreenState extends State<SubmissionHistoryScreen> {
     );
   }
 
+  // Update action section to show appropriate actions for both file and video
   Widget _buildActionSection(Datum submission) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-      child: OutlinedButton.icon(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => FullImagePreview(
-                imageUrl: "https://eduapi.senikita.my.id/storage/${submission.filePath}"
+    if (widget.submissionType == "file") {
+      return Padding(
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+        child: OutlinedButton.icon(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => FullImagePreview(
+                  imageUrl: "https://eduapi.senikita.my.id/storage/${submission.filePath}"
+                ),
               ),
+            );
+          },
+          icon: const Icon(Icons.visibility, size: 16),
+          label: Text(
+            'Lihat Gambar',
+            style: AppFont.ralewaySubtitle.copyWith(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
             ),
-          );
-        },
-        icon: const Icon(Icons.visibility, size: 16),
-        label: Text(
-          'Lihat Gambar',
-          style: AppFont.ralewaySubtitle.copyWith(
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
+          ),
+          style: OutlinedButton.styleFrom(
+            foregroundColor: AppColors.primary,
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
           ),
         ),
-        style: OutlinedButton.styleFrom(
-          foregroundColor: AppColors.primary,
-          padding: const EdgeInsets.symmetric(vertical: 10),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
-        ),
-      ),
-    );
+      );
+    }
+    
+    return const SizedBox.shrink();
   }
 }
