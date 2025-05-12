@@ -74,6 +74,7 @@ class MyApp extends StatelessWidget {
       ],
       child: ToastificationWrapper(
         child: MaterialApp(
+          debugShowCheckedModeBanner: false,
           title: 'Widya',
           theme: ThemeData(
             primarySwatch: Colors.blue,

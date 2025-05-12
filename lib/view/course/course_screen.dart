@@ -540,10 +540,10 @@ class _CourseScreenState extends State<CourseScreen> {
                 const SizedBox(height: 5),
                 Row(
                   children: [
-                    Icon(Icons.flash_on, size: 20, color: Colors.grey,),
+                    Icon(Icons.smart_toy_outlined, size: 20, color: Colors.grey,),
                     const SizedBox(width: 5),
                     Text(
-                      "2 Pre Test",
+                      "Asisstant Pembelajaran",
                       style: AppFont.ralewaySubtitle.copyWith(
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
@@ -552,13 +552,12 @@ class _CourseScreenState extends State<CourseScreen> {
                     )
                   ],
                 ),
-                const SizedBox(height: 5),
                 Row(
                   children: [
-                    Icon(Icons.help_outline, size: 20, color: Colors.grey,),
+                    Icon(Icons.auto_awesome_outlined, size: 20, color: Colors.grey,),
                     const SizedBox(width: 5),
                     Text(
-                      "Asisstant Pembelajaran",
+                      "Feedback AI Submission",
                       style: AppFont.ralewaySubtitle.copyWith(
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
@@ -704,7 +703,7 @@ class _CourseScreenState extends State<CourseScreen> {
         },
       ),
     ),
-       if (enrollmentsViewModel.loading) const Loading(opacity: 0.5)
+      //  if (enrollmentsViewModel.loading) const Loading(opacity: 0.5)
       ],
     );
   }

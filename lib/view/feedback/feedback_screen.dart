@@ -33,20 +33,17 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
       final ImagePicker picker = ImagePicker();
       final XFile? image = await picker.pickImage(
         source: ImageSource.gallery,
-        // Add more precise options
         imageQuality: 80,
         maxWidth: 1200,
         maxHeight: 1200,
       );
 
       if (image != null) {
-        // Validate file is actually an image
         final fileBytes = await image.readAsBytes();
         if (fileBytes.isEmpty) {
           throw Exception('Selected file is empty');
         }
 
-        // Validate file extension
         final validExtensions = ['jpg', 'jpeg', 'png'];
         final extension = image.path.split('.').last.toLowerCase();
         if (!validExtensions.contains(extension)) {
@@ -57,7 +54,6 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
           _selectedFile = File(image.path);
         });
 
-        // Show success message
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Gambar berhasil dipilih'),
@@ -221,9 +217,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                 
                 const SizedBox(height: 24),
                 
-                // Only show upload section if feedback not received yet
                 if (!_showFeedback) ...[
-                  // Image upload section
                   Text(
                     'Upload Karya',
                     style: AppFont.ralewaySubtitle.copyWith(
@@ -303,7 +297,6 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                   
                   const SizedBox(height: 24),
                   
-                  // Submit button - only shown if feedback not received
                   SizedBox(
                     width: double.infinity,
                     height: 50,
@@ -332,11 +325,9 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                 
                 const SizedBox(height: 30),
                 
-                // AI Feedback results section
                 if (_showFeedback && _feedbackResponse != null) ...[
                   if (!_showFeedback) const Divider(thickness: 1),
                   
-                  // If we have the file, show it
                   if (_selectedFile != null) ...[
                     ClipRRect(
                       borderRadius: BorderRadius.circular(12),
@@ -469,13 +460,11 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                   
                   const SizedBox(height: 24),
                   
-                  // Share button
                   SizedBox(
                     width: double.infinity,
                     height: 50,
                     child: OutlinedButton.icon(
                       onPressed: () {
-                        // Implement sharing functionality
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text('Fitur berbagi feedback akan segera hadir!')),
                         );
@@ -512,7 +501,6 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
   }
 
   Widget _buildFeedbackCard(String title, String description, IconData iconData, int score) {
-    // Ensure score is between 0 and 100
     final clampedScore = score.clamp(0, 100);
     
     return Container(
