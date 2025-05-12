@@ -79,10 +79,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   image: DecorationImage(
                     image: AssetImage('assets/common/hero-texture2.png'),
                     fit: BoxFit.cover,
-                    colorFilter: ColorFilter.mode(
-                      Colors.black.withAlpha(15),
-                      BlendMode.srcOver
-                    ),
+                    // colorFilter: ColorFilter.mode(
+                    //   // Colors.black.withAlpha(15),
+                    //   // BlendMode.srcOver
+                    // ),
                   ),
                 ),
                 padding: const EdgeInsets.all(18),
