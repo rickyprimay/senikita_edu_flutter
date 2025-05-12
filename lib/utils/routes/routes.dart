@@ -77,10 +77,12 @@ class Routes {
       case (RouteNames.submission):
         final args = settings.arguments as Map<String, dynamic>;
         final lessonId = args['lessonId'] as int;
+        final submissionType = args['submissionType'] as String;
 
         return MaterialPageRoute(
           builder: (BuildContext context) => SubmissionScreen(
             lessonId: lessonId,
+            submissionType: submissionType,
           ),
         );
       case (RouteNames.quiz):

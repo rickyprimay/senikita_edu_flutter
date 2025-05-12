@@ -13,6 +13,7 @@ class Lesson {
   final DateTime? createdAt;
   final DateTime? updatedAt;
   final DateTime? completedAt;
+  final String? submissionType;
 
   Lesson({
     this.id,
@@ -29,6 +30,7 @@ class Lesson {
     this.createdAt,
     this.updatedAt,
     this.completedAt,
+    this.submissionType,
   });
 
   factory Lesson.fromJson(Map<String, dynamic> json) {
@@ -47,6 +49,7 @@ class Lesson {
       createdAt: DateTime.parse(json['created_at']),
       updatedAt: DateTime.parse(json['updated_at']),
       completedAt: json['completed_at'] != null ? DateTime.parse(json['completed_at']) : null,
+      submissionType: json['submission_type'] ?? '',
     );
   }
 
@@ -66,6 +69,7 @@ class Lesson {
       'created_at': createdAt?.toIso8601String(),
       'updated_at': updatedAt?.toIso8601String(),
       'completed_at': completedAt?.toIso8601String(),
+      'submission_type': submissionType,
     };
   }
 }

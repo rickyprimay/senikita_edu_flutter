@@ -583,6 +583,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
                                     RouteNames.submission,
                                     arguments: {
                                       "lessonId": lesson.id,
+                                      "submissionType": lesson.submissionType,
                                     },
                                   );
                                 },
@@ -607,35 +608,35 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
                           ],
                         ),
                         const SizedBox(height: 16),
-                        // if (lesson.type)
-                        ElevatedButton.icon(
-                          onPressed: () {
-                            Navigator.of(context, rootNavigator: true).pushNamed(
-                              RouteNames.feedback,
-                              arguments: {
-                                "lessonId": lesson.id,
-                                "rules": lesson.content
-                              },
-                            );
-                          },
-                          icon: const Icon(Icons.smart_toy_outlined, size: 18),
-                          label: Text(
-                            "Minta Feedback AI",
-                            style: AppFont.ralewaySubtitle.copyWith(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
+                        if (lesson.submissionType == "file")
+                          ElevatedButton.icon(
+                            onPressed: () {
+                              Navigator.of(context, rootNavigator: true).pushNamed(
+                                RouteNames.feedback,
+                                arguments: {
+                                  "lessonId": lesson.id,
+                                  "rules": lesson.content
+                                },
+                              );
+                            },
+                            icon: const Icon(Icons.smart_toy_outlined, size: 18),
+                            label: Text(
+                              "Minta Feedback AI",
+                              style: AppFont.ralewaySubtitle.copyWith(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.tertiary,
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              minimumSize: const Size(double.infinity, 48),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
                             ),
                           ),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.tertiary,
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                            minimumSize: const Size(double.infinity, 48),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                        ),
                         const SizedBox(height: 12),
                       ]
                     ),
