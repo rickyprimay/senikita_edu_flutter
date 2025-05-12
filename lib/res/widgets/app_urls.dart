@@ -83,4 +83,6 @@ class AppUrls {
 
   static const feedbackSubmission = "https://sti.dinus.id/besti-api/api/v1/feedback/feedback-penilaian";
 
+  static const getCertificate = "$baseUrl/certificates";
+
 }
