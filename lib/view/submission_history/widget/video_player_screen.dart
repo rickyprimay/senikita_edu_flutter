@@ -99,7 +99,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                       ),
                     ),
                   ),
-            backgroundColor: Colors.black,
+            backgroundColor: Colors.white,
             body: SafeArea(
               child: Column(
                 children: [
@@ -157,7 +157,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                             widget.videoTitle,
                             style: AppFont.crimsonTextSubtitle.copyWith(
                               fontSize: 20,
-                              color: Colors.white,
+                              color: AppColors.primary,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
