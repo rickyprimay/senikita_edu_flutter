@@ -116,7 +116,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
     return YoutubePlayer.convertUrlToId(videoUrl);
   }
   
-  void _openVideoPlayer(String videoUrl, String title) {
+  void _openVideoPlayer(String videoUrl, String title, String description, String content) {
     final videoId = _getYoutubeVideoId(videoUrl);
     if (videoId != null) {
       Navigator.push(
@@ -125,6 +125,8 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
           builder: (context) => VideoPlayerScreen(
             videoId: videoId,
             videoTitle: title,
+            videoDescription: description,
+            videoContent: content,
           ),
         ),
       );
@@ -431,16 +433,13 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
 
   Widget _buildLessonMedia(Lesson lesson) {
     if (lesson.type?.toLowerCase() == "lesson" && lesson.videoUrl != null) {
-      // Get YouTube video ID
       final videoId = _getYoutubeVideoId(lesson.videoUrl);
       
       if (videoId != null) {
-        // Get thumbnail URL for the video
         final thumbnailUrl = 'https://img.youtube.com/vi/$videoId/0.jpg';
         
         return Stack(
           children: [
-            // YouTube thumbnail
             ClipRRect(
               borderRadius: BorderRadius.circular(0),
               child: AspectRatio(
@@ -476,7 +475,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
                 color: Colors.transparent,
                 child: InkWell(
                   onTap: () {
-                    _openVideoPlayer(lesson.videoUrl!, lesson.title ?? "");
+                    _openVideoPlayer(lesson.videoUrl!, lesson.title ?? "", lesson.description ?? "", lesson.content ?? "");
                   },
                   child: Center(
                     child: Container(

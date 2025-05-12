@@ -7,11 +7,15 @@ import 'package:widya/res/widgets/fonts.dart';
 class VideoPlayerScreen extends StatefulWidget {
   final String videoId;
   final String videoTitle;
+  final String? videoDescription;
+  final String? videoContent;
 
   const VideoPlayerScreen({
     Key? key,
     required this.videoId,
     required this.videoTitle,
+    this.videoDescription,
+    this.videoContent,
   }) : super(key: key);
 
   @override
@@ -114,9 +118,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                         backgroundColor: Colors.grey,
                         bufferedColor: Colors.white70,
                       ),
-                      onReady: () {
-                        // Player is ready
-                      },
+                      onReady: () {},
                       bottomActions: [
                         CurrentPosition(),
                         ProgressBar(isExpanded: true),
@@ -149,7 +151,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                   
                   if (!_isFullScreen) ...[
                     Padding(
-                      padding: const EdgeInsets.all(16),
+                      padding: const EdgeInsets.only(top: 12),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -159,6 +161,24 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                               fontSize: 20,
                               color: AppColors.primary,
                               fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            widget.videoDescription ?? '',
+                            style: AppFont.crimsonTextSubtitle.copyWith(
+                              fontSize: 16,
+                              color: Colors.black,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            widget.videoContent ?? '',
+                            style: AppFont.crimsonTextSubtitle.copyWith(
+                              fontSize: 16,
+                              color: Colors.black,
+                              fontWeight: FontWeight.w400,
                             ),
                           ),
                         ],
