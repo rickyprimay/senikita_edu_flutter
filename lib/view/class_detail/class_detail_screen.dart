@@ -596,13 +596,13 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
                           ],
                         ),
                         const SizedBox(height: 16),
-                        // Add AI Feedback button here
                         ElevatedButton.icon(
                           onPressed: () {
                             Navigator.of(context, rootNavigator: true).pushNamed(
                               RouteNames.feedback,
                               arguments: {
                                 "lessonId": lesson.id,
+                                "rules": lesson.content
                               },
                             );
                           },
