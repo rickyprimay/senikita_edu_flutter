@@ -504,7 +504,7 @@ class _SubmissionHistoryScreenState extends State<SubmissionHistoryScreen> {
             child: AspectRatio(
               aspectRatio: 16/9,
               child: Image.network(
-                "https://eduapi.senikita.my.id/storage/${submission.filePath}",
+                submission.filePath ?? "",
                 fit: BoxFit.cover,
                 width: double.infinity,
                 errorBuilder: (context, error, stackTrace) {
@@ -551,7 +551,6 @@ class _SubmissionHistoryScreenState extends State<SubmissionHistoryScreen> {
             ),
           ),
           
-          // Public indicator
           if (submission.isPublished == 1)
             Positioned(
               top: 12,
@@ -622,7 +621,6 @@ class _SubmissionHistoryScreenState extends State<SubmissionHistoryScreen> {
     );
   }
 
-  // Update action section to show appropriate actions for both file and video
   Widget _buildActionSection(Datum submission) {
     if (widget.submissionType == "file") {
       return Padding(
@@ -633,7 +631,7 @@ class _SubmissionHistoryScreenState extends State<SubmissionHistoryScreen> {
               context,
               MaterialPageRoute(
                 builder: (context) => FullImagePreview(
-                  imageUrl: "https://eduapi.senikita.my.id/storage/${submission.filePath}"
+                  imageUrl: submission.filePath ?? ""
                 ),
               ),
             );
@@ -648,6 +646,7 @@ class _SubmissionHistoryScreenState extends State<SubmissionHistoryScreen> {
           ),
           style: OutlinedButton.styleFrom(
             foregroundColor: AppColors.primary,
+            minimumSize: const Size(double.infinity, 40),
             padding: const EdgeInsets.symmetric(vertical: 10),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
