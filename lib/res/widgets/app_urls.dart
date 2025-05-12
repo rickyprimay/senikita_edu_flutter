@@ -87,4 +87,6 @@ class AppUrls {
 
   static const getPublishedGallery = "$baseUrl/published";
 
+  static const getTemuBatik = "https://sti.dinus.id/besti-api/api/v1/feedback/caption";
+
 }
