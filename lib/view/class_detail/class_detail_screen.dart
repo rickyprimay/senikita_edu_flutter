@@ -640,10 +640,9 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
                               ),
                             ),
                           ),
-                        const SizedBox(height: 12),
                       ]
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 4),
                   ]
                 ),
                 Html(
