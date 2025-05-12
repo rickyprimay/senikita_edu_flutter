@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:widya/res/helpers/date_formatter.dart';
-import 'package:widya/res/helpers/get_level_color.dart';
 import 'package:widya/res/widgets/colors.dart';
 import 'package:widya/res/widgets/fonts.dart';
 import 'package:widya/res/widgets/loading.dart';
