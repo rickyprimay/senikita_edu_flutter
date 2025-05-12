@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_lightbox/image_type.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:provider/provider.dart';
+import 'package:widya/models/gallery/gallery.dart';
 import 'package:widya/res/widgets/colors.dart';
 import 'package:widya/res/widgets/fonts.dart';
+import 'package:widya/res/widgets/loading.dart';
 import 'package:flutter_lightbox/flutter_lightbox.dart';
-import 'package:widya/res/widgets/logger.dart';
-import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import 'package:widya/viewModel/gallery_view_model.dart';
 
 class ArtScreen extends StatefulWidget {
   const ArtScreen({super.key});
@@ -16,33 +18,20 @@ class ArtScreen extends StatefulWidget {
 }
 
 class _ArtScreenState extends State<ArtScreen> {
-  static const List<String> imageUrls = [
-    'https://placehold.co/400x600/png',
-    'https://youtu.be/HrFc7W7MxzE?si=1J8ixpgzkfx--cG5',
-    'https://placehold.co/400x500/png',
-    'https://placehold.co/400x700/png',
-    'https://youtu.be/HrFc7W7MxzE?si=1J8ixpgzkfx--cG5',
-    'https://placehold.co/400x300/png',
-    'https://placehold.co/400x800/png',
-    'https://placehold.co/400x400/png',
-    'https://placehold.co/400x550/png',
-    'https://placehold.co/400x650/png',
-  ];
-
-  final Map<String, String?> _videoIdCache = {};
-  
   final ScrollController _scrollController = ScrollController();
   
-  int _itemsPerPage = 4;
+  int _itemsPerPage = 10;
   int _currentPage = 0;
-  List<String> _displayedItems = [];
-  bool _isLoading = false;
+  List<GalleryList> _displayedItems = [];
+  bool _isLoadingMore = false;
 
   @override
   void initState() {
     super.initState();
     
-    _loadMoreItems();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<GalleryViewModel>(context, listen: false).fetchGallery();
+    });
     
     _scrollController.addListener(() {
       if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent * 0.7) {
@@ -52,106 +41,70 @@ class _ArtScreenState extends State<ArtScreen> {
   }
 
   void _loadMoreItems() {
-    if (_isLoading) return;
+    if (_isLoadingMore) return;
     
+    final viewModel = Provider.of<GalleryViewModel>(context, listen: false);
+    final allItems = viewModel.galleryItems;
+    
+    if (_displayedItems.length >= allItems.length) return;
     
     setState(() {
-      _isLoading = true;
+      _isLoadingMore = true;
     });
     
     Future.delayed(const Duration(milliseconds: 300), () {
       final startIndex = _displayedItems.length;
       
-      AppLogger.logInfo("Start index: $startIndex, imageUrls length: ${imageUrls.length}");
-      
-      if (startIndex < imageUrls.length) {
-        final itemsToAdd = imageUrls.skip(startIndex).take(_itemsPerPage).toList();
-        
-        AppLogger.logInfo("Adding ${itemsToAdd.length} new items");
+      if (startIndex < allItems.length) {
+        final itemsToAdd = allItems
+            .skip(startIndex)
+            .take(_itemsPerPage)
+            .toList();
         
         if (mounted) {
           setState(() {
             _displayedItems.addAll(itemsToAdd);
             _currentPage++;
-            _isLoading = false;
+            _isLoadingMore = false;
           });
         }
       } else {
         if (mounted) {
           setState(() {
-            _isLoading = false;
+            _isLoadingMore = false;
           });
         }
       }
     });
   }
 
-  String? getVideoId(String url) {
-    if (_videoIdCache.containsKey(url)) {
-      return _videoIdCache[url];
-    }
-    
-    final videoId = YoutubePlayer.convertUrlToId(url);
-    _videoIdCache[url] = videoId;
-    return videoId;
-  }
-
-  bool isYoutubeLink(String url) {
-    return url.contains("youtube.com") || url.contains("youtu.be");
-  }
-
   void _showLightbox(int initialIndex) {
-    final url = _displayedItems[initialIndex];
+    final item = _displayedItems[initialIndex];
+    
+    final imageUrls = _displayedItems
+        .where((item) => item.filePath.isNotEmpty)
+        .map((item) => item.filePath)
+        .toList();
 
-    if (isYoutubeLink(url)) {
-      final videoId = getVideoId(url);
-      if (videoId == null) return;
+    final baseUrl = item.filePath;
+    final adjustedIndex = imageUrls.indexOf(baseUrl);
 
-      showGeneralDialog(
-        context: context,
-        barrierDismissible: true,
-        barrierLabel: "Lightbox",
-        pageBuilder: (_, animation, secondaryAnimation) {
-          return Center(
-            child: Container(
-              color: Colors.black.withOpacity(0.5),
-              padding: const EdgeInsets.all(20),
-              child: YoutubePlayer(
-                controller: YoutubePlayerController(
-                  initialVideoId: videoId,
-                  flags: const YoutubePlayerFlags(
-                    autoPlay: true,
-                    mute: false,
-                  ),
-                ),
-                showVideoProgressIndicator: true,
-                width: double.infinity,
-              ),
-            ),
-          );
-        },
-      );
-    } else {
-      final imageUrls = _displayedItems.where((url) => !isYoutubeLink(url)).toList();
-      final adjustedIndex = imageUrls.indexOf(url);
+    if (adjustedIndex < 0) return;
 
-      if (adjustedIndex < 0) return; 
-
-      showGeneralDialog(
-        context: context,
-        barrierDismissible: true,
-        barrierLabel: "Lightbox",
-        pageBuilder: (_, animation, secondaryAnimation) {
-          return LightBox(
-            initialIndex: adjustedIndex,
-            images: imageUrls,
-            imageType: ImageType.network,
-            thumbnailHeight: 0.0,
-            thumbnailWidth: 0.0,
-          );
-        },
-      );
-    }
+    showGeneralDialog(
+      context: context,
+      barrierDismissible: true,
+      barrierLabel: "Lightbox",
+      pageBuilder: (_, animation, secondaryAnimation) {
+        return LightBox(
+          initialIndex: adjustedIndex,
+          images: imageUrls,
+          imageType: ImageType.network,
+          thumbnailHeight: 0.0,
+          thumbnailWidth: 0.0,
+        );
+      },
+    );
   }
 
   @override
@@ -199,95 +152,203 @@ class _ArtScreenState extends State<ArtScreen> {
             const SizedBox(height: 12),
             
             Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Column(
-                children: [
-                  Expanded(
-                      child: MasonryGridView.count(
-                        controller: _scrollController,
-                        crossAxisCount: 2,
-                        mainAxisSpacing: 8,
-                        crossAxisSpacing: 8,
-                        itemCount: _displayedItems.length + (_isLoading ? 1 : 0),
-                        itemBuilder: (context, index) {
-                          if (index == _displayedItems.length) {
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: Consumer<GalleryViewModel>(
+                        builder: (context, viewModel, child) {
+                          if (viewModel.isLoading && _displayedItems.isEmpty) {
                             return const Center(
-                              child: Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: CircularProgressIndicator(),
+                              child: Loading(opacity: 1),
+                            );
+                          }
+                          
+                          if (viewModel.error != null && _displayedItems.isEmpty) {
+                            return Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Icon(
+                                    Icons.error_outline_rounded,
+                                    size: 60,
+                                    color: Colors.red,
+                                  ),
+                                  const SizedBox(height: 16),
+                                  Text(
+                                    'Gagal memuat karya',
+                                    style: AppFont.crimsonTextSubtitle.copyWith(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    viewModel.error!,
+                                    textAlign: TextAlign.center,
+                                    style: AppFont.ralewaySubtitle.copyWith(
+                                      fontSize: 14,
+                                      color: Colors.grey[700],
+                                    ),
+                                  ),
+                                  const SizedBox(height: 24),
+                                  ElevatedButton.icon(
+                                    onPressed: () {
+                                      viewModel.fetchGallery();
+                                    },
+                                    icon: const Icon(Icons.refresh),
+                                    label: const Text('Coba Lagi'),
+                                    style: ElevatedButton.styleFrom(
+                                      foregroundColor: Colors.white,
+                                      backgroundColor: AppColors.primary,
+                                    ),
+                                  ),
+                                ],
                               ),
                             );
                           }
+                          
+                          if (viewModel.galleryItems.isEmpty) {
+                            return Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.image_not_supported_outlined,
+                                    size: 60,
+                                    color: Colors.grey[400],
+                                  ),
+                                  const SizedBox(height: 16),
+                                  Text(
+                                    'Belum ada karya',
+                                    style: AppFont.crimsonTextSubtitle.copyWith(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 32),
+                                    child: Text(
+                                      'Saat ini belum ada karya yang dipublikasikan',
+                                      textAlign: TextAlign.center,
+                                      style: AppFont.ralewaySubtitle.copyWith(
+                                        fontSize: 14,
+                                        color: Colors.grey[700],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }
+                          
+                          if (_displayedItems.isEmpty && viewModel.galleryItems.isNotEmpty) {
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              _loadMoreItems();
+                            });
+                          }
+                          
+                          return MasonryGridView.count(
+                            controller: _scrollController,
+                            crossAxisCount: 2,
+                            mainAxisSpacing: 8,
+                            crossAxisSpacing: 8,
+                            itemCount: _displayedItems.length + (_isLoadingMore ? 1 : 0),
+                            itemBuilder: (context, index) {
+                              if (index == _displayedItems.length) {
+                                return const Center(
+                                  child: Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                );
+                              }
 
-                          final url = _displayedItems[index];
+                              final item = _displayedItems[index];
+                              final imageUrl = item.filePath;
 
-                          if (isYoutubeLink(url)) {
-                            final videoId = getVideoId(url);
-                            if (videoId == null) {
-                              return const SizedBox.shrink();
-                            }
-
-                            return GestureDetector(
-                              onTap: () => _showLightbox(index),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(12),
-                                child: Stack(
-                                  alignment: Alignment.center,
-                                  children: [
-                                    CachedNetworkImage(
-                                      imageUrl: 'https://img.youtube.com/vi/$videoId/0.jpg',
-                                      fit: BoxFit.cover,
-                                      placeholder: (context, url) => Container(
-                                        color: Colors.grey[300],
-                                        child: const Center(
-                                          child: CircularProgressIndicator(),
+                              return GestureDetector(
+                                onTap: () => _showLightbox(index),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(12),
+                                  child: Stack(
+                                    children: [
+                                      CachedNetworkImage(
+                                        imageUrl: imageUrl,
+                                        fit: BoxFit.cover,
+                                        width: double.infinity,
+                                        placeholder: (context, url) => AspectRatio(
+                                          aspectRatio: 1,
+                                          child: Container(
+                                            color: Colors.grey[300],
+                                            child: const Center(
+                                              child: CircularProgressIndicator(),
+                                            ),
+                                          ),
+                                        ),
+                                        errorWidget: (context, url, error) => AspectRatio(
+                                          aspectRatio: 1,
+                                          child: Container(
+                                            color: Colors.grey[300],
+                                            child: const Icon(Icons.error),
+                                          ),
                                         ),
                                       ),
-                                      errorWidget: (context, url, error) => Container(
-                                        color: Colors.grey[300],
-                                        child: const Icon(Icons.error),
+                                      
+                                      Positioned.fill(
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            gradient: LinearGradient(
+                                              begin: Alignment.topCenter,
+                                              end: Alignment.bottomCenter,
+                                              colors: [
+                                                Colors.transparent,
+                                                Colors.transparent,
+                                                Colors.black.withOpacity(0.1),
+                                                Colors.black.withOpacity(0.5),
+                                                Colors.black.withOpacity(0.7),
+                                              ],
+                                              stops: const [0.0, 0.6, 0.75, 0.85, 1.0],
+                                            ),
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                    Container(
-                                      width: 50,
-                                      height: 50,
-                                      decoration: BoxDecoration(
-                                        color: Colors.black.withOpacity(0.7),
-                                        shape: BoxShape.circle,
+                                      
+                                      Positioned(
+                                        left: 10,
+                                        right: 10,
+                                        bottom: 10,
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              item.user.name,
+                                              style: AppFont.ralewaySubtitle.copyWith(
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 12,
+                                                color: Colors.white,
+                                                shadows: [
+                                                  Shadow(
+                                                    blurRadius: 3.0,
+                                                    color: Colors.black.withOpacity(0.5),
+                                                    offset: const Offset(1, 1),
+                                                  ),
+                                                ],
+                                              ),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                      child: const Icon(
-                                        Icons.play_arrow,
-                                        color: Colors.white,
-                                        size: 30,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          } else {
-                            return GestureDetector(
-                              onTap: () => _showLightbox(index),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(12),
-                                child: CachedNetworkImage(
-                                  imageUrl: url,
-                                  fit: BoxFit.cover,
-                                  placeholder: (context, url) => Container(
-                                    color: Colors.grey[300],
-                                    child: const Center(
-                                      child: CircularProgressIndicator(),
-                                    ),
+                                    ],
                                   ),
-                                  errorWidget: (context, url, error) => Container(
-                                    color: Colors.grey[300],
-                                    child: const Icon(Icons.error),
-                                  ),
                                 ),
-                              ),
-                            );
-                          }
+                              );
+                            },
+                          );
                         },
                       ),
                     ),

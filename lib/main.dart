@@ -12,6 +12,7 @@ import 'package:widya/viewModel/category_view_model.dart';
 import 'package:widya/viewModel/certificate_view_model.dart';
 import 'package:widya/viewModel/course_view_model.dart';
 import 'package:widya/viewModel/enrollments_view_model.dart';
+import 'package:widya/viewModel/gallery_view_model.dart';
 import 'package:widya/viewModel/lesson_view_model.dart';
 import 'package:widya/viewModel/quiz_view_model.dart';
 import 'package:widya/viewModel/submission_view_model.dart';
@@ -63,6 +64,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => LessonViewModel()),
         ChangeNotifierProvider(create: (_) => SubmissionViewModel()),
         ChangeNotifierProvider(create: (_) => CertificateViewModel()),
+        ChangeNotifierProvider(create: (_) => GalleryViewModel()),
         ChangeNotifierProvider(create: (_) => QuizViewModel()),
         ChangeNotifierProxyProvider<QuizViewModel, QuizProvider>(
           create: (context) => QuizProvider(quizViewModel: context.read<QuizViewModel>()),
