@@ -114,7 +114,7 @@ class _ArtScreenState extends State<ArtScreen> {
         pageBuilder: (_, animation, secondaryAnimation) {
           return Center(
             child: Container(
-              color: Colors.black.withOpacity(0.9),
+              color: Colors.black.withOpacity(0.5),
               padding: const EdgeInsets.all(20),
               child: YoutubePlayer(
                 controller: YoutubePlayerController(

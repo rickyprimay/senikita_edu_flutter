@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:widya/models/submissions/submission.dart';
@@ -7,6 +8,7 @@ import 'package:widya/res/widgets/fonts.dart';
 import 'package:widya/res/widgets/loading.dart';
 import 'package:widya/view/submission_history/widget/full_image_preview_widget.dart';
 import 'package:widya/viewModel/submission_view_model.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class SubmissionHistoryScreen extends StatefulWidget {
   final int lessonId;
@@ -25,6 +27,15 @@ class SubmissionHistoryScreen extends StatefulWidget {
 }
 
 class _SubmissionHistoryScreenState extends State<SubmissionHistoryScreen> {
+  Map<int, YoutubePlayerController> _youtubeControllers = {};
+  YoutubePlayerController? _activeController; // Track the currently active controller
+  
+  @override
+  void dispose() {
+    _youtubeControllers.forEach((_, controller) => controller.dispose());
+    super.dispose();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -53,8 +64,103 @@ class _SubmissionHistoryScreenState extends State<SubmissionHistoryScreen> {
     }
   }
 
+  // Method to create or get a YouTube controller for a submission
+  YoutubePlayerController _getYoutubeController(String videoUrl) {
+    final videoId = YoutubePlayer.convertUrlToId(videoUrl);
+    if (videoId == null) {
+      throw Exception('Invalid YouTube URL');
+    }
+    
+    final submissionHash = videoUrl.hashCode;
+    if (!_youtubeControllers.containsKey(submissionHash)) {
+      _youtubeControllers[submissionHash] = YoutubePlayerController(
+        initialVideoId: videoId,
+        flags: const YoutubePlayerFlags(
+          autoPlay: false,
+          mute: false,
+          disableDragSeek: false,
+          loop: false,
+          isLive: false,
+          forceHD: false,
+          enableCaption: true,
+        ),
+      );
+    }
+    
+    // Set as active controller when accessed
+    _activeController = _youtubeControllers[submissionHash];
+    return _youtubeControllers[submissionHash]!;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
+    final hasVideoPlayer = _activeController != null;
+    
+    if (isLandscape && hasVideoPlayer) {
+      return _buildLandscapeVideoView();
+    }
+    
+    return _buildPortraitView();
+  }
+
+  Widget _buildLandscapeVideoView() {
+    return Scaffold(
+      body: SafeArea(
+        child: Stack(
+          children: [
+            // Fill screen with YouTube player
+            Center(
+              child: AspectRatio(
+                aspectRatio: 16 / 9,
+                child: YoutubePlayer(
+                  controller: _activeController!,
+                  showVideoProgressIndicator: true,
+                  progressIndicatorColor: AppColors.primary,
+                  progressColors: const ProgressBarColors(
+                    playedColor: AppColors.primary,
+                    handleColor: AppColors.tertiary,
+                  ),
+                ),
+              ),
+            ),
+            
+            // Back button overlay
+            Positioned(
+              top: 16,
+              left: 16,
+              child: GestureDetector(
+                onTap: () {
+                  // Force back to portrait mode
+                  SystemChrome.setPreferredOrientations([
+                    DeviceOrientation.portraitUp,
+                  ]).then((_) {
+                    // Allow all orientations again after delay
+                    Future.delayed(const Duration(milliseconds: 500), () {
+                      SystemChrome.setPreferredOrientations(DeviceOrientation.values);
+                    });
+                  });
+                },
+                child: Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.5),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.arrow_back,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPortraitView() {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -231,97 +337,23 @@ class _SubmissionHistoryScreenState extends State<SubmissionHistoryScreen> {
   }
 
   Widget _buildSubmissionCard(Datum submission) {
+    final courseTitle = widget.lessonName;
+    final completedDate = _formatDate(
+      (submission.createdAt ?? DateTime.now()).add(const Duration(hours: 7)),
+    );
+    
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
       elevation: 0,
       color: Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: Colors.grey),
+        side: const BorderSide(color: Colors.grey),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Stack(
-            children: [
-              ClipRRect(
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-                child: AspectRatio(
-                  aspectRatio: 16/9,
-                  child: Image.network(
-                    "https://eduapi.senikita.my.id/storage/${submission.filePath}",
-                    fit: BoxFit.cover,
-                    width: double.infinity,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Container(
-                        color: Colors.grey.withOpacity(0.1),
-                        child: const Center(
-                          child: Icon(Icons.image_not_supported, size: 40, color: Colors.grey),
-                        ),
-                      );
-                    },
-                    loadingBuilder: (context, child, loadingProgress) {
-                      if (loadingProgress == null) return child;
-                      return Container(
-                        color: Colors.grey.withOpacity(0.1),
-                        child: const Center(
-                          child: CircularProgressIndicator(),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ),
-              Positioned(
-                top: 12,
-                right: 12,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: _getStatusColor(submission.status ?? "").withOpacity(0.8),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(
-                    (submission.status ?? "").isNotEmpty
-                    ? "${(submission.status ?? "").substring(0, 1).toUpperCase()}${(submission.status ?? "").substring(1)}"
-                    : "",
-                    style: AppFont.ralewaySubtitle.copyWith(
-                      color: Colors.white,
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
-              if (submission.isPublished == 1)
-                Positioned(
-                  top: 12,
-                  left: 12,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                    decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.7),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Icon(Icons.public, size: 14, color: Colors.white),
-                        const SizedBox(width: 4),
-                        Text(
-                          'Publik',
-                          style: AppFont.ralewaySubtitle.copyWith(
-                            color: Colors.white,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-            ],
-          ),
+          _buildMediaSection(submission),
           
           Padding(
             padding: const EdgeInsets.all(16),
@@ -329,7 +361,7 @@ class _SubmissionHistoryScreenState extends State<SubmissionHistoryScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  widget.lessonName,
+                  courseTitle,
                   style: AppFont.crimsonTextSubtitle.copyWith(
                     fontSize: 18,
                     color: AppColors.primary,
@@ -338,17 +370,27 @@ class _SubmissionHistoryScreenState extends State<SubmissionHistoryScreen> {
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
+                
+                if (submission.submission != null && submission.submission!.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: Text(
+                      submission.submission!,
+                      style: AppFont.ralewaySubtitle.copyWith(
+                        fontSize: 14,
+                        color: Colors.black87,
+                      ),
+                    ),
+                  ),
+                
                 const SizedBox(height: 8),
                 
-                // Date
                 Row(
                   children: [
                     const Icon(Icons.calendar_today, size: 14, color: Colors.grey),
                     const SizedBox(width: 6),
                     Text(
-                      _formatDate(
-                        (submission.createdAt ?? DateTime.now()).add(Duration(hours: 7)),
-                      ),
+                      completedDate,
                       style: AppFont.nunitoSubtitle.copyWith(
                         fontSize: 12,
                         color: Colors.grey[700],
@@ -426,41 +468,254 @@ class _SubmissionHistoryScreenState extends State<SubmissionHistoryScreen> {
             ),
           ),
           
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-            child: Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton.icon(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => FullImagePreview(imageUrl: "https://eduapi.senikita.my.id/storage/${submission.filePath}"),
+          // Add action buttons if needed based on submission type
+          if (widget.submissionType == "file")
+            _buildActionSection(submission),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMediaSection(Datum submission) {
+    // Check submission type and render appropriate media
+    if (widget.submissionType != "file" && submission.submission != null) {
+      // Try to extract YouTube video URL from submission
+      try {
+        final controller = _getYoutubeController(submission.submission!);
+        
+        return Stack(
+          children: [
+            // YouTube player
+            ClipRRect(
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+              child: YoutubePlayer(
+                controller: controller,
+                showVideoProgressIndicator: true,
+                progressIndicatorColor: AppColors.primary,
+                progressColors: const ProgressBarColors(
+                  playedColor: AppColors.primary,
+                  handleColor: AppColors.tertiary,
+                ),
+                onReady: () {
+                  // Player is ready to use
+                },
+                actionsPadding: const EdgeInsets.all(8),
+                bottomActions: [
+                  CurrentPosition(),
+                  ProgressBar(
+                    isExpanded: true,
+                    colors: const ProgressBarColors(
+                      playedColor: AppColors.primary,
+                      handleColor: AppColors.tertiary,
+                      backgroundColor: Colors.grey,
+                      bufferedColor: Colors.white70,
+                    ),
+                  ),
+                  RemainingDuration(),
+                  const PlaybackSpeedButton(),
+                  FullScreenButton(),
+                ],
+              ),
+            ),
+            
+            // Status indicator
+            Positioned(
+              top: 12,
+              right: 12,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: _getStatusColor(submission.status ?? "").withOpacity(0.8),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(
+                  (submission.status ?? "").isNotEmpty
+                  ? "${(submission.status ?? "").substring(0, 1).toUpperCase()}${(submission.status ?? "").substring(1)}"
+                  : "",
+                  style: AppFont.ralewaySubtitle.copyWith(
+                    color: Colors.white,
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+            
+            // Public indicator
+            if (submission.isPublished == 1)
+              Positioned(
+                top: 12,
+                left: 12,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.7),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.public, size: 14, color: Colors.white),
+                      const SizedBox(width: 4),
+                      Text(
+                        'Publik',
+                        style: AppFont.ralewaySubtitle.copyWith(
+                          color: Colors.white,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
                         ),
-                      );
-                    },
-                    icon: const Icon(Icons.visibility, size: 16),
-                    label: Text(
-                      'Lihat Gambar',
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+          ],
+        );
+      } catch (e) {
+        // If YouTube video can't be loaded, show error
+        return _buildErrorMediaDisplay('Invalid YouTube URL');
+      }
+    } else {
+      // Show image for file submissions
+      return Stack(
+        children: [
+          ClipRRect(
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+            child: AspectRatio(
+              aspectRatio: 16/9,
+              child: Image.network(
+                "https://eduapi.senikita.my.id/storage/${submission.filePath}",
+                fit: BoxFit.cover,
+                width: double.infinity,
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    color: Colors.grey.withOpacity(0.1),
+                    child: const Center(
+                      child: Icon(Icons.image_not_supported, size: 40, color: Colors.grey),
+                    ),
+                  );
+                },
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return Container(
+                    color: Colors.grey.withOpacity(0.1),
+                    child: const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
+          
+          // Status indicator
+          Positioned(
+            top: 12,
+            right: 12,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: _getStatusColor(submission.status ?? "").withOpacity(0.8),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Text(
+                (submission.status ?? "").isNotEmpty
+                ? "${(submission.status ?? "").substring(0, 1).toUpperCase()}${(submission.status ?? "").substring(1)}"
+                : "",
+                style: AppFont.ralewaySubtitle.copyWith(
+                  color: Colors.white,
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+          
+          // Public indicator
+          if (submission.isPublished == 1)
+            Positioned(
+              top: 12,
+              left: 12,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.7),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.public, size: 14, color: Colors.white),
+                    const SizedBox(width: 4),
+                    Text(
+                      'Publik',
                       style: AppFont.ralewaySubtitle.copyWith(
-                        fontSize: 14,
+                        color: Colors.white,
+                        fontSize: 12,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: AppColors.primary,
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                  ),
+                  ],
                 ),
-              ],
+              ),
             ),
-          ),
         ],
+      );
+    }
+  }
+
+  Widget _buildErrorMediaDisplay(String message) {
+    return Container(
+      height: 200,
+      decoration: BoxDecoration(
+        color: Colors.grey[200],
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+      ),
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.error_outline, size: 48, color: Colors.grey),
+            const SizedBox(height: 8),
+            Text(
+              message,
+              style: const TextStyle(color: Colors.grey),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildActionSection(Datum submission) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+      child: OutlinedButton.icon(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => FullImagePreview(
+                imageUrl: "https://eduapi.senikita.my.id/storage/${submission.filePath}"
+              ),
+            ),
+          );
+        },
+        icon: const Icon(Icons.visibility, size: 16),
+        label: Text(
+          'Lihat Gambar',
+          style: AppFont.ralewaySubtitle.copyWith(
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        style: OutlinedButton.styleFrom(
+          foregroundColor: AppColors.primary,
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+        ),
       ),
     );
   }
