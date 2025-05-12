@@ -17,5 +17,6 @@ class RouteNames {
   static const String feedback = "feedback_screen";
   static const String certificate = "certificate_screen";
   static const String temuBatik = "temu_batik_screen";
+  static const String helpAndSupport = "help_and_support_screen";
 
 }

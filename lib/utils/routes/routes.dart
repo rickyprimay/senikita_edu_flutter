@@ -8,6 +8,7 @@ import 'package:widya/view/class_detail/class_detail_screen.dart';
 import 'package:widya/view/course/course_screen.dart';
 import 'package:widya/view/discover/discover_screen.dart';
 import 'package:widya/view/feedback/feedback_screen.dart';
+import 'package:widya/view/help_and_support/help_and_support_screen.dart';
 import 'package:widya/view/history_quiz/history_quiz_screen.dart';
 import 'package:widya/view/home/home_screen.dart';
 import 'package:widya/view/login/login_screen.dart';
@@ -55,6 +56,8 @@ class Routes {
         return MaterialPageRoute(builder: (BuildContext context) => const CertificateScreen());
       case (RouteNames.temuBatik):
         return MaterialPageRoute(builder: (BuildContext context) => const TemuBatikScreen());
+      case (RouteNames.helpAndSupport):
+        return MaterialPageRoute(builder: (BuildContext context) => const HelpAndSupportScreen());
       case (RouteNames.feedback):
         final args = settings.arguments as Map<String, dynamic>;
         final lessonId = args['lessonId'] as int;

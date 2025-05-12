@@ -221,7 +221,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                       ),
                     ),
-                    ProfileInfoTile(icon: const Icon(Icons.help), title: "Bantuan", trailing: const Icon(Icons.arrow_forward_ios, size: 16, color: AppColors.primary)),
+                    ProfileInfoTile(
+                      icon: const Icon(Icons.info),
+                      title: "Bantuan",
+                      trailing: const Icon(Icons.help, size: 16, color: AppColors.primary),
+                      onTap: () {
+                        Navigator.of(context, rootNavigator: true).pushNamed(RouteNames.helpAndSupport);
+                      },
+                    ),
                     ProfileInfoTile(
                       icon: const Icon(Icons.info),
                       title: "Tentang Widya",
