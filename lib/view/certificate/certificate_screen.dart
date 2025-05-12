@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_lightbox/image_type.dart';
 import 'package:provider/provider.dart';
 import 'package:widya/models/certificate/certificate.dart';
 import 'package:widya/res/widgets/colors.dart';
@@ -7,6 +8,7 @@ import 'package:widya/res/widgets/loading.dart';
 import 'package:widya/viewModel/certificate_view_model.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_media_downloader/flutter_media_downloader.dart';
+import 'package:flutter_lightbox/flutter_lightbox.dart';
 
 class CertificateScreen extends StatefulWidget {
   const CertificateScreen({super.key});
@@ -354,13 +356,30 @@ class _CertificateScreenState extends State<CertificateScreen> {
 
   void _openCertificatePreview(CertificateList certificate) async {
     final url = certificate.certificateImage;
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Tidak dapat membuka sertifikat')),
-      );
-    }
+
+    showGeneralDialog(
+      context: context,
+      barrierDismissible: true,
+      barrierLabel: "Certificate Preview",
+      barrierColor: Colors.black.withOpacity(0.5),
+      // transitionDuration: const Duration(milliseconds: 300),
+      pageBuilder: (BuildContext context, Animation animation, Animation secondaryAnimation) {
+        return Center(
+          child: LightBox(
+            images: [url],
+            imageType: ImageType.network,
+            imageHeight: 200,
+            imageWidth: 200,
+          ),
+        );
+      },
+      transitionBuilder: (ctx, animation, secondaryAnimation, child) {
+        return FadeTransition(
+          opacity: animation,
+          child: child,
+        );
+      },
+    );
   }
 
   void _downloadCertificate(CertificateList certificate) async {
