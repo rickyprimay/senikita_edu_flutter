@@ -9,6 +9,7 @@ import 'package:widya/res/widgets/fonts.dart';
 import 'package:widya/res/widgets/loading.dart';
 import 'package:flutter_lightbox/flutter_lightbox.dart';
 import 'package:widya/viewModel/gallery_view_model.dart';
+import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 
 class ArtScreen extends StatefulWidget {
   const ArtScreen({super.key});
@@ -76,6 +77,14 @@ class _ArtScreenState extends State<ArtScreen> {
         }
       }
     });
+  }
+
+  Future<void> refreshGallery() async {
+    setState(() {
+      _displayedItems = [];
+      _currentPage = 0;
+    });
+    Provider.of<GalleryViewModel>(context, listen: false).refreshGallery();
   }
 
   void _showLightbox(int initialIndex) {
@@ -149,210 +158,216 @@ class _ArtScreenState extends State<ArtScreen> {
                 ),
               ),
             ),
-            const SizedBox(height: 12),
             
             Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: Consumer<GalleryViewModel>(
-                        builder: (context, viewModel, child) {
-                          if (viewModel.isLoading && _displayedItems.isEmpty) {
-                            return const Center(
-                              child: Loading(opacity: 1),
-                            );
-                          }
-                          
-                          if (viewModel.error != null && _displayedItems.isEmpty) {
-                            return Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const Icon(
-                                    Icons.error_outline_rounded,
-                                    size: 60,
-                                    color: Colors.red,
-                                  ),
-                                  const SizedBox(height: 16),
-                                  Text(
-                                    'Gagal memuat karya',
-                                    style: AppFont.crimsonTextSubtitle.copyWith(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w600,
+              child: LiquidPullToRefresh(
+                onRefresh: refreshGallery,
+                showChildOpacityTransition: true,
+                color: AppColors.primary,
+                height: 60,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 12),
+                      Expanded(
+                        child: Consumer<GalleryViewModel>(
+                          builder: (context, viewModel, child) {
+                            if (viewModel.isLoading && _displayedItems.isEmpty) {
+                              return const Center(
+                                child: Loading(opacity: 1),
+                              );
+                            }
+                            
+                            if (viewModel.error != null && _displayedItems.isEmpty) {
+                              return Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Icon(
+                                      Icons.error_outline_rounded,
+                                      size: 60,
+                                      color: Colors.red,
                                     ),
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Text(
-                                    viewModel.error!,
-                                    textAlign: TextAlign.center,
-                                    style: AppFont.ralewaySubtitle.copyWith(
-                                      fontSize: 14,
-                                      color: Colors.grey[700],
+                                    const SizedBox(height: 16),
+                                    Text(
+                                      'Gagal memuat karya',
+                                      style: AppFont.crimsonTextSubtitle.copyWith(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w600,
+                                      ),
                                     ),
-                                  ),
-                                  const SizedBox(height: 24),
-                                  ElevatedButton.icon(
-                                    onPressed: () {
-                                      viewModel.fetchGallery();
-                                    },
-                                    icon: const Icon(Icons.refresh),
-                                    label: const Text('Coba Lagi'),
-                                    style: ElevatedButton.styleFrom(
-                                      foregroundColor: Colors.white,
-                                      backgroundColor: AppColors.primary,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
-                          }
-                          
-                          if (viewModel.galleryItems.isEmpty) {
-                            return Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.image_not_supported_outlined,
-                                    size: 60,
-                                    color: Colors.grey[400],
-                                  ),
-                                  const SizedBox(height: 16),
-                                  Text(
-                                    'Belum ada karya',
-                                    style: AppFont.crimsonTextSubtitle.copyWith(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 32),
-                                    child: Text(
-                                      'Saat ini belum ada karya yang dipublikasikan',
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      viewModel.error!,
                                       textAlign: TextAlign.center,
                                       style: AppFont.ralewaySubtitle.copyWith(
                                         fontSize: 14,
                                         color: Colors.grey[700],
                                       ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                            );
-                          }
-                          
-                          if (_displayedItems.isEmpty && viewModel.galleryItems.isNotEmpty) {
-                            WidgetsBinding.instance.addPostFrameCallback((_) {
-                              _loadMoreItems();
-                            });
-                          }
-                          
-                          return MasonryGridView.count(
-                            controller: _scrollController,
-                            crossAxisCount: 2,
-                            mainAxisSpacing: 8,
-                            crossAxisSpacing: 8,
-                            itemCount: _displayedItems.length + (_isLoadingMore ? 1 : 0),
-                            itemBuilder: (context, index) {
-                              if (index == _displayedItems.length) {
-                                return const Center(
-                                  child: Padding(
-                                    padding: EdgeInsets.all(8.0),
-                                    child: CircularProgressIndicator(),
-                                  ),
-                                );
-                              }
-
-                              final item = _displayedItems[index];
-                              final imageUrl = item.filePath;
-
-                              return GestureDetector(
-                                onTap: () => _showLightbox(index),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(12),
-                                  child: Stack(
-                                    children: [
-                                      CachedNetworkImage(
-                                        imageUrl: imageUrl,
-                                        fit: BoxFit.cover,
-                                        width: double.infinity,
-                                        placeholder: (context, url) => AspectRatio(
-                                          aspectRatio: 1,
-                                          child: Container(
-                                            color: Colors.grey[300],
-                                            child: const Center(
-                                              child: CircularProgressIndicator(),
-                                            ),
-                                          ),
-                                        ),
-                                        errorWidget: (context, url, error) => AspectRatio(
-                                          aspectRatio: 1,
-                                          child: Container(
-                                            color: Colors.grey[300],
-                                            child: const Icon(Icons.error),
-                                          ),
-                                        ),
+                                    const SizedBox(height: 24),
+                                    ElevatedButton.icon(
+                                      onPressed: () {
+                                        viewModel.fetchGallery();
+                                      },
+                                      icon: const Icon(Icons.refresh),
+                                      label: const Text('Coba Lagi'),
+                                      style: ElevatedButton.styleFrom(
+                                        foregroundColor: Colors.white,
+                                        backgroundColor: AppColors.primary,
                                       ),
-                                      
-                                      Positioned.fill(
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            gradient: LinearGradient(
-                                              begin: Alignment.topCenter,
-                                              end: Alignment.bottomCenter,
-                                              colors: [
-                                                Colors.transparent,
-                                                Colors.transparent,
-                                                Colors.black.withOpacity(0.1),
-                                                Colors.black.withOpacity(0.5),
-                                                Colors.black.withOpacity(0.7),
-                                              ],
-                                              stops: const [0.0, 0.6, 0.75, 0.85, 1.0],
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      
-                                      Positioned(
-                                        left: 10,
-                                        right: 10,
-                                        bottom: 10,
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              item.user.name,
-                                              style: AppFont.ralewaySubtitle.copyWith(
-                                                fontWeight: FontWeight.w600,
-                                                fontSize: 12,
-                                                color: Colors.white,
-                                                shadows: [
-                                                  Shadow(
-                                                    blurRadius: 3.0,
-                                                    color: Colors.black.withOpacity(0.5),
-                                                    offset: const Offset(1, 1),
-                                                  ),
-                                                ],
-                                              ),
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
                               );
-                            },
-                          );
-                        },
+                            }
+                            
+                            if (viewModel.galleryItems.isEmpty) {
+                              return Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.image_not_supported_outlined,
+                                      size: 60,
+                                      color: Colors.grey[400],
+                                    ),
+                                    const SizedBox(height: 16),
+                                    Text(
+                                      'Belum ada karya',
+                                      style: AppFont.crimsonTextSubtitle.copyWith(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 32),
+                                      child: Text(
+                                        'Saat ini belum ada karya yang dipublikasikan',
+                                        textAlign: TextAlign.center,
+                                        style: AppFont.ralewaySubtitle.copyWith(
+                                          fontSize: 14,
+                                          color: Colors.grey[700],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }
+                            
+                            if (_displayedItems.isEmpty && viewModel.galleryItems.isNotEmpty) {
+                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                                _loadMoreItems();
+                              });
+                            }
+                            
+                            return MasonryGridView.count(
+                              controller: _scrollController,
+                              crossAxisCount: 2,
+                              mainAxisSpacing: 8,
+                              crossAxisSpacing: 8,
+                              itemCount: _displayedItems.length + (_isLoadingMore ? 1 : 0),
+                              itemBuilder: (context, index) {
+                                if (index == _displayedItems.length) {
+                                  return const Center(
+                                    child: Padding(
+                                      padding: EdgeInsets.all(8.0),
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                  );
+                                }
+
+                                final item = _displayedItems[index];
+                                final imageUrl = item.filePath;
+
+                                return GestureDetector(
+                                  onTap: () => _showLightbox(index),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(12),
+                                    child: Stack(
+                                      children: [
+                                        CachedNetworkImage(
+                                          imageUrl: imageUrl,
+                                          fit: BoxFit.cover,
+                                          width: double.infinity,
+                                          placeholder: (context, url) => AspectRatio(
+                                            aspectRatio: 1,
+                                            child: Container(
+                                              color: Colors.grey[300],
+                                              child: const Center(
+                                                child: CircularProgressIndicator(),
+                                              ),
+                                            ),
+                                          ),
+                                          errorWidget: (context, url, error) => AspectRatio(
+                                            aspectRatio: 1,
+                                            child: Container(
+                                              color: Colors.grey[300],
+                                              child: const Icon(Icons.error),
+                                            ),
+                                          ),
+                                        ),
+                                        
+                                        Positioned.fill(
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              gradient: LinearGradient(
+                                                begin: Alignment.topCenter,
+                                                end: Alignment.bottomCenter,
+                                                colors: [
+                                                  Colors.transparent,
+                                                  Colors.transparent,
+                                                  Colors.black.withOpacity(0.1),
+                                                  Colors.black.withOpacity(0.5),
+                                                  Colors.black.withOpacity(0.7),
+                                                ],
+                                                stops: const [0.0, 0.6, 0.75, 0.85, 1.0],
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        
+                                        Positioned(
+                                          left: 10,
+                                          right: 10,
+                                          bottom: 10,
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                item.user.name,
+                                                style: AppFont.ralewaySubtitle.copyWith(
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 12,
+                                                  color: Colors.white,
+                                                  shadows: [
+                                                    Shadow(
+                                                      blurRadius: 3.0,
+                                                      color: Colors.black.withOpacity(0.5),
+                                                      offset: const Offset(1, 1),
+                                                    ),
+                                                  ],
+                                                ),
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
