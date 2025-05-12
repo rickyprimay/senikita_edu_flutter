@@ -10,6 +10,7 @@ import 'package:widya/view/submission_history/widget/full_image_preview_widget.d
 import 'package:widya/view/submission_history/widget/video_player_screen.dart';
 import 'package:widya/viewModel/submission_view_model.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 
 class SubmissionHistoryScreen extends StatefulWidget {
   final int lessonId;
@@ -218,12 +219,16 @@ class _SubmissionHistoryScreenState extends State<SubmissionHistoryScreen> {
   }
 
   Widget _buildSubmissionList(Submission submission) {
-    return RefreshIndicator(
+    return LiquidPullToRefresh(
       onRefresh: () async {
         await Provider.of<SubmissionViewModel>(context, listen: false)
             .fetchSubmission(lessonId: widget.lessonId);
       },
+      showChildOpacityTransition: true,
       color: AppColors.primary,
+      height: 60,
+      backgroundColor: Colors.white,
+      animSpeedFactor: 2,
       child: ListView.builder(
         padding: const EdgeInsets.all(16),
         itemCount: submission.data.length,
