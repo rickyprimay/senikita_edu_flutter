@@ -596,6 +596,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
                           ],
                         ),
                         const SizedBox(height: 16),
+                        // if (lesson.type)
                         ElevatedButton.icon(
                           onPressed: () {
                             Navigator.of(context, rootNavigator: true).pushNamed(

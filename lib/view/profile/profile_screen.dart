@@ -191,6 +191,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                     ),
                     ProfileInfoTile(icon: const Icon(Icons.email), title: "Email", subtitle: email ?? '', trailing: const Icon(Icons.info_outline, size: 18, color: AppColors.primary)),
+                    ProfileInfoTile(
+                      icon: const Icon(Icons.article),
+                      title: "Sertifikat",
+                      trailing: const Icon(Icons.arrow_forward_ios, size: 16, color: AppColors.primary),
+                      onTap: () {
+                        Navigator.of(context, rootNavigator: true).pushNamed(RouteNames.certificate);
+                      },
+                    ),
                     const SizedBox(height: 10),
                     SizedBox(
                       width: double.infinity,

@@ -3,6 +3,7 @@ import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 import 'package:widya/res/widgets/discover_list.dart';
 import 'package:widya/utils/routes/routes_names.dart';
 import 'package:widya/view/art/art_screen.dart';
+import 'package:widya/view/certificate/certificate_screen.dart';
 import 'package:widya/view/class_detail/class_detail_screen.dart';
 import 'package:widya/view/course/course_screen.dart';
 import 'package:widya/view/discover/discover_screen.dart';
@@ -49,6 +50,8 @@ class Routes {
         return MaterialPageRoute(builder: (BuildContext context) => const ArtScreen());
       case (RouteNames.quizHistory):
         return MaterialPageRoute(builder: (BuildContext context) => const HistoryQuizScreen());
+      case (RouteNames.certificate):
+        return MaterialPageRoute(builder: (BuildContext context) => const CertificateScreen());
       case (RouteNames.feedback):
         final args = settings.arguments as Map<String, dynamic>;
         final lessonId = args['lessonId'] as int;
