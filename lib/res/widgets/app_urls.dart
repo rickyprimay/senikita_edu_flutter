@@ -81,4 +81,6 @@ class AppUrls {
     return "$baseUrl/final-submissions/$lessonId";
   }
 
+  static const feedbackSubmission = "https://sti.dinus.id/besti-api/api/v1/feedback/feedback-penilaian";
+
 }
