@@ -73,7 +73,7 @@ class _ChatBody extends StatefulWidget {
 class _ChatBodyState extends State<_ChatBody> {
   final List<ChatMessage> _messages = [
     ChatMessage(
-      text: 'Halo, aku WiChat, asisten virtualmu. Apa yang bisa aku bantu hari ini?',
+      text: 'Halo, aku Widya AI, asisten virtualmu. Apa yang bisa aku bantu hari ini?',
       isUser: false,
     ),
   ];
@@ -143,11 +143,11 @@ class _ChatBodyState extends State<_ChatBody> {
 
     String chatHistory = "";
     for (var msg in recentMessages) {
-      final speaker = msg.isUser ? "Pengguna" : "WiChat";
+      final speaker = msg.isUser ? "Pengguna" : "Widya AI";
       chatHistory += "$speaker: ${msg.text}\n";
     }
 
-    return "Peran kamu adalah WiChat, asisten AI di platform pembelajaran kesenian Widya (bagian dari SeniKita, marketplace produk dan jasa kesenian daerah Indonesia). "
+    return "Peran kamu adalah Widya AI, asisten AI di platform pembelajaran kesenian Widya (bagian dari SeniKita, marketplace produk dan jasa kesenian daerah Indonesia). "
            "Tugas kamu adalah mendampingi pengguna dalam belajar seni, seperti musik, tari, kriya, dan masih banyak lagi.\n\n"
            "Berikut adalah konteks kelas yang sedang diikuti pengguna: "
            "- Nama Kelas: '${widget.courseName}' "
@@ -174,7 +174,7 @@ class _ChatBodyState extends State<_ChatBody> {
           Container(
             padding: const EdgeInsets.symmetric(vertical: 12),
             child: Text(
-              'Chat dengan WiChat',
+              'Chat dengan Widya AI',
               style: AppFont.crimsonTextHeader.copyWith(
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
