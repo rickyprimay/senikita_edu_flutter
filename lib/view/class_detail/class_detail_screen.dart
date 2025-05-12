@@ -528,69 +528,104 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
                 Column(
                   children: [
                     const SizedBox(height: 12),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    Column(
                       children: [
-                        Expanded(
-                          child: OutlinedButton.icon(
-                            onPressed: () {
-                              Navigator.of(context, rootNavigator: true).pushNamed(
-                                RouteNames.submissionHistory,
-                                arguments: {
-                                  "lessonId": lesson.id,
+                        const SizedBox(height: 12),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: OutlinedButton.icon(
+                                onPressed: () {
+                                  Navigator.of(context, rootNavigator: true).pushNamed(
+                                    RouteNames.submissionHistory,
+                                    arguments: {
+                                      "lessonId": lesson.id,
+                                    },
+                                  );
                                 },
-                              );
-                            },
-                            icon: const Icon(Icons.comment_outlined, size: 18),
-                            label: Text(
-                              "Cek Hasil Submit",
-                              style: AppFont.ralewaySubtitle.copyWith(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
+                                icon: const Icon(Icons.comment_outlined, size: 18),
+                                label: Text(
+                                  "Cek Hasil Submit",
+                                  style: AppFont.ralewaySubtitle.copyWith(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                style: OutlinedButton.styleFrom(
+                                  foregroundColor: AppColors.primary,
+                                  padding: const EdgeInsets.symmetric(vertical: 12),
+                                  side: BorderSide(color: AppColors.primary),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
                               ),
                             ),
-                            style: OutlinedButton.styleFrom(
-                              foregroundColor: AppColors.primary,
-                              padding: const EdgeInsets.symmetric(vertical: 12),
-                              side: BorderSide(color: AppColors.primary),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
+                    
+                            const SizedBox(width: 16),
+                    
+                            Expanded(
+                              child: ElevatedButton.icon(
+                                onPressed: () {
+                                  Navigator.of(context, rootNavigator: true).pushNamed(
+                                    RouteNames.submission,
+                                    arguments: {
+                                      "lessonId": lesson.id,
+                                    },
+                                  );
+                                },
+                                icon: const Icon(Icons.upload_file_outlined, size: 18),
+                                label: Text(
+                                  "Submit",
+                                  style: AppFont.ralewaySubtitle.copyWith(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: AppColors.primary,
+                                  foregroundColor: Colors.white,
+                                  padding: const EdgeInsets.symmetric(vertical: 12),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
                               ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+                        // Add AI Feedback button here
+                        ElevatedButton.icon(
+                          onPressed: () {
+                            Navigator.of(context, rootNavigator: true).pushNamed(
+                              RouteNames.feedback,
+                              arguments: {
+                                "lessonId": lesson.id,
+                              },
+                            );
+                          },
+                          icon: const Icon(Icons.smart_toy_outlined, size: 18),
+                          label: Text(
+                            "Minta Feedback AI",
+                            style: AppFont.ralewaySubtitle.copyWith(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.tertiary,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            minimumSize: const Size(double.infinity, 48),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
                             ),
                           ),
                         ),
-
-                        const SizedBox(width: 16),
-
-                        Expanded(
-                          child: ElevatedButton.icon(
-                            onPressed: () {
-                              Navigator.of(context, rootNavigator: true).pushNamed(
-                                RouteNames.submission,
-                                arguments: {
-                                  "lessonId": lesson.id,
-                                },
-                              );
-                            },
-                            icon: const Icon(Icons.upload_file_outlined, size: 18),
-                            label: Text(
-                              "Submit",
-                              style: AppFont.ralewaySubtitle.copyWith(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.primary,
-                              foregroundColor: Colors.white,
-                              padding: const EdgeInsets.symmetric(vertical: 12),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
+                        const SizedBox(height: 12),
+                      ]
                     ),
                     const SizedBox(height: 12),
                   ]

@@ -14,5 +14,6 @@ class RouteNames {
   static const String quizHistory = "quiz_history_screen";
   static const String submission = "submission_screen";
   static const String submissionHistory = "submission_history_screen";
+  static const String feedback = "feedback_screen";
 
 }

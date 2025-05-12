@@ -6,6 +6,7 @@ import 'package:widya/view/art/art_screen.dart';
 import 'package:widya/view/class_detail/class_detail_screen.dart';
 import 'package:widya/view/course/course_screen.dart';
 import 'package:widya/view/discover/discover_screen.dart';
+import 'package:widya/view/feedback/feedback_screen.dart';
 import 'package:widya/view/history_quiz/history_quiz_screen.dart';
 import 'package:widya/view/home/home_screen.dart';
 import 'package:widya/view/login/login_screen.dart';
@@ -48,6 +49,8 @@ class Routes {
         return MaterialPageRoute(builder: (BuildContext context) => const ArtScreen());
       case (RouteNames.quizHistory):
         return MaterialPageRoute(builder: (BuildContext context) => const HistoryQuizScreen());
+      case (RouteNames.feedback):
+        return MaterialPageRoute(builder: (BuildContext context) => const FeedbackScreen());
       case (RouteNames.submissionHistory):
         final args = settings.arguments as Map<String, dynamic>;
         final lessonId = args['lessonId'] as int;
