@@ -151,6 +151,7 @@ class _MyClassScreenState extends State<MyClassScreen> {
                                       subtitle: enrollment.course.description,
                                       duration: enrollment.course.duration,
                                       author: enrollment.course.instructor.name,
+                                      status: enrollment.status,
                                       imageUrl: enrollment.course.thumbnail,
                                       progress: enrollment.completionStats?.completionPercentage ?? 0.0,
                                       onTap: () {
