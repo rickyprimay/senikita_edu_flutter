@@ -4,6 +4,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:provider/provider.dart';
 import 'package:widya/models/gallery/gallery.dart';
+import 'package:widya/res/helpers/random_name.dart';
 import 'package:widya/res/widgets/colors.dart';
 import 'package:widya/res/widgets/fonts.dart';
 import 'package:widya/res/widgets/loading.dart';
@@ -338,7 +339,7 @@ class _ArtScreenState extends State<ArtScreen> {
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
                                               Text(
-                                                item.user.name,
+                                                item.user.name != "Admin" ? item.user.name : RandomName.getRandomName(),
                                                 style: AppFont.ralewaySubtitle.copyWith(
                                                   fontWeight: FontWeight.w600,
                                                   fontSize: 12,
