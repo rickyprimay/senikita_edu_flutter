@@ -55,7 +55,7 @@ class _SubmissionHistoryScreenState extends State<SubmissionHistoryScreen> {
       appBar: AppBar(
         backgroundColor: AppColors.primary,
         title: Text(
-          'Riwayat Karya',
+          'Riwayat Submission',
           style: AppFont.crimsonTextSubtitle.copyWith(
             fontSize: 18,
             fontWeight: FontWeight.w600,
@@ -217,11 +217,11 @@ class _SubmissionHistoryScreenState extends State<SubmissionHistoryScreen> {
   Widget _buildSubmissionCard(Datum submission) {
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
-      elevation: 2,
-      shadowColor: Colors.black.withOpacity(0.1),
+      elevation: 0,
+      color: Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: Colors.grey.withOpacity(0.2)),
+        side: BorderSide(color: Colors.grey),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -312,11 +312,11 @@ class _SubmissionHistoryScreenState extends State<SubmissionHistoryScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Title
                 Text(
                   submission.submission ?? "Karya Tanpa Judul",
                   style: AppFont.crimsonTextSubtitle.copyWith(
                     fontSize: 18,
+                    color: AppColors.primary,
                     fontWeight: FontWeight.bold,
                   ),
                   maxLines: 2,
@@ -366,6 +366,7 @@ class _SubmissionHistoryScreenState extends State<SubmissionHistoryScreen> {
                           submission.feedback.toString(),
                           style: AppFont.ralewaySubtitle.copyWith(
                             fontSize: 13,
+                            fontWeight: FontWeight.w400,
                             color: Colors.black87,
                           ),
                         ),
@@ -382,7 +383,7 @@ class _SubmissionHistoryScreenState extends State<SubmissionHistoryScreen> {
                           'Nilai:',
                           style: AppFont.ralewaySubtitle.copyWith(
                             fontSize: 14,
-                            fontWeight: FontWeight.w500,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                         const SizedBox(width: 8),
@@ -395,8 +396,8 @@ class _SubmissionHistoryScreenState extends State<SubmissionHistoryScreen> {
                           ),
                           child: Text(
                             submission.score.toString(),
-                            style: AppFont.crimsonTextSubtitle.copyWith(
-                              fontSize: 16,
+                            style: AppFont.nunitoSubtitle.copyWith(
+                              fontSize: 14,
                               fontWeight: FontWeight.bold,
                               color: AppColors.primary,
                             ),
