@@ -66,15 +66,6 @@ class _SubmissionScreenState extends State<SubmissionScreen> {
       AppLogger.logError('Gallery picker error: $e');
     }
   }
-  
-  String _getFileSize() {
-    if (_selectedFile == null) return '';
-    
-    final bytes = _selectedFile!.lengthSync();
-    if (bytes < 1024) return '$bytes B';
-    if (bytes < 1024 * 1024) return '${(bytes / 1024).toStringAsFixed(2)} KB';
-    return '${(bytes / (1024 * 1024)).toStringAsFixed(2)} MB';
-  }
 
   void _showSuccessDialog() {
     showDialog(

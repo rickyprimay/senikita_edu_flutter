@@ -323,16 +323,18 @@ class _SubmissionHistoryScreenState extends State<SubmissionHistoryScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  submission.submission ?? "Karya Tanpa Judul",
-                  style: AppFont.crimsonTextSubtitle.copyWith(
-                    fontSize: 18,
-                    color: AppColors.primary,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
+                submission.submission != null
+                 ? Text(
+                    submission.submission ?? "",
+                    style: AppFont.crimsonTextSubtitle.copyWith(
+                      fontSize: 18,
+                      color: AppColors.primary,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  )
+                  : const SizedBox.shrink(),
                 const SizedBox(height: 8),
                 
                 // Date
