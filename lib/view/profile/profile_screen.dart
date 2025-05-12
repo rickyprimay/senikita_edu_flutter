@@ -199,6 +199,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         Navigator.of(context, rootNavigator: true).pushNamed(RouteNames.certificate);
                       },
                     ),
+                    ProfileInfoTile(
+                      icon: const Icon(Icons.auto_awesome_outlined),
+                      title: "Temu Batik",
+                      trailing: const Icon(Icons.arrow_forward_ios, size: 16, color: AppColors.primary),
+                      onTap: () {
+                        Navigator.of(context, rootNavigator: true).pushNamed(RouteNames.temuBatik);
+                      },
+                    ),
                     const SizedBox(height: 10),
                     SizedBox(
                       width: double.infinity,
