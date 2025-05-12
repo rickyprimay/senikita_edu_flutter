@@ -655,7 +655,6 @@ class _SubmissionHistoryScreenState extends State<SubmissionHistoryScreen> {
         ),
       );
     }
-    
     return const SizedBox.shrink();
   }
 }

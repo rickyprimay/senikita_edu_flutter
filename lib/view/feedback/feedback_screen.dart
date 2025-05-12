@@ -267,7 +267,14 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                                 TextButton.icon(
                                   onPressed: _pickFile,
                                   icon: const Icon(Icons.refresh, size: 16),
-                                  label: const Text('Ganti Gambar'),
+                                  label: Text(
+                                    'Ganti Gambar',
+                                    style: AppFont.ralewaySubtitle.copyWith(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                      color: AppColors.tertiary,
+                                    ),
+                                  ),
                                   style: TextButton.styleFrom(
                                     foregroundColor: AppColors.tertiary,
                                   ),
