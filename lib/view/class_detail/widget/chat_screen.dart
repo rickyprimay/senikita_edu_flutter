@@ -171,10 +171,19 @@ class _ChatScreenState extends State<ChatScreen> {
           ),
         ),
         centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          color: Colors.white,
-          onPressed: () => Navigator.of(context).pop(),
+        leading: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: GestureDetector(
+            onTap: () => Navigator.pop(context),
+            child: Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppColors.tertiary.withAlpha(120),
+              ),
+              padding: const EdgeInsets.all(8),
+              child: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 18),
+            ),
+          ),
         ),
       ),
       body: Column(
@@ -193,7 +202,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     : message.text == 'Loading...'
                         ? Colors.grey.shade400
                         : Colors.grey.shade200;
-                final textColor = isUser ? Colors.white : Colors.black;
+                final textColor = isUser ? Colors.white : Colors.grey.shade800;
       
                 final avatar = isUser
                     ? (_userPhotoUrl != null && _userPhotoUrl!.isNotEmpty
@@ -220,7 +229,7 @@ class _ChatScreenState extends State<ChatScreen> {
                           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                           decoration: BoxDecoration(
                             color: bubbleColor,
-                            borderRadius: BorderRadius.circular(20),
+                            borderRadius: BorderRadius.circular(15),
                           ),
                           child: message.text == 'Loading...'
                               ? const LoadingDots()
@@ -345,7 +354,7 @@ class _LoadingDotsState extends State<LoadingDots> {
     return Text(
       'Loading$dots',
       style: AppFont.ralewaySubtitle.copyWith(
-        color: Colors.black,
+        color: AppColors.greyCustom,
         fontSize: 14,
       ),
     );
