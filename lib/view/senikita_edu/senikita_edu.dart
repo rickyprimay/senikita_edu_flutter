@@ -71,7 +71,7 @@ class _SeniKitaEduScreenState extends State<SeniKitaEduScreen> {
         ),
         actions: [
           IconButton(
-            icon: Icon(
+            icon: const Icon(
               Icons.language, 
               color: Colors.white,
             ),
@@ -113,7 +113,7 @@ class _SeniKitaEduScreenState extends State<SeniKitaEduScreen> {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Platform pembelajaran seni dan budaya Indonesia',
+                      'Platform pembelajaran seni dan budaya Indonesia berbasis teknologi yang interaktif dan inovatif.',
                       style: AppFont.ralewaySubtitle.copyWith(
                         color: Colors.white,
                         fontWeight: FontWeight.w400,
@@ -130,7 +130,7 @@ class _SeniKitaEduScreenState extends State<SeniKitaEduScreen> {
               child: Column(
                 children: [
                   Text(
-                    'SeniKita didirikan pada tahun 2024 dengan tujuan untuk memberdayakan seniman lokal di Indonesia. Berawal dari komunitas kecil seniman yang ingin memperluas jangkauan karya mereka, SeniKita tumbuh menjadi marketplace seni yang menghubungkan seniman dengan pembeli dari seluruh penjuru negeri. Hingga saat ini, SeniKita terus berkomitmen untuk mendukung perkembangan seni dan budaya melalui teknologi dan inovasi.',
+                    'Widya adalah platform edukasi seni dan budaya Indonesia yang dirancang untuk memberdayakan seniman, pelajar, dan pecinta budaya melalui teknologi modern. Bernaung di bawah aplikasi SeniKita, Widya menyediakan materi pembelajaran interaktif berupa video, dokumen pendukung, kuis, dan tugas yang disusun secara bertahap. Dengan dukungan chatbot berbasis AI, analisis otomatis, serta mentor profesional, Widya memudahkan pengguna untuk memahami materi, mengembangkan keterampilan, dan memperoleh sertifikat kompetensi. Portofolio karya dan sertifikat juga dapat disimpan dan dipublikasikan sebagai bukti pengembangan diri.',
                     style: AppFont.ralewaySubtitle.copyWith(
                       color: Colors.black,
                       fontWeight: FontWeight.w400,
@@ -144,14 +144,18 @@ class _SeniKitaEduScreenState extends State<SeniKitaEduScreen> {
                   _buildCard(
                     title: 'Visi',
                     description:
-                        'Menjadi platform seni terkemuka di Indonesia yang memberikan akses luas kepada seniman lokal untuk berkembang dan menjangkau pasar global.',
+                        'Menjadi platform edukasi seni dan budaya Indonesia terdepan yang menginspirasi, memberdayakan, dan menghubungkan seniman serta pelajar melalui pembelajaran inovatif dan teknologi cerdas.',
                   ),
                   const SizedBox(height: 16),
 
                   _buildCard(
                     title: 'Misi',
                     description:
-                        'Membangun ekosistem seni yang inklusif, mendukung seniman lokal dengan sarana inovatif, dan menciptakan akses mudah bagi pembeli untuk mendapatkan karya seni berkualitas tinggi.',
+                        '• Menyediakan materi pembelajaran seni budaya yang berkualitas, interaktif, dan mudah diakses.\n'
+                        '• Memanfaatkan teknologi AI untuk mendampingi proses belajar dan memberikan umpan balik yang konstruktif.\n'
+                        '• Memfasilitasi mentor profesional dalam membimbing pengguna secara personal.\n'
+                        '• Memberikan sertifikasi kompetensi yang diakui untuk mendukung pengembangan karir dan portofolio.\n'
+                        '• Membangun komunitas seni yang inklusif dan kolaboratif di tingkat nasional dan global.',
                   ),
                 ],
               ),
