@@ -553,6 +553,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> with TickerProvid
                                     arguments: {
                                       "lessonId": lesson.id,
                                       "lessonName": lesson.title,
+                                      "submissionType": lesson.submissionType,
                                     },
                                   );
                                 },

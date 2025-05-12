@@ -313,7 +313,6 @@ class _SubmissionScreenState extends State<SubmissionScreen> {
       }
 
       if (viewModel.error != null) {
-        AppLogger.logError("Submission error: ${viewModel.error}");
         if (mounted) {
           _showErrorDialog(viewModel.error!);
         }
@@ -323,7 +322,6 @@ class _SubmissionScreenState extends State<SubmissionScreen> {
         }
       }
     } catch (e) {
-      AppLogger.logError("Submission exception: $e");
       if (mounted) {
         _showErrorDialog("Terjadi kesalahan: $e");
       }

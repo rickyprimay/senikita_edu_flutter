@@ -68,12 +68,14 @@ class Routes {
         final args = settings.arguments as Map<String, dynamic>;
         final lessonId = args['lessonId'] as int;
         final lessonName = args['lessonName'] as String;
+        final submissionType = args['submissionType'] as String;
 
         return MaterialPageRoute(
           builder: (BuildContext context) =>
             SubmissionHistoryScreen(
               lessonId: lessonId,
               lessonName: lessonName,
+              submissionType: submissionType,
             )
         );
       case (RouteNames.submission):

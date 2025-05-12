@@ -11,10 +11,12 @@ import 'package:widya/viewModel/submission_view_model.dart';
 class SubmissionHistoryScreen extends StatefulWidget {
   final int lessonId;
   final String lessonName;
-  
+  final String submissionType;
+
   const SubmissionHistoryScreen({
     required this.lessonId,
     required this.lessonName,
+    required this.submissionType,
     super.key
   });
 
