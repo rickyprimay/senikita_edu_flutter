@@ -230,7 +230,7 @@ class _ChatScreenState extends State<ChatScreen> {
                           ),
                           child: message.text == 'Loading...'
                               ? const LoadingDots()
-                              : Text(
+                              : Text( 
                                   message.text,
                                   style: AppFont.ralewaySubtitle.copyWith(
                                     color: textColor,

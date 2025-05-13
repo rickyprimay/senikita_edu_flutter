@@ -4,7 +4,6 @@ import 'package:widya/res/helpers/date_formatter.dart';
 import 'package:widya/res/widgets/colors.dart';
 import 'package:widya/res/widgets/fonts.dart';
 import 'package:widya/res/widgets/loading.dart';
-import 'package:widya/res/widgets/logger.dart';
 import 'package:widya/utils/routes/routes_names.dart';
 import 'package:widya/viewModel/course_view_model.dart';
 import 'package:widya/viewModel/enrollments_view_model.dart';
