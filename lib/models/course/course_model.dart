@@ -4,7 +4,7 @@ class Course {
   final int id;
   final String title;
   final String description;
-  final String certificateAvailable;
+  final int certificateAvailable;
   final String slug;
   final String status;
   final String thumbnail;
