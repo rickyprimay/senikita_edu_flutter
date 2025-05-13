@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:widya/models/submissions/submission.dart';
 import 'package:widya/repository/submission_repository.dart';
-import 'package:widya/res/widgets/logger.dart';
 import 'package:widya/res/widgets/shared_preferences.dart';
 
 class SubmissionViewModel with ChangeNotifier {

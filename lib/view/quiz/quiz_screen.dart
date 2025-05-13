@@ -359,7 +359,6 @@ class _QuizScreenState extends State<QuizScreen> {
                         ? _buildEmptyQuizView()
                         : _buildQuizContent(quizProvider),
           ),
-          if (quizProvider.isLoading && quizProvider.questions.isNotEmpty) const Loading(opacity: 0.7),
           ]
         );
       },

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:widya/models/quiz/quiz_response.dart';
 import 'package:widya/repository/quiz_repository.dart';
-import 'package:widya/res/widgets/logger.dart';
 import 'package:widya/res/widgets/shared_preferences.dart';
 
 class QuizViewModel extends ChangeNotifier {

@@ -3,7 +3,6 @@ import 'package:widya/models/enrollments/enrollments_model.dart';
 import 'package:widya/models/enrollments/enrollments_list_model.dart';
 import 'package:widya/models/enrollments/list_total_enrollments.dart';
 import 'package:widya/repository/enrollments_repository.dart';
-import 'package:widya/res/widgets/logger.dart';
 import 'package:widya/res/widgets/shared_preferences.dart';
 import 'package:widya/utils/utils.dart';
 

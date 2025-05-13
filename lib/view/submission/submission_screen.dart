@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:widya/res/widgets/colors.dart';
 import 'package:widya/res/widgets/fonts.dart';
 import 'package:widya/res/widgets/loading.dart';
-import 'package:widya/res/widgets/logger.dart';
 import 'package:widya/viewModel/submission_view_model.dart';
 
 class SubmissionScreen extends StatefulWidget {

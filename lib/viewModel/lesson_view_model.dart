@@ -4,7 +4,6 @@ import 'package:widya/models/lessons/lesson_list.dart';
 import 'package:widya/models/lessons/additionals_materials.dart';
 import 'package:widya/repository/lesson_repository.dart';
 import 'package:widya/res/widgets/app_urls.dart';
-import 'package:widya/res/widgets/logger.dart';
 import 'package:widya/res/widgets/shared_preferences.dart';
 
 class LessonViewModel with ChangeNotifier {

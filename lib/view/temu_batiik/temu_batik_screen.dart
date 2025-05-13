@@ -5,7 +5,6 @@ import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:widya/res/widgets/colors.dart';
 import 'package:widya/res/widgets/fonts.dart';
 import 'package:widya/res/widgets/loading.dart';
-import 'package:widya/res/widgets/logger.dart';
 import 'package:widya/repository/temu_batik_repository.dart';
 
 class TemuBatikScreen extends StatefulWidget {

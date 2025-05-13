@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:widya/res/widgets/logger.dart';
 import 'package:widya/res/widgets/shared_preferences.dart';
 import 'package:widya/repository/user_repository.dart';
 import 'package:flutter/material.dart'; 

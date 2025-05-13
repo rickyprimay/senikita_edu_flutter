@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:widya/repository/auth_repository.dart';
-import 'package:widya/res/widgets/logger.dart';
 import 'package:widya/res/widgets/shared_preferences.dart';
 import 'package:widya/utils/routes/routes_names.dart';
 import 'package:widya/viewModel/category_view_model.dart';
