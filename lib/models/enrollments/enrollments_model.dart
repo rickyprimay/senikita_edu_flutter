@@ -2,14 +2,14 @@ import 'package:widya/models/course/course_model.dart';
 import 'package:widya/models/enrollments/completion_stats.dart';
 
 class Enrollments {
-  int id;
-  int userId;
-  int courseId;
-  String status;
-  String? completedAt;
-  String createdAt;
-  CompletionStats? completionStats;
-  Course course;
+  final int id;
+  final String userId;
+  final String courseId;
+  final String status;
+  final String? completedAt;
+  final String createdAt;
+  final CompletionStats? completionStats;
+  final Course course;
 
   Enrollments({
     required this.id,

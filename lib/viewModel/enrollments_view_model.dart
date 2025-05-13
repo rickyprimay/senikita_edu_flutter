@@ -49,7 +49,6 @@ class EnrollmentsViewModel extends ChangeNotifier {
           _currentPage = page ?? 1;
           _hasMore = true;
           
-          // Check pagination metadata
           if (response['meta'] != null && response['meta']['pagination'] != null) {
             final pagination = response['meta']['pagination'];
             final int totalPages = pagination['total_pages'] ?? 1;
