@@ -67,7 +67,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buildProfileHeader() {
-    // Pre-rendered gradient background instead of loading image
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -79,6 +78,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ],
         ),
         borderRadius: const BorderRadius.vertical(bottom: Radius.circular(30)),
+        image: DecorationImage(
+          image: AssetImage('assets/common/hero-texture2.png'),
+          fit: BoxFit.cover,
+        ),
       ),
       padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
       child: Column(
