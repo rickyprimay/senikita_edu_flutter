@@ -46,14 +46,12 @@ class QuizViewModel extends ChangeNotifier {
     try {
       final response = await _quizRepository.fetchQUiz(lessonId: lessonId, token: token);
       
-      // Parse response into the new Quiz model
       _quiz = Quiz.fromJson(response);
       
       if (!(_quiz?.success ?? false) || _quiz?.data.quiz == null) {
         _error = _quiz?.message ?? "Failed to load quiz";
       }
     } catch (e) {
-      AppLogger.logError("Error fetching quizzes: $e");
       _error = e.toString();
       _quiz = null;
     } finally {
@@ -86,7 +84,6 @@ class QuizViewModel extends ChangeNotifier {
         _error = _quiz?.message ?? "Failed to load quiz history";
       }
     } catch (e) {
-      AppLogger.logError("Error fetching quiz history: $e");
       _error = e.toString();
       _quiz = null;
     } finally {

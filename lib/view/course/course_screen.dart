@@ -43,7 +43,6 @@ class _CourseScreenState extends State<CourseScreen> {
       Provider.of<EnrollmentsViewModel>(context, listen: false);
       Provider.of<LessonViewModel>(context, listen: false).fetchLessonByCourseId(widget.courseId);
       viewModel.fetchCourseDetail(widget.courseId);
-      AppLogger.logInfo("isEnrolled: ${widget.isEnrolled}");
     });
   }
 
@@ -431,7 +430,6 @@ class _CourseScreenState extends State<CourseScreen> {
                                     courseId: widget.courseId,
                                     context: context,
                                   );
-                                  AppLogger.logInfo("course Id: ${widget.courseId}");
                                 },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: AppColors.primary,

@@ -63,7 +63,6 @@ class _SubmissionScreenState extends State<SubmissionScreen> {
       });
       
       _showErrorDialog('Terjadi masalah saat membuka galeri. Pastikan aplikasi memiliki izin akses.');
-      AppLogger.logError('Gallery picker error: $e');
     }
   }
 

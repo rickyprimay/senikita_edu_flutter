@@ -16,7 +16,6 @@ class LessonRepository {
       final response = await _network.getGetApiResponseWithHeader(AppUrls.getCourseLessons(courseId), headers);
       return response;
     } catch (e) {
-      AppLogger.logDebug("Error fetching course lessons: $e");
       rethrow;
     }
   }
@@ -31,7 +30,6 @@ class LessonRepository {
       final response = await _network.getPostApiResponseWithHeader(AppUrls.postCompleteLesson(lessonId), headers, null, context);
       return response;
     } catch (e) {
-      AppLogger.logDebug("Error completing lesson: $e");
       rethrow;
     }
   }

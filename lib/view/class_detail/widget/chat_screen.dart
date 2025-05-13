@@ -89,19 +89,16 @@ class _ChatScreenState extends State<ChatScreen> {
             _messages.removeLast();
             _messages.add(ChatMessage(text: 'Maaf, ada masalah dalam memproses pesan.', isUser: false));
           });
-          AppLogger.logError('Gemini response output is null');
         }
       } catch (e) {
         setState(() {
           _messages.removeLast();
           _messages.add(ChatMessage(text: 'Terjadi kesalahan: $e', isUser: false));
         });
-        AppLogger.logError('Error sending message to Gemini: $e');
       } finally {
         setState(() {
           _isSending = false;
         });
-        // Scroll to bottom after updating messages
         _scrollToBottom();
       }
     }

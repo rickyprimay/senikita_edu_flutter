@@ -63,15 +63,12 @@ class EnrollmentsViewModel extends ChangeNotifier {
           _error = null;
         } catch (e) {
           _error = 'Failed to parse response';
-          AppLogger.logError('Failed to parse response: $e');
         }
       } else {
         _error = 'Data not found or empty.';
-        AppLogger.logError('Data not found or empty.');
       }
     } catch (e) {
       _error = 'Failed to load data: $e';
-      AppLogger.logError('Failed to load data: $e');
     } finally {
       _loading = false;
       notifyListeners();
@@ -87,18 +84,15 @@ class EnrollmentsViewModel extends ChangeNotifier {
 
     try {
       final response = await _enrollmentsRepository.fetchTotalEnrollments(token ?? "");
-      AppLogger.logInfo('Total Enrollments: $response');
       if (response != null) {
         _totalEnrollments = ListTotalEnrollments.fromJson(response);
         _error = null; 
         notifyListeners();
       } else {
         _error = 'Data not found or empty.';
-        AppLogger.logError('Data not found or empty.');
       }
     } catch (e) {
       _error = 'Failed to load data: $e';
-      AppLogger.logError('Failed to load data: $e');
     } finally {
       _loading = false;
       notifyListeners();

@@ -82,7 +82,6 @@ class AuthViewModel with ChangeNotifier {
       }
     } catch (e) {
       Utils.showToastification('Verfikasi gagal', 'Verifikasi gagal, silahkan coba kembali', false, context);
-      AppLogger.logError('Google Sign In Error: $e');
     } finally {
       setLoginLoading(false);
       notifyListeners();
@@ -119,7 +118,6 @@ class AuthViewModel with ChangeNotifier {
       );
     } catch (e) {
       Utils.showToastification('Gagal Log Out', 'Gagal Logout, silahkan coba kembali', false, context);
-      AppLogger.logError('Logout Error: $e');
     } finally {
       setLogoutLoading(false);
     }

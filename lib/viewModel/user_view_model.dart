@@ -45,7 +45,6 @@ class UserViewModel with ChangeNotifier {
       }
 
       final response = await _userRepository.fetchUserDetail(token);
-      AppLogger.logInfo('📥 User Detail Response: $response');
 
       if (response['success'] == true && response['data'] != null) {
         final userData = response['data']['user'];

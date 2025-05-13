@@ -68,7 +68,6 @@ class NetworkApiServices extends BaseApiServices {
      if (response.statusCode == 200 || response.statusCode == 201) {
        return jsonDecode(response.body);
     } else {
-      AppLogger.logError('Failed to load data : ${response.body}');
       Utils.showToastification("Gagal", "Kamu telah terdaftar dalam kelas ini", false, context);
     }
   }

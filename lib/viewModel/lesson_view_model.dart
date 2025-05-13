@@ -31,11 +31,9 @@ class LessonViewModel with ChangeNotifier {
     notifyListeners();  
 
     final url = AppUrls.getCourseLessons(courseId);
-    AppLogger.logInfo("url: $url");
 
     try {
       final response = await _lessonRepository.getCourseLessons(courseId, token ?? "");
-      AppLogger.logInfo("response: $response");
 
       final lessonListResponse = LessonList.fromJson(response);
 
@@ -46,15 +44,11 @@ class LessonViewModel with ChangeNotifier {
         _lessons!.sort((a, b) => (a.order ?? 0).compareTo(b.order ?? 0));
       }
 
-      AppLogger.logInfo("lessons: ${_lessons?.length}");
-      AppLogger.logInfo("additionalMaterials: ${_additionalMaterials?.length}");
-
       _loading = false;
       notifyListeners();
 
     } catch (e) {
       _loading = false;
-      AppLogger.logError("Error fetching lessons: $e");
       _error = e.toString();
       notifyListeners();  
     }
@@ -65,13 +59,10 @@ class LessonViewModel with ChangeNotifier {
     final String? token = sp.getString("auth_token");
   
     _error = null;
-    AppLogger.logInfo("lessonId: $lessonId");
   
     try {
       final response = await _lessonRepository.postCompleteLesson(lessonId, token ?? "", context);
-      AppLogger.logInfo("response: $response");
-      
-      // Update the lesson object in the list
+
       if (_lessons != null) {
         for (int i = 0; i < _lessons!.length; i++) {
           if (_lessons![i].id == lessonId) {
@@ -85,7 +76,6 @@ class LessonViewModel with ChangeNotifier {
       return true;  // Return success
       
     } catch (e) {
-      AppLogger.logError("Error completing lesson: $e");
       _error = e.toString();
       notifyListeners();
       return false;  // Return failure 

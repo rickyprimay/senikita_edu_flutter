@@ -58,13 +58,9 @@ class SubmissionRepository {
 
       request.files.add(multipartFile);
 
-      AppLogger.logInfo("Sending multipart request to ${AppUrls.submitSubmission}");
       var streamedResponse = await request.send();
       var response = await http.Response.fromStream(streamedResponse);
 
-      AppLogger.logInfo("Response: ${response.body}");
-
-      // Add this: Parse and return the response
       if (response.statusCode == 200 || response.statusCode == 201) {
         return json.decode(response.body);
       } else {
@@ -74,7 +70,6 @@ class SubmissionRepository {
         };
       }
     } catch (e) {
-      AppLogger.logError("Error in repository: $e");
       return {
         'success': false,
         'message': e.toString()
@@ -103,11 +98,8 @@ class SubmissionRepository {
       request.fields['submission'] = submissionText;
       request.fields['is_published'] = isPublished.toString();
 
-      AppLogger.logInfo("Sending link submission request to ${AppUrls.submitSubmission}");
       var streamedResponse = await request.send();
       var response = await http.Response.fromStream(streamedResponse);
-
-      AppLogger.logInfo("Response: ${response.body}");
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         return json.decode(response.body);
@@ -118,7 +110,6 @@ class SubmissionRepository {
         };
       }
     } catch (e) {
-      AppLogger.logError("Error in repository: $e");
       return {
         'success': false,
         'message': e.toString()

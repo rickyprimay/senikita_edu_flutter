@@ -37,8 +37,6 @@ class SubmissionViewModel with ChangeNotifier {
         lessonId: lessonId, 
         token: token
       );
-
-      AppLogger.logInfo("Submission response: $response");
       
       if (response != null && response["success"] == true) {
         try {
@@ -48,17 +46,14 @@ class SubmissionViewModel with ChangeNotifier {
           
           _submission = Submission.fromJson(submissionData);
           _error = null;
-          AppLogger.logInfo("Submission data parsed successfully");
         } catch (e) {
           _error = "Gagal memproses data submission: ${e.toString()}";
-          AppLogger.logError("Submission parsing error: $e");
         }
       } else {
         _error = response?["message"] ?? "Gagal memuat data submission";
       }
     } catch (e) {
       _error = e.toString();
-      AppLogger.logError("Fetch submission error: $e");
     } finally {
       _loading = false;
       notifyListeners();
@@ -109,16 +104,14 @@ class SubmissionViewModel with ChangeNotifier {
 
               _submission = Submission.fromJson(submissionData);
             } catch (e) {
-              AppLogger.logInfo("Note: Couldn't parse submission data: $e");
+              // Todos
             }
           }
         } else {
           _error = response != null ? (response["message"] ?? "Unknown error") : "No response from server";
-          AppLogger.logError("Submission error: $_error");
         }
       } catch (e) {
         _error = e.toString();
-        AppLogger.logError("Submission exception: $e");
       } finally {
         _loading = false;
         notifyListeners();
@@ -158,16 +151,14 @@ class SubmissionViewModel with ChangeNotifier {
     
               _submission = Submission.fromJson(submissionData);
             } catch (e) {
-              AppLogger.logInfo("Note: Couldn't parse submission data: $e");
+              // TODOS
             }
           }
         } else {
           _error = response != null ? (response["message"] ?? "Unknown error") : "No response from server";
-          AppLogger.logError("Submission error: $_error");
         }
       } catch (e) {
         _error = e.toString();
-        AppLogger.logError("Submission exception: $e");
       } finally {
         _loading = false;
         notifyListeners();

@@ -69,7 +69,6 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
           backgroundColor: AppColors.customRed,
         ),
       );
-      AppLogger.logError('Gallery picker error: $e');
     }
   }
   
@@ -94,8 +93,6 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
         imageFile: _selectedFile!,
         rules: widget.rules,
       );
-
-      AppLogger.logInfo('Feedback response: $response');
 
       if (response.containsKey('detail')) {
         throw Exception(response['detail'].toString());
@@ -124,7 +121,6 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
           ),
         ),
       );
-      AppLogger.logError('Feedback submission error: $e');
     }
   }
   

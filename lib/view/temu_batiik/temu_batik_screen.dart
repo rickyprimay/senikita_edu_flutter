@@ -63,7 +63,6 @@ class _TemuBatikScreenState extends State<TemuBatikScreen> {
           backgroundColor: AppColors.customRed,
         ),
       );
-      AppLogger.logError('Gallery picker error: $e');
     }
   }
   
@@ -80,8 +79,6 @@ class _TemuBatikScreenState extends State<TemuBatikScreen> {
         file: _selectedFile!,
         tema: _selectedTheme,
       );
-
-      AppLogger.logInfo('TemuBatik response: $response');
 
       if (response.containsKey('detail') || response['success'] == false) {
         throw Exception(response['detail']?.toString() ?? 'Unknown error occurred');
@@ -110,7 +107,6 @@ class _TemuBatikScreenState extends State<TemuBatikScreen> {
           ),
         ),
       );
-      AppLogger.logError('TemuBatik submission error: $e');
     }
   }
   

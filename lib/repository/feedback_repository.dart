@@ -57,18 +57,12 @@ class FeedbackRepository {
 
       request.files.add(multipartFile);
 
-      AppLogger.logInfo("Sending multipart request to ${AppUrls.feedbackSubmission}");
-      AppLogger.logInfo("File: ${imageFile.path}, Size: $length bytes, Type: $contentType");
 
       var streamedResponse = await request.send();
       var response = await http.Response.fromStream(streamedResponse);
 
-      AppLogger.logInfo("Response status: ${response.statusCode}");
-      AppLogger.logInfo("Response: ${response.body}");
-
       return json.decode(response.body);
     } catch (e) {
-      AppLogger.logError("Error in repository: $e");
       rethrow;
     }
   }
