@@ -245,35 +245,37 @@ class _CourseScreenState extends State<CourseScreen> {
                         ),
                       ),
                       const SizedBox(width: 6),
-                      Expanded(
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.brown.shade300),
-                            borderRadius: BorderRadius.circular(50),
-                            color: Colors.brown.shade50,
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.workspace_premium, color: Colors.brown, size: 12),
-                              const SizedBox(width: 4),
-                              Flexible(
-                                child: Text(
-                                  "Sertifikat",
-                                  style: AppFont.ralewaySubtitle.copyWith(
-                                    fontSize: 9,
-                                    color: Colors.brown,
-                                    fontWeight: FontWeight.w600,
+                      courseDetail.certificateAvailable == "1"
+                      ? Expanded(
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.brown.shade300),
+                              borderRadius: BorderRadius.circular(50),
+                              color: Colors.brown.shade50,
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.workspace_premium, color: Colors.brown, size: 12),
+                                const SizedBox(width: 4),
+                                Flexible(
+                                  child: Text(
+                                    "Sertifikat",
+                                    style: AppFont.ralewaySubtitle.copyWith(
+                                      fontSize: 9,
+                                      color: Colors.brown,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
                                   ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                      ),
+                        )
+                      : const SizedBox(),
                     ],
                   ),
                 ),
